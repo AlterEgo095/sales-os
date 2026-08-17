@@ -9,6 +9,7 @@ import {
   CreditCard,
   Warehouse,
   Target,
+  DollarSign,
   Settings,
 } from 'lucide-react'
 import {
@@ -36,6 +37,7 @@ const mainNav = [
 const secondaryNav = [
   { id: 'agents' as ViewId, label: 'Agents', icon: UserCircle },
   { id: 'payments' as ViewId, label: 'Paiements', icon: CreditCard },
+  { id: 'commissions' as ViewId, label: 'Commissions', icon: DollarSign },
   { id: 'stock' as ViewId, label: 'Stock', icon: Warehouse },
   { id: 'targets' as ViewId, label: 'Objectifs', icon: Target },
 ]
@@ -51,7 +53,7 @@ export function AppSidebar() {
             SALES <span className="text-blue-500">OS</span>
           </div>
           <span className="text-[9px] font-medium px-1.5 py-0.5 rounded border border-blue-500/30 text-blue-400 bg-blue-500/10">
-            V1
+            V2
           </span>
         </div>
       </SidebarHeader>

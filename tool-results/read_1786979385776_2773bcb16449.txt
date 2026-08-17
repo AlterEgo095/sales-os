@@ -1,0 +1,894 @@
+     1→'use client'
+     2→
+     3→import { useEffect, useState, useCallback } from 'react'
+     4→import {
+     5→  Card,
+     6→  CardContent,
+     7→  CardHeader,
+     8→  CardTitle,
+     9→} from '@/components/ui/card'
+    10→import { Button } from '@/components/ui/button'
+    11→import { Badge } from '@/components/ui/badge'
+    12→import {
+    13→  Dialog,
+    14→  DialogContent,
+    15→  DialogHeader,
+    16→  DialogTitle,
+    17→  DialogFooter,
+    18→} from '@/components/ui/dialog'
+    19→import { Input } from '@/components/ui/input'
+    20→import { Label } from '@/components/ui/label'
+    21→import {
+    22→  Select,
+    23→  SelectContent,
+    24→  SelectItem,
+    25→  SelectTrigger,
+    26→  SelectValue,
+    27→} from '@/components/ui/select'
+    28→import {
+    29→  Table,
+    30→  TableBody,
+    31→  TableCell,
+    32→  TableHead,
+    33→  TableHeader,
+    34→  TableRow,
+    35→} from '@/components/ui/table'
+    36→import { Textarea } from '@/components/ui/textarea'
+    37→import { Separator } from '@/components/ui/separator'
+    38→import {
+    39→  Plus,
+    40→  ShoppingCart,
+    41→  ArrowRight,
+    42→  CheckCircle,
+    43→  XCircle,
+    44→  Eye,
+    45→  FileText,
+    46→  Trash2,
+    47→  Loader2,
+    48→} from 'lucide-react'
+    49→import { toast } from '@/hooks/use-toast'
+    50→
+    51→// --- Types ---
+    52→interface Customer {
+    53→  id: string
+    54→  name: string
+    55→  email?: string
+    56→}
+    57→
+    58→interface Product {
+    59→  id: string
+    60→  name: string
+    61→  price: number
+    62→}
+    63→
+    64→interface Agent {
+    65→  id: string
+    66→  name: string
+    67→}
+    68→
+    69→interface OrderItem {
+    70→  productId: string
+    71→  quantity: number
+    72→  unitPrice: number
+    73→  discount: number
+    74→  total: number
+    75→}
+    76→
+    77→interface Order {
+    78→  id: string
+    79→  customerId: string
+    80→  customer?: Customer
+    81→  houseId: string
+    82→  source: 'client' | 'agent' | 'digital'
+    83→  agentId?: string
+    84→  agent?: Agent
+    85→  sellerId?: string
+    86→  currency?: string
+    87→  notes?: string
+    88→  items: OrderItem[]
+    89→  status: 'draft' | 'formalized' | 'confirmed' | 'completed' | 'cancelled'
+    90→  totalAmount?: number
+    91→  createdAt: string
+    92→  updatedAt: string
+    93→}
+    94→
+    95→interface TenantInfo {
+    96→  id: string
+    97→  houseId: string
+    98→}
+    99→
+   100→// --- Status helpers ---
+   101→const statusConfig: Record<
+   102→  string,
+   103→  { label: string; variant: 'default' | 'secondary' | 'outline' | 'destructive'; className: string }
+   104→> = {
+   105→  draft: { label: 'Brouillon', variant: 'secondary', className: 'bg-gray-600 text-gray-100 hover:bg-gray-600' },
+   106→  formalized: { label: 'Formalisée', variant: 'secondary', className: 'bg-yellow-600 text-yellow-100 hover:bg-yellow-600' },
+   107→  confirmed: { label: 'Confirmée', variant: 'secondary', className: 'bg-blue-600 text-blue-100 hover:bg-blue-600' },
+   108→  completed: { label: 'Complétée', variant: 'secondary', className: 'bg-green-600 text-green-100 hover:bg-green-600' },
+   109→  cancelled: { label: 'Annulée', variant: 'destructive', className: 'bg-red-600 text-red-100 hover:bg-red-600' },
+   110→}
+   111→
+   112→const sourceLabels: Record<string, string> = {
+   113→  client: 'Client',
+   114→  agent: 'Agent',
+   115→  digital: 'Digital',
+   116→}
+   117→
+   118→const statusTransitions: Record<string, { next: string; label: string } | null> = {
+   119→  draft: { next: 'formalized', label: 'Formaliser' },
+   120→  formalized: { next: 'confirmed', label: 'Confirmer' },
+   121→  confirmed: { next: 'completed', label: 'Completer' },
+   122→  completed: null,
+   123→  cancelled: null,
+   124→}
+   125→
+   126→// --- Component ---
+   127→export function OrdersView() {
+   128→  // Core data
+   129→  const [orders, setOrders] = useState<Order[]>([])
+   130→  const [customers, setCustomers] = useState<Customer[]>([])
+   131→  const [products, setProducts] = useState<Product[]>([])
+   132→  const [agents, setAgents] = useState<Agent[]>([])
+   133→  const [tenantInfo, setTenantInfo] = useState<TenantInfo | null>(null)
+   134→
+   135→  // Loading states
+   136→  const [loading, setLoading] = useState(true)
+   137→  const [creating, setCreating] = useState(false)
+   138→  const [transitioning, setTransitioning] = useState<string | null>(null)
+   139→
+   140→  // Dialogs
+   141→  const [createOpen, setCreateOpen] = useState(false)
+   142→  const [detailOpen, setDetailOpen] = useState(false)
+   143→  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+   144→
+   145→  // Create form state
+   146→  const [formCustomerId, setFormCustomerId] = useState('')
+   147→  const [formSource, setFormSource] = useState<'client' | 'agent' | 'digital'>('client')
+   148→  const [formAgentId, setFormAgentId] = useState('')
+   149→  const [formNotes, setFormNotes] = useState('')
+   150→  const [formItems, setFormItems] = useState<
+   151→    { productId: string; quantity: number; unitPrice: number; discount: number }[]
+   152→  >([{ productId: '', quantity: 1, unitPrice: 0, discount: 0 }])
+   153→
+   154→  // --- Fetch tenant ---
+   155→  const fetchTenant = useCallback(async () => {
+   156→    try {
+   157→      const res = await fetch('/api/tenants')
+   158→      if (!res.ok) throw new Error('Failed to fetch tenants')
+   159→      const data = await res.json()
+   160→      if (data && data.length > 0) {
+   161→        setTenantInfo({ id: data[0].id, houseId: data[0].houseId || data[0].id })
+   162→      } else if (data?.id) {
+   163→        setTenantInfo({ id: data.id, houseId: data.houseId || data.id })
+   164→      }
+   165→    } catch {
+   166→      // Tenant fetch failed silently
+   167→    }
+   168→  }, [])
+   169→
+   170→  // --- Fetch orders ---
+   171→  const fetchOrders = useCallback(async () => {
+   172→    if (!tenantInfo) return
+   173→    setLoading(true)
+   174→    try {
+   175→      const res = await fetch(`/api/orders?tenantId=${tenantInfo.id}`)
+   176→      if (!res.ok) throw new Error('Failed to fetch orders')
+   177→      const data = await res.json()
+   178→      setOrders(Array.isArray(data) ? data : [])
+   179→    } catch {
+   180→      toast({ title: 'Erreur', description: 'Impossible de charger les commandes', variant: 'destructive' })
+   181→    } finally {
+   182→      setLoading(false)
+   183→    }
+   184→  }, [tenantInfo])
+   185→
+   186→  // --- Fetch customers ---
+   187→  const fetchCustomers = useCallback(async () => {
+   188→    if (!tenantInfo) return
+   189→    try {
+   190→      const res = await fetch(`/api/customers?tenantId=${tenantInfo.id}`)
+   191→      if (!res.ok) return
+   192→      const data = await res.json()
+   193→      setCustomers(Array.isArray(data) ? data : [])
+   194→    } catch {
+   195→      // silent
+   196→    }
+   197→  }, [tenantInfo])
+   198→
+   199→  // --- Fetch products ---
+   200→  const fetchProducts = useCallback(async () => {
+   201→    if (!tenantInfo) return
+   202→    try {
+   203→      const res = await fetch(`/api/products?tenantId=${tenantInfo.id}`)
+   204→      if (!res.ok) return
+   205→      const data = await res.json()
+   206→      setProducts(Array.isArray(data) ? data : [])
+   207→    } catch {
+   208→      // silent
+   209→    }
+   210→  }, [tenantInfo])
+   211→
+   212→  // --- Fetch agents ---
+   213→  const fetchAgents = useCallback(async () => {
+   214→    if (!tenantInfo) return
+   215→    try {
+   216→      const res = await fetch(`/api/agents?tenantId=${tenantInfo.id}`)
+   217→      if (!res.ok) return
+   218→      const data = await res.json()
+   219→      setAgents(Array.isArray(data) ? data : [])
+   220→    } catch {
+   221→      // silent
+   222→    }
+   223→  }, [tenantInfo])
+   224→
+   225→  // --- Init ---
+   226→  useEffect(() => {
+   227→    fetchTenant()
+   228→  }, [fetchTenant])
+   229→
+   230→  useEffect(() => {
+   231→    if (tenantInfo) {
+   232→      fetchOrders()
+   233→      fetchCustomers()
+   234→      fetchProducts()
+   235→      fetchAgents()
+   236→    }
+   237→  }, [tenantInfo, fetchOrders, fetchCustomers, fetchProducts, fetchAgents])
+   238→
+   239→  // --- Create order ---
+   240→  const handleCreate = async () => {
+   241→    if (!tenantInfo || !formCustomerId) {
+   242→      toast({ title: 'Erreur', description: 'Veuillez sélectionner un client', variant: 'destructive' })
+   243→      return
+   244→    }
+   245→
+   246→    const validItems = formItems.filter((i) => i.productId && i.quantity > 0)
+   247→    if (validItems.length === 0) {
+   248→      toast({ title: 'Erreur', description: 'Ajoutez au moins un article', variant: 'destructive' })
+   249→      return
+   250→    }
+   251→
+   252→    setCreating(true)
+   253→    try {
+   254→      const body: Record<string, unknown> = {
+   255→        tenantId: tenantInfo.id,
+   256→        houseId: tenantInfo.houseId,
+   257→        customerId: formCustomerId,
+   258→        source: formSource,
+   259→        currency: 'EUR',
+   260→        notes: formNotes || undefined,
+   261→        items: validItems.map((i) => ({
+   262→          productId: i.productId,
+   263→          quantity: i.quantity,
+   264→          unitPrice: i.unitPrice,
+   265→          discount: i.discount,
+   266→          total: i.quantity * i.unitPrice * (1 - i.discount / 100),
+   267→        })),
+   268→      }
+   269→      if (formAgentId) body.agentId = formAgentId
+   270→
+   271→      const res = await fetch('/api/orders', {
+   272→        method: 'POST',
+   273→        headers: { 'Content-Type': 'application/json' },
+   274→        body: JSON.stringify(body),
+   275→      })
+   276→      if (!res.ok) throw new Error('Failed to create order')
+   277→
+   278→      toast({ title: 'Commande créée', description: 'La commande a été créée avec succès' })
+   279→      setCreateOpen(false)
+   280→      resetForm()
+   281→      fetchOrders()
+   282→    } catch {
+   283→      toast({ title: 'Erreur', description: 'Impossible de créer la commande', variant: 'destructive' })
+   284→    } finally {
+   285→      setCreating(false)
+   286→    }
+   287→  }
+   288→
+   289→  // --- Status transition ---
+   290→  const handleTransition = async (order: Order, newStatus: string) => {
+   291→    if (!tenantInfo) return
+   292→    setTransitioning(order.id)
+   293→    try {
+   294→      const res = await fetch(`/api/orders/${order.id}`, {
+   295→        method: 'PUT',
+   296→        headers: { 'Content-Type': 'application/json' },
+   297→        body: JSON.stringify({ status: newStatus, tenantId: tenantInfo.id }),
+   298→      })
+   299→      if (!res.ok) throw new Error('Failed to update order')
+   300→
+   301→      toast({ title: 'Statut mis à jour', description: `Commande passée à "${statusConfig[newStatus]?.label || newStatus}"` })
+   302→      fetchOrders()
+   303→      // Also refresh detail if open
+   304→      if (selectedOrder?.id === order.id) {
+   305→        setSelectedOrder({ ...order, status: newStatus as Order['status'] })
+   306→      }
+   307→    } catch {
+   308→      toast({ title: 'Erreur', description: 'Impossible de mettre à jour le statut', variant: 'destructive' })
+   309→    } finally {
+   310→      setTransitioning(null)
+   311→    }
+   312→  }
+   313→
+   314→  // --- Reset form ---
+   315→  const resetForm = () => {
+   316→    setFormCustomerId('')
+   317→    setFormSource('client')
+   318→    setFormAgentId('')
+   319→    setFormNotes('')
+   320→    setFormItems([{ productId: '', quantity: 1, unitPrice: 0, discount: 0 }])
+   321→  }
+   322→
+   323→  // --- Add form item ---
+   324→  const addFormItem = () => {
+   325→    setFormItems((prev) => [...prev, { productId: '', quantity: 1, unitPrice: 0, discount: 0 }])
+   326→  }
+   327→
+   328→  // --- Remove form item ---
+   329→  const removeFormItem = (index: number) => {
+   330→    setFormItems((prev) => prev.filter((_, i) => i !== index))
+   331→  }
+   332→
+   333→  // --- Update form item ---
+   334→  const updateFormItem = (
+   335→    index: number,
+   336→    field: string,
+   337→    value: string | number
+   338→  ) => {
+   339→    setFormItems((prev) =>
+   340→      prev.map((item, i) => {
+   341→        if (i !== index) return item
+   342→        const updated = { ...item, [field]: value }
+   343→        // Auto-fill unitPrice from product
+   344→        if (field === 'productId' && typeof value === 'string') {
+   345→          const prod = products.find((p) => p.id === value)
+   346→          if (prod) updated.unitPrice = prod.price
+   347→        }
+   348→        return updated
+   349→      })
+   350→    )
+   351→  }
+   352→
+   353→  // --- Compute form total ---
+   354→  const computeFormTotal = () => {
+   355→    return formItems.reduce((sum, item) => {
+   356→      if (!item.productId) return sum
+   357→      return sum + item.quantity * item.unitPrice * (1 - item.discount / 100)
+   358→    }, 0)
+   359→  }
+   360→
+   361→  // --- Compute order total ---
+   362→  const computeOrderTotal = (order: Order) => {
+   363→    if (order.totalAmount != null) return order.totalAmount
+   364→    return (order.items || []).reduce((sum, item) => sum + (item.total || 0), 0)
+   365→  }
+   366→
+   367→  // --- Helpers ---
+   368→  const getCustomerName = (order: Order) => {
+   369→    if (order.customer?.name) return order.customer.name
+   370→    const c = customers.find((c) => c.id === order.customerId)
+   371→    return c?.name || order.customerId?.slice(-6) || '—'
+   372→  }
+   373→
+   374→  const getProductName = (productId: string) => {
+   375→    const p = products.find((p) => p.id === productId)
+   376→    return p?.name || productId.slice(-6)
+   377→  }
+   378→
+   379→  const getAgentName = (agentId: string) => {
+   380→    const a = agents.find((a) => a.id === agentId)
+   381→    return a?.name || agentId.slice(-6)
+   382→  }
+   383→
+   384→  const formatDate = (date: string) => {
+   385→    try {
+   386→      return new Date(date).toLocaleDateString('fr-FR')
+   387→    } catch {
+   388→      return '—'
+   389→    }
+   390→  }
+   391→
+   392→  // --- Render ---
+   393→  return (
+   394→    <div className="space-y-6">
+   395→      {/* Header */}
+   396→      <div className="flex items-center justify-between">
+   397→        <div className="flex items-center gap-3">
+   398→          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1f2937]">
+   399→            <ShoppingCart className="h-5 w-5 text-emerald-400" />
+   400→          </div>
+   401→          <div>
+   402→            <h1 className="text-2xl font-bold text-white">Commandes</h1>
+   403→            <p className="text-sm text-gray-400">Gestion des commandes et suivi des statuts</p>
+   404→          </div>
+   405→        </div>
+   406→        <Button
+   407→          onClick={() => setCreateOpen(true)}
+   408→          className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+   409→        >
+   410→          <Plus className="h-4 w-4" />
+   411→          Nouvelle commande
+   412→        </Button>
+   413→      </div>
+   414→
+   415→      {/* Orders Table */}
+   416→      <Card className="bg-[#111827] border-[#1f2937]">
+   417→        <CardHeader className="pb-3">
+   418→          <CardTitle className="text-white flex items-center gap-2">
+   419→            <FileText className="h-5 w-5 text-gray-400" />
+   420→            Liste des commandes
+   421→            <Badge variant="secondary" className="ml-2 bg-[#1f2937] text-gray-400">
+   422→              {orders.length}
+   423→            </Badge>
+   424→          </CardTitle>
+   425→        </CardHeader>
+   426→        <CardContent>
+   427→          {loading ? (
+   428→            <div className="flex items-center justify-center py-12">
+   429→              <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+   430→              <span className="ml-2 text-gray-400">Chargement...</span>
+   431→            </div>
+   432→          ) : orders.length === 0 ? (
+   433→            <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+   434→              <ShoppingCart className="h-12 w-12 mb-3 opacity-50" />
+   435→              <p>Aucune commande trouvée</p>
+   436→              <p className="text-sm">Créez votre première commande pour commencer</p>
+   437→            </div>
+   438→          ) : (
+   439→            <div className="overflow-x-auto">
+   440→              <Table>
+   441→                <TableHeader>
+   442→                  <TableRow className="border-[#1f2937] hover:bg-transparent">
+   443→                    <TableHead className="text-gray-400 font-semibold">ID</TableHead>
+   444→                    <TableHead className="text-gray-400 font-semibold">Client</TableHead>
+   445→                    <TableHead className="text-gray-400 font-semibold text-right">Montant</TableHead>
+   446→                    <TableHead className="text-gray-400 font-semibold">Source</TableHead>
+   447→                    <TableHead className="text-gray-400 font-semibold">Statut</TableHead>
+   448→                    <TableHead className="text-gray-400 font-semibold">Date</TableHead>
+   449→                    <TableHead className="text-gray-400 font-semibold text-right">Actions</TableHead>
+   450→                  </TableRow>
+   451→                </TableHeader>
+   452→                <TableBody>
+   453→                  {orders.map((order) => {
+   454→                    const sc = statusConfig[order.status] || statusConfig.draft
+   455→                    const transition = statusTransitions[order.status]
+   456→                    return (
+   457→                      <TableRow key={order.id} className="border-[#1f2937] hover:bg-[#1f2937]/50">
+   458→                        <TableCell className="text-gray-300 font-mono text-sm">
+   459→                          {order.id.slice(-6).toUpperCase()}
+   460→                        </TableCell>
+   461→                        <TableCell className="text-white font-medium">
+   462→                          {getCustomerName(order)}
+   463→                        </TableCell>
+   464→                        <TableCell className="text-gray-300 text-right font-mono">
+   465→                          {computeOrderTotal(order).toLocaleString('fr-FR', {
+   466→                            style: 'currency',
+   467→                            currency: order.currency || 'EUR',
+   468→                          })}
+   469→                        </TableCell>
+   470→                        <TableCell className="text-gray-300">
+   471→                          {sourceLabels[order.source] || order.source}
+   472→                        </TableCell>
+   473→                        <TableCell>
+   474→                          <Badge variant={sc.variant} className={sc.className}>
+   475→                            {sc.label}
+   476→                          </Badge>
+   477→                        </TableCell>
+   478→                        <TableCell className="text-gray-400 text-sm">
+   479→                          {formatDate(order.createdAt)}
+   480→                        </TableCell>
+   481→                        <TableCell className="text-right">
+   482→                          <div className="flex items-center justify-end gap-1.5">
+   483→                            {/* View detail */}
+   484→                            <Button
+   485→                              variant="ghost"
+   486→                              size="sm"
+   487→                              onClick={() => {
+   488→                                setSelectedOrder(order)
+   489→                                setDetailOpen(true)
+   490→                              }}
+   491→                              className="text-gray-400 hover:text-white hover:bg-[#1f2937] h-8 w-8 p-0"
+   492→                            >
+   493→                              <Eye className="h-4 w-4" />
+   494→                            </Button>
+   495→
+   496→                            {/* Status transition */}
+   497→                            {transition && (
+   498→                              <Button
+   499→                                variant="ghost"
+   500→                                size="sm"
+   501→                                disabled={transitioning === order.id}
+   502→                                onClick={() => handleTransition(order, transition.next)}
+   503→                                className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-900/30 h-8 gap-1 text-xs"
+   504→                              >
+   505→                                {transitioning === order.id ? (
+   506→                                  <Loader2 className="h-3 w-3 animate-spin" />
+   507→                                ) : (
+   508→                                  <ArrowRight className="h-3 w-3" />
+   509→                                )}
+   510→                                {transition.label}
+   511→                              </Button>
+   512→                            )}
+   513→
+   514→                            {/* Cancel (from any non-cancelled, non-completed state) */}
+   515→                            {order.status !== 'cancelled' && order.status !== 'completed' && (
+   516→                              <Button
+   517→                                variant="ghost"
+   518→                                size="sm"
+   519→                                disabled={transitioning === order.id}
+   520→                                onClick={() => handleTransition(order, 'cancelled')}
+   521→                                className="text-red-400 hover:text-red-300 hover:bg-red-900/30 h-8 gap-1 text-xs"
+   522→                              >
+   523→                                <XCircle className="h-3 w-3" />
+   524→                                Annuler
+   525→                              </Button>
+   526→                            )}
+   527→                          </div>
+   528→                        </TableCell>
+   529→                      </TableRow>
+   530→                    )
+   531→                  })}
+   532→                </TableBody>
+   533→              </Table>
+   534→            </div>
+   535→          )}
+   536→        </CardContent>
+   537→      </Card>
+   538→
+   539→      {/* ========= CREATE DIALOG ========= */}
+   540→      <Dialog open={createOpen} onOpenChange={(open) => { setCreateOpen(open); if (!open) resetForm() }}>
+   541→        <DialogContent className="bg-[#111827] border-[#1f2937] text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+   542→          <DialogHeader>
+   543→            <DialogTitle className="text-white flex items-center gap-2">
+   544→              <ShoppingCart className="h-5 w-5 text-emerald-400" />
+   545→              Nouvelle commande
+   546→            </DialogTitle>
+   547→          </DialogHeader>
+   548→
+   549→          <div className="space-y-5 py-4">
+   550→            {/* Customer */}
+   551→            <div className="space-y-2">
+   552→              <Label className="text-gray-300">Client *</Label>
+   553→              <Select value={formCustomerId} onValueChange={setFormCustomerId}>
+   554→                <SelectTrigger className="bg-[#1f2937] border-[#374151] text-white">
+   555→                  <SelectValue placeholder="Sélectionner un client" />
+   556→                </SelectTrigger>
+   557→                <SelectContent className="bg-[#1f2937] border-[#374151]">
+   558→                  {customers.map((c) => (
+   559→                    <SelectItem key={c.id} value={c.id} className="text-white focus:bg-[#374151] focus:text-white">
+   560→                      {c.name}
+   561→                    </SelectItem>
+   562→                  ))}
+   563→                </SelectContent>
+   564→              </Select>
+   565→            </div>
+   566→
+   567→            {/* Source + Agent row */}
+   568→            <div className="grid grid-cols-2 gap-4">
+   569→              <div className="space-y-2">
+   570→                <Label className="text-gray-300">Source</Label>
+   571→                <Select value={formSource} onValueChange={(v) => setFormSource(v as typeof formSource)}>
+   572→                  <SelectTrigger className="bg-[#1f2937] border-[#374151] text-white">
+   573→                    <SelectValue />
+   574→                  </SelectTrigger>
+   575→                  <SelectContent className="bg-[#1f2937] border-[#374151]">
+   576→                    <SelectItem value="client" className="text-white focus:bg-[#374151] focus:text-white">Client</SelectItem>
+   577→                    <SelectItem value="agent" className="text-white focus:bg-[#374151] focus:text-white">Agent</SelectItem>
+   578→                    <SelectItem value="digital" className="text-white focus:bg-[#374151] focus:text-white">Digital</SelectItem>
+   579→                  </SelectContent>
+   580→                </Select>
+   581→              </div>
+   582→              <div className="space-y-2">
+   583→                <Label className="text-gray-300">Apporteur (optionnel)</Label>
+   584→                <Select value={formAgentId} onValueChange={setFormAgentId}>
+   585→                  <SelectTrigger className="bg-[#1f2937] border-[#374151] text-white">
+   586→                    <SelectValue placeholder="Aucun" />
+   587→                  </SelectTrigger>
+   588→                  <SelectContent className="bg-[#1f2937] border-[#374151]">
+   589→                    <SelectItem value="__none__" className="text-white focus:bg-[#374151] focus:text-white">Aucun</SelectItem>
+   590→                    {agents.map((a) => (
+   591→                      <SelectItem key={a.id} value={a.id} className="text-white focus:bg-[#374151] focus:text-white">
+   592→                        {a.name}
+   593→                      </SelectItem>
+   594→                    ))}
+   595→                  </SelectContent>
+   596→                </Select>
+   597→              </div>
+   598→            </div>
+   599→
+   600→            <Separator className="bg-[#374151]" />
+   601→
+   602→            {/* Order Items */}
+   603→            <div className="space-y-3">
+   604→              <div className="flex items-center justify-between">
+   605→                <Label className="text-gray-300 font-semibold">Articles</Label>
+   606→                <Button
+   607→                  type="button"
+   608→                  variant="ghost"
+   609→                  size="sm"
+   610→                  onClick={addFormItem}
+   611→                  className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-900/30 gap-1 h-8"
+   612→                >
+   613→                  <Plus className="h-3.5 w-3.5" />
+   614→                  Ajouter
+   615→                </Button>
+   616→              </div>
+   617→
+   618→              {formItems.map((item, index) => (
+   619→                <div key={index} className="bg-[#1f2937] rounded-lg p-3 space-y-3">
+   620→                  <div className="grid grid-cols-12 gap-3 items-end">
+   621→                    {/* Product */}
+   622→                    <div className="col-span-4 space-y-1">
+   623→                      <Label className="text-gray-400 text-xs">Produit</Label>
+   624→                      <Select
+   625→                        value={item.productId}
+   626→                        onValueChange={(v) => updateFormItem(index, 'productId', v)}
+   627→                      >
+   628→                        <SelectTrigger className="bg-[#111827] border-[#374151] text-white h-9 text-sm">
+   629→                          <SelectValue placeholder="Choisir" />
+   630→                        </SelectTrigger>
+   631→                        <SelectContent className="bg-[#1f2937] border-[#374151]">
+   632→                          {products.map((p) => (
+   633→                            <SelectItem key={p.id} value={p.id} className="text-white focus:bg-[#374151] focus:text-white">
+   634→                              {p.name}
+   635→                            </SelectItem>
+   636→                          ))}
+   637→                        </SelectContent>
+   638→                      </Select>
+   639→                    </div>
+   640→
+   641→                    {/* Quantity */}
+   642→                    <div className="col-span-2 space-y-1">
+   643→                      <Label className="text-gray-400 text-xs">Qté</Label>
+   644→                      <Input
+   645→                        type="number"
+   646→                        min={1}
+   647→                        value={item.quantity}
+   648→                        onChange={(e) => updateFormItem(index, 'quantity', parseInt(e.target.value) || 1)}
+   649→                        className="bg-[#111827] border-[#374151] text-white h-9 text-sm"
+   650→                      />
+   651→                    </div>
+   652→
+   653→                    {/* Unit Price */}
+   654→                    <div className="col-span-2 space-y-1">
+   655→                      <Label className="text-gray-400 text-xs">P.U. (€)</Label>
+   656→                      <Input
+   657→                        type="number"
+   658→                        min={0}
+   659→                        step={0.01}
+   660→                        value={item.unitPrice}
+   661→                        onChange={(e) => updateFormItem(index, 'unitPrice', parseFloat(e.target.value) || 0)}
+   662→                        className="bg-[#111827] border-[#374151] text-white h-9 text-sm"
+   663→                      />
+   664→                    </div>
+   665→
+   666→                    {/* Discount */}
+   667→                    <div className="col-span-2 space-y-1">
+   668→                      <Label className="text-gray-400 text-xs">Remise %</Label>
+   669→                      <Input
+   670→                        type="number"
+   671→                        min={0}
+   672→                        max={100}
+   673→                        value={item.discount}
+   674→                        onChange={(e) => updateFormItem(index, 'discount', parseFloat(e.target.value) || 0)}
+   675→                        className="bg-[#111827] border-[#374151] text-white h-9 text-sm"
+   676→                      />
+   677→                    </div>
+   678→
+   679→                    {/* Line total + Remove */}
+   680→                    <div className="col-span-2 flex items-end justify-between gap-1">
+   681→                      <div className="space-y-1">
+   682→                        <Label className="text-gray-400 text-xs">Total</Label>
+   683→                        <div className="text-white text-sm font-mono h-9 flex items-center">
+   684→                          {(item.quantity * item.unitPrice * (1 - item.discount / 100)).toLocaleString('fr-FR', {
+   685→                            minimumFractionDigits: 2,
+   686→                            maximumFractionDigits: 2,
+   687→                          })}€
+   688→                        </div>
+   689→                      </div>
+   690→                      {formItems.length > 1 && (
+   691→                        <Button
+   692→                          type="button"
+   693→                          variant="ghost"
+   694→                          size="sm"
+   695→                          onClick={() => removeFormItem(index)}
+   696→                          className="text-red-400 hover:text-red-300 hover:bg-red-900/30 h-8 w-8 p-0"
+   697→                        >
+   698→                          <Trash2 className="h-3.5 w-3.5" />
+   699→                        </Button>
+   700→                      )}
+   701→                    </div>
+   702→                  </div>
+   703→                </div>
+   704→              ))}
+   705→
+   706→              {/* Total */}
+   707→              <div className="flex items-center justify-end gap-3 pt-2">
+   708→                <span className="text-gray-400 text-sm">Total :</span>
+   709→                <span className="text-white text-lg font-bold font-mono">
+   710→                  {computeFormTotal().toLocaleString('fr-FR', {
+   711→                    minimumFractionDigits: 2,
+   712→                    maximumFractionDigits: 2,
+   713→                  })}€
+   714→                </span>
+   715→              </div>
+   716→            </div>
+   717→
+   718→            <Separator className="bg-[#374151]" />
+   719→
+   720→            {/* Notes */}
+   721→            <div className="space-y-2">
+   722→              <Label className="text-gray-300">Notes</Label>
+   723→              <Textarea
+   724→                value={formNotes}
+   725→                onChange={(e) => setFormNotes(e.target.value)}
+   726→                placeholder="Notes internes sur la commande..."
+   727→                className="bg-[#1f2937] border-[#374151] text-white min-h-[80px] resize-none"
+   728→              />
+   729→            </div>
+   730→          </div>
+   731→
+   732→          <DialogFooter className="gap-2">
+   733→            <Button
+   734→              variant="ghost"
+   735→              onClick={() => { setCreateOpen(false); resetForm() }}
+   736→              className="text-gray-400 hover:text-white hover:bg-[#1f2937]"
+   737→            >
+   738→              Annuler
+   739→            </Button>
+   740→            <Button
+   741→              onClick={handleCreate}
+   742→              disabled={creating || !formCustomerId}
+   743→              className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+   744→            >
+   745→              {creating ? (
+   746→                <Loader2 className="h-4 w-4 animate-spin" />
+   747→              ) : (
+   748→                <CheckCircle className="h-4 w-4" />
+   749→              )}
+   750→              Créer la commande
+   751→            </Button>
+   752→          </DialogFooter>
+   753→        </DialogContent>
+   754→      </Dialog>
+   755→
+   756→      {/* ========= DETAIL DIALOG ========= */}
+   757→      <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
+   758→        <DialogContent className="bg-[#111827] border-[#1f2937] text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+   759→          {selectedOrder && (
+   760→            <>
+   761→              <DialogHeader>
+   762→                <DialogTitle className="text-white flex items-center gap-2">
+   763→                  <FileText className="h-5 w-5 text-emerald-400" />
+   764→                  Commande #{selectedOrder.id.slice(-6).toUpperCase()}
+   765→                  <Badge
+   766→                    variant={statusConfig[selectedOrder.status]?.variant || 'secondary'}
+   767→                    className={statusConfig[selectedOrder.status]?.className || ''}
+   768→                  >
+   769→                    {statusConfig[selectedOrder.status]?.label || selectedOrder.status}
+   770→                  </Badge>
+   771→                </DialogTitle>
+   772→              </DialogHeader>
+   773→
+   774→              <div className="space-y-5 py-4">
+   775→                {/* Info grid */}
+   776→                <div className="grid grid-cols-2 gap-4">
+   777→                  <div className="space-y-1">
+   778→                    <span className="text-gray-400 text-xs uppercase tracking-wider">Client</span>
+   779→                    <p className="text-white font-medium">{getCustomerName(selectedOrder)}</p>
+   780→                  </div>
+   781→                  <div className="space-y-1">
+   782→                    <span className="text-gray-400 text-xs uppercase tracking-wider">Source</span>
+   783→                    <p className="text-white">{sourceLabels[selectedOrder.source] || selectedOrder.source}</p>
+   784→                  </div>
+   785→                  <div className="space-y-1">
+   786→                    <span className="text-gray-400 text-xs uppercase tracking-wider">Apporteur</span>
+   787→                    <p className="text-white">
+   788→                      {selectedOrder.agentId ? (selectedOrder.agent?.name || getAgentName(selectedOrder.agentId)) : '—'}
+   789→                    </p>
+   790→                  </div>
+   791→                  <div className="space-y-1">
+   792→                    <span className="text-gray-400 text-xs uppercase tracking-wider">Date</span>
+   793→                    <p className="text-white">{formatDate(selectedOrder.createdAt)}</p>
+   794→                  </div>
+   795→                </div>
+   796→
+   797→                <Separator className="bg-[#374151]" />
+   798→
+   799→                {/* Items */}
+   800→                <div className="space-y-2">
+   801→                  <h4 className="text-gray-300 font-semibold text-sm">Articles</h4>
+   802→                  {(selectedOrder.items || []).length === 0 ? (
+   803→                    <p className="text-gray-500 text-sm">Aucun article</p>
+   804→                  ) : (
+   805→                    <div className="space-y-2">
+   806→                      {(selectedOrder.items || []).map((item, i) => (
+   807→                        <div key={i} className="bg-[#1f2937] rounded-lg p-3 flex items-center justify-between">
+   808→                          <div>
+   809→                            <p className="text-white text-sm font-medium">{getProductName(item.productId)}</p>
+   810→                            <p className="text-gray-400 text-xs">
+   811→                              Qté: {item.quantity} × {item.unitPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2 })}€
+   812→                              {item.discount > 0 && ` − ${item.discount}%`}
+   813→                            </p>
+   814→                          </div>
+   815→                          <p className="text-white font-mono text-sm">
+   816→                            {(item.total || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2 })}€
+   817→                          </p>
+   818→                        </div>
+   819→                      ))}
+   820→                    </div>
+   821→                  )}
+   822→
+   823→                  {/* Order total */}
+   824→                  <div className="flex items-center justify-end gap-3 pt-2">
+   825→                    <span className="text-gray-400 text-sm">Total :</span>
+   826→                    <span className="text-white text-lg font-bold font-mono">
+   827→                      {computeOrderTotal(selectedOrder).toLocaleString('fr-FR', {
+   828→                        minimumFractionDigits: 2,
+   829→                        maximumFractionDigits: 2,
+   830→                      })}€
+   831→                    </span>
+   832→                  </div>
+   833→                </div>
+   834→
+   835→                {/* Notes */}
+   836→                {selectedOrder.notes && (
+   837→                  <>
+   838→                    <Separator className="bg-[#374151]" />
+   839→                    <div className="space-y-1">
+   840→                      <h4 className="text-gray-300 font-semibold text-sm">Notes</h4>
+   841→                      <p className="text-gray-400 text-sm whitespace-pre-wrap">{selectedOrder.notes}</p>
+   842→                    </div>
+   843→                  </>
+   844→                )}
+   845→
+   846→                <Separator className="bg-[#374151]" />
+   847→
+   848→                {/* Status actions */}
+   849→                <div className="space-y-2">
+   850→                  <h4 className="text-gray-300 font-semibold text-sm">Actions</h4>
+   851→                  <div className="flex items-center gap-2 flex-wrap">
+   852→                    {statusTransitions[selectedOrder.status] && (
+   853→                      <Button
+   854→                        size="sm"
+   855→                        disabled={transitioning === selectedOrder.id}
+   856→                        onClick={() =>
+   857→                          handleTransition(selectedOrder, statusTransitions[selectedOrder.status]!.next)
+   858→                        }
+   859→                        className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5"
+   860→                      >
+   861→                        {transitioning === selectedOrder.id ? (
+   862→                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+   863→                        ) : (
+   864→                          <ArrowRight className="h-3.5 w-3.5" />
+   865→                        )}
+   866→                        {statusTransitions[selectedOrder.status]!.label}
+   867→                      </Button>
+   868→                    )}
+   869→                    {selectedOrder.status !== 'cancelled' && selectedOrder.status !== 'completed' && (
+   870→                      <Button
+   871→                        size="sm"
+   872→                        variant="outline"
+   873→                        disabled={transitioning === selectedOrder.id}
+   874→                        onClick={() => handleTransition(selectedOrder, 'cancelled')}
+   875→                        className="border-red-600 text-red-400 hover:bg-red-900/30 hover:text-red-300 gap-1.5"
+   876→                      >
+   877→                        <XCircle className="h-3.5 w-3.5" />
+   878→                        Annuler
+   879→                      </Button>
+   880→                    )}
+   881→                    {(selectedOrder.status === 'completed' || selectedOrder.status === 'cancelled') && (
+   882→                      <p className="text-gray-500 text-sm">Aucune action disponible</p>
+   883→                    )}
+   884→                  </div>
+   885→                </div>
+   886→              </div>
+   887→            </>
+   888→          )}
+   889→        </DialogContent>
+   890→      </Dialog>
+   891→    </div>
+   892→  )
+   893→}
+   894→

@@ -9,6 +9,7 @@ export type ViewId =
   | 'payments'
   | 'stock'
   | 'targets'
+  | 'commissions'
   | 'settings'
 
 interface NavigationState {

@@ -10,6 +10,8 @@ import { OrdersView } from '@/components/modules/orders-view'
 import { AgentsView } from '@/components/modules/agents-view'
 import { PaymentsView } from '@/components/modules/payments-view'
 import { StockView } from '@/components/modules/stock-view'
+import { TargetsView } from '@/components/modules/targets-view'
+import { CommissionsView } from '@/components/modules/commissions-view'
 import { SettingsView } from '@/components/modules/settings-view'
 import { Separator } from '@/components/ui/separator'
 
@@ -20,6 +22,7 @@ const viewLabels: Record<ViewId, string> = {
   orders: 'Commandes',
   agents: 'Agents',
   payments: 'Paiements',
+  commissions: 'Commissions',
   stock: 'Stock',
   targets: 'Objectifs',
   settings: 'Parametres',
@@ -46,18 +49,14 @@ export default function SalesOSApp() {
         return <AgentsView />
       case 'payments':
         return <PaymentsView />
+      case 'commissions':
+        return <CommissionsView />
       case 'stock':
         return <StockView />
+      case 'targets':
+        return <TargetsView />
       case 'settings':
         return <SettingsView />
-      case 'targets':
-        return (
-          <div className="flex flex-col items-center justify-center py-24 text-gray-400">
-            <TargetIcon />
-            <p className="mt-4 text-lg font-medium">Objectifs</p>
-            <p className="text-sm text-gray-600">Disponible en V2 — Intelligence</p>
-          </div>
-        )
       default:
         return <DashboardView onNavigate={handleNavigate} />
     }
@@ -90,21 +89,11 @@ export default function SalesOSApp() {
           {/* Footer */}
           <footer className="border-t border-[#1f2937] px-6 py-3 mt-auto">
             <div className="text-center text-xs text-gray-600">
-              SALES OS — MVP V1 — Architecture Implementation-Ready
+              SALES OS — V2 — Intelligence & Commissions
             </div>
           </footer>
         </SidebarInset>
       </div>
     </SidebarProvider>
-  )
-}
-
-function TargetIcon() {
-  return (
-    <svg className="w-12 h-12 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 13a1 1 0 100-2 1 1 0 000 2z" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 13a1 1 0 100-2 1 1 0 000 2z" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49m11.31-2.83a10 10 0 010 14.14m-14.14 0a10 10 0 010-14.14" />
-    </svg>
   )
 }
