@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Architecture de Référence — Implementation-Ready — SALES OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+@page { size: 720px 1020px; margin: 0; }
+
+:root {
+    --c-bg: #0a0f1a;
+    --c-bg-cover: #060b14;
+    --c-surface: #111827;
+    --c-surface-2: #1a2236;
+    --c-accent: #3b82f6;
+    --c-accent-light: #60a5fa;
+    --c-accent-dim: #1e40af;
+    --c-text: #e5e7eb;
+    --c-text-muted: #9ca3af;
+    --c-text-bright: #f9fafb;
+    --c-border: #1f2937;
+    --c-border-light: #374151;
+    --c-success: #10b981;
+    --c-warning: #f59e0b;
+    --c-danger: #ef4444;
+    --c-code-bg: #0d1117;
+    --c-table-header: #111827;
+    --c-table-stripe: #0f1520;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    width: 720px;
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    line-height: 1.65;
+}
+
+/* ── Cover ── */
+.cover {
+    width: 720px;
+    height: 1020px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--c-bg-cover);
+    break-after: page;
+    overflow: hidden;
+    position: relative;
+}
+.cover-bg { position: absolute; inset: 0; z-index: 0; }
+.cover-circle-1 {
+    position: absolute;
+    right: -50px;
+    top: 12%;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    border: 1px solid rgba(59,130,246,0.06);
+}
+.cover-circle-2 {
+    position: absolute;
+    left: -100px;
+    bottom: 18%;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    border: 1px solid rgba(59,130,246,0.04);
+}
+.cover-watermark {
+    position: absolute;
+    left: 4%;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    font-size: 140px;
+    font-weight: 900;
+    color: rgba(59,130,246,0.03);
+    letter-spacing: 8px;
+}
+.cover-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 80px;
+}
+.cover-badge {
+    display: inline-block;
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.2);
+    color: var(--c-accent-light);
+    padding: 6px 20px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 44px;
+}
+.cover-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--c-text-bright);
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+}
+.cover-title span { color: var(--c-accent); }
+.cover-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--c-text-muted);
+    margin-bottom: 52px;
+}
+.cover-meta {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+.cover-meta-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+.cover-meta-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-text-bright);
+}
+.cover-footer {
+    position: absolute;
+    bottom: 40px;
+    text-align: center;
+    z-index: 1;
+}
+.cover-footer-text {
+    font-size: 9px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* ── Content ── */
+.main-content { padding: 50px 60px 40px 60px; }
+.chapter-header {
+    break-after: avoid;
+    break-inside: avoid;
+    margin-top: 28px;
+    margin-bottom: 16px;
+}
+.section-number {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--c-accent);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+.section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--c-text-bright);
+    line-height: 1.2;
+}
+.sub-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--c-accent-light);
+    margin-top: 18px;
+    margin-bottom: 8px;
+}
+.divider {
+    width: 40px;
+    height: 2px;
+    background: var(--c-accent);
+    margin-bottom: 16px;
+}
+.body-text {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--c-text);
+    margin-bottom: 12px;
+}
+.body-text strong { color: var(--c-text-bright); font-weight: 700; }
+
+/* ── Components ── */
+.card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 10px 0;
+    break-inside: avoid;
+}
+.card-accent {
+    background: var(--c-surface);
+    border-left: 3px solid var(--c-accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 10px 0;
+    break-inside: avoid;
+}
+.card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-accent-light);
+    margin-bottom: 8px;
+}
+.card p, .card-accent p {
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: var(--c-text);
+    margin-bottom: 6px;
+}
+
+/* ── Lists ── */
+ul.content-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px 0;
+}
+ul.content-list li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    line-height: 1.65;
+}
+ul.content-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-accent);
+}
+
+/* ── Tables ── */
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 14px 0;
+    font-size: 10.5px;
+}
+.data-table thead th {
+    background: var(--c-table-header);
+    color: var(--c-text-bright);
+    font-weight: 700;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 9.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+.data-table thead th:first-child { border-radius: 8px 0 0 0; }
+.data-table thead th:last-child { border-radius: 0 8px 0 0; }
+.data-table tbody td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--c-border);
+    color: var(--c-text);
+}
+.data-table tbody td:first-child { font-weight: 600; color: var(--c-accent-light); }
+.data-table tbody tr:nth-child(even) td { background: var(--c-table-stripe); }
+.data-table code {
+    background: var(--c-code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 9.5px;
+    color: var(--c-accent-light);
+}
+
+/* ── Code blocks ── */
+.code-block {
+    background: var(--c-code-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 9.5px;
+    line-height: 1.55;
+    color: var(--c-text);
+    overflow-x: auto;
+    white-space: pre;
+    break-inside: avoid;
+}
+
+/* ── Other ── */
+blockquote {
+    border-left: 3px solid var(--c-accent);
+    background: rgba(59,130,246,0.06);
+    padding: 14px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+}
+blockquote p {
+    margin: 0 0 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--c-text-bright);
+}
+.highlight-box {
+    background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.04));
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin: 20px 0;
+    break-inside: avoid;
+}
+.highlight-box .hl-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--c-accent-light);
+    margin-bottom: 8px;
+}
+.highlight-box .hl-text {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--c-text);
+}
+.tag-implemented {
+    display: inline-block;
+    background: rgba(16,185,129,0.12);
+    color: #34d399;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.tag-prepared {
+    display: inline-block;
+    background: rgba(245,158,11,0.12);
+    color: #fbbf24;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.tag-deferred {
+    display: inline-block;
+    background: rgba(107,114,128,0.12);
+    color: #9ca3af;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.role-card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    break-inside: avoid;
+}
+.role-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-accent-light);
+    margin-bottom: 4px;
+}
+.role-desc {
+    font-size: 10px;
+    color: var(--c-text-muted);
+    margin-bottom: 6px;
+}
+.ending {
+    width: 720px;
+    height: 1020px;
+    break-before: page;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    background: var(--c-bg-cover);
+}
+.ending-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--c-text-bright);
+}
+.ending-subtitle {
+    font-size: 13px;
+    color: var(--c-accent-light);
+    font-weight: 600;
+}
+.sig-label {
+    font-size: 10px;
+    color: var(--c-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.sig-dots {
+    border-bottom: 1px solid var(--c-border-light);
+    height: 24px;
+    margin-bottom: 16px;
+}
+.conclusion-box {
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.15);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 20px 0;
+    text-align: center;
+}
+.conclusion-box p {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--c-text);
+    margin-bottom: 8px;
+}
+.conclusion-box strong { color: var(--c-text-bright); }
+.conclusion-box .highlight { color: var(--c-accent-light); font-weight: 700; }
+
+/* ── Highlight box warning variant ── */
+.highlight-box-warning {
+    background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.04));
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin: 20px 0;
+    break-inside: avoid;
+}
+.highlight-box-warning .hl-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fbbf24;
+    margin-bottom: 8px;
+}
+.highlight-box-warning .hl-text {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--c-text);
+}
+
+/* ── Screen adaptation ── */
+@media screen {
+    html { height: auto; display: flex; justify-content: center; background: #1a1a2e; }
+    body { transform-origin: top center; margin: 20px auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════ COVER PAGE ════════════════════════════════════════════════ -->
+<div class="cover">
+    <div class="cover-bg">
+        <div class="cover-circle-1"></div>
+        <div class="cover-circle-2"></div>
+        <div class="cover-watermark">SALES OS</div>
+    </div>
+    <div class="cover-content">
+        <div class="cover-badge">Architecture de Référence</div>
+        <h1 class="cover-title">IMPLEMENTATION-READY<br><span>SALES OS</span></h1>
+        <p class="cover-subtitle">Architecture globale scalable et élite — Prête pour le lancement</p>
+        <div class="cover-meta">
+            <div>
+                <div class="cover-meta-label">Projet</div>
+                <div class="cover-meta-value">SALES OS V1</div>
+            </div>
+            <div>
+                <div class="cover-meta-label">Version</div>
+                <div class="cover-meta-value">2.0 Consolidée</div>
+            </div>
+            <div>
+                <div class="cover-meta-label">Statut</div>
+                <div class="cover-meta-value">Implementation-Ready</div>
+            </div>
+        </div>
+    </div>
+    <div class="cover-footer">
+        <div class="cover-footer-text">Confidentiel — SALES OS — Architecture de Référence</div>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ CONTENT ════════════════════════════════════════════════ -->
+<div class="main-content">
+
+<!-- ── Section 1 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 01</div>
+    <h2 class="section-title">Vision & Principes Fondateurs</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text"><strong>SALES OS</strong> est une plateforme de gestion commerciale conçue pour orchestrer l'ensemble du cycle de vente — de la gestion des clients à l'enregistrement des commissions — dans un environnement multi-tenant sécurisé. L'architecture repose sur un principe fondamental : construire un <strong>noyau commercial inébranlable</strong> dont les frontières accueillent l'avenir.</p>
+
+<p class="body-text">Chaque module est classifié selon trois niveaux de maturité, ce qui permet de distinguer clairement ce qui doit fonctionner dès le premier jour, ce qui est structurellement prêt, et ce qui viendra dans les itérations suivantes.</p>
+
+<div class="card-accent">
+    <div class="card-title">Niveaux de Maturité</div>
+    <p><span class="tag-implemented">Implémenté</span> — Module entièrement fonctionnel en V1. Code, tests, API, UI — tout doit être opérationnel au lancement.</p>
+    <p><span class="tag-prepared">Préparé</span> — Modèle de données et/ou API prêts. Les champs existent en base, les contrats sont définis, mais la logique métier complète et l'interface ne sont pas encore développées.</p>
+    <p><span class="tag-deferred">Différé</span> — Non construit en V1. Les concepts sont documentés dans l'architecture pour guider les futures itérations, mais aucun code n'est écrit.</p>
+</div>
+
+<p class="body-text">Le principe directeur est simple : <strong>construire un noyau commercial rocher dont les frontières accueillent le futur</strong>. Chaque module est isolé par des interfaces claires, chaque table porte le <code>tenant_id</code>, chaque événement est persisté avant d'être publié. L'architecture est conçue pour être étendue, jamais refactorisée en profondeur.</p>
+
+<!-- ── Section 2 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 02</div>
+    <h2 class="section-title">Architecture Physique : Modular Monolith</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">SALES OS adopte une architecture de <strong>monolithe modulaire</strong> — trois domaines fonctionnels clairement séparés, mais déployés comme une seule application. Chaque module possède des limites strictes (interfaces typées, événements asynchrones), mais partage une base de données unique et un processus unique.</p>
+
+<div class="code-block">SALES OS
+├── PLATFORM
+│   ├── Auth · Tenants · Users · RBAC · Houses · Audit
+├── BUSINESS
+│   ├── CRM · Products · Orders · Sales · Payments · Stock · Commissions
+└── INTELLIGENCE
+    ├── Targets · Dashboard · Reporting · Analytics</div>
+
+<p class="body-text"><strong>PLATFORM</strong> gère l'infrastructure transversale : authentification, multi-tenant, utilisateurs, RBAC, maisons (points de vente) et audit. C'est le socle sur lequel tout repose.</p>
+
+<p class="body-text"><strong>BUSINESS</strong> contient le cœur commercial : CRM (clients), produits, commandes, ventes, paiements, stock et commissions. C'est le noyau générateur de valeur.</p>
+
+<p class="body-text"><strong>INTELLIGENCE</strong> regroupe les capacités analytiques : objectifs, dashboard, reporting et analytics. Ce domaine consomme les données de BUSINESS sans impacter les transactions.</p>
+
+<div class="card">
+    <div class="card-title">Pourquoi Monolithe Modulaire en V1 ?</div>
+    <p><strong>Simplicité opérationnelle</strong> — Un seul déploiement, une seule base de données, un seul processus à monitorer.</p>
+    <p><strong>Transaction unique</strong> — Les opérations critiques (commande → vente → paiement → stock) s'exécutent dans une seule transaction DB, garantissant la cohérence sans Saga ni compensation.</p>
+    <p><strong>Itération rapide</strong> — Pas de overhead réseau inter-service, pas de sérialisation, pas de gestion de contrats API versionnés entre services déployés séparément.</p>
+    <p><strong>Chemin d'extraction préservé</strong> — Les limites de modules sont des interfaces claires. Si un module doit être extrait en microservice, ses contrats sont déjà définis.</p>
+</div>
+
+<!-- ── Section 3 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 03</div>
+    <h2 class="section-title">Stack Technique</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">La stack est choisie pour maximiser la productivité tout en garantissant la sécurité multi-tenant au niveau base de données. Chaque composant a un rôle précis et irremplaçable.</p>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Composant</th>
+            <th>Technologie</th>
+            <th>Version</th>
+            <th>Rôle</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Frontend</td>
+            <td>Next.js / React</td>
+            <td>15.x</td>
+            <td>Interface utilisateur et rendu SSR</td>
+        </tr>
+        <tr>
+            <td>Backend / Admin</td>
+            <td>Payload CMS</td>
+            <td>3.x</td>
+            <td>API auto-générée, administration, access control</td>
+        </tr>
+        <tr>
+            <td>Base de données</td>
+            <td>PostgreSQL</td>
+            <td>16.x</td>
+            <td>Source de vérité, RLS multi-tenant</td>
+        </tr>
+        <tr>
+            <td>ORM</td>
+            <td>Drizzle</td>
+            <td>0.x</td>
+            <td>Requêtes typées, migrations, utilisé par Payload</td>
+        </tr>
+        <tr>
+            <td>Cache / Events</td>
+            <td>Redis</td>
+            <td>7.x</td>
+            <td>Cache, jobs, transport d'événements</td>
+        </tr>
+        <tr>
+            <td>Stockage</td>
+            <td>S3-Compatible</td>
+            <td>—</td>
+            <td>Images, fichiers, exports</td>
+        </tr>
+        <tr>
+            <td>Runtime</td>
+            <td>Node.js</td>
+            <td>20.x LTS</td>
+            <td>Environnement d'exécution</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ── Section 4 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 04</div>
+    <h2 class="section-title">ADR-001 : Payload CMS + PostgreSQL RLS</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text"><strong>Contexte :</strong> La sécurité multi-tenant exige une isolation des données au niveau base de données. Payload CMS fournit son propre système d'Access Control au niveau applicatif, mais cela ne suffit pas — un bug applicatif ou une requête Drizzle directe peut contourner l'isolation. PostgreSQL Row Level Security (RLS) est la dernière ligne de défense : même si l'application est compromise au niveau applicatif, la base refuse toute donnée cross-tenant.</p>
+
+<p class="body-text"><strong>Décision :</strong> Valider RLS via un PoC avant tout développement métier. Le PoC doit démontrer que l'isolation tenant fonctionne dans tous les scénarios d'accès, y compris les contournements potentiels.</p>
+
+<p class="body-text"><strong>Cas de test du PoC :</strong></p>
+
+<ul class="content-list">
+    <li>SELECT cross-tenant — Un utilisateur du tenant B ne peut lire aucune donnée du tenant A</li>
+    <li>INSERT cross-tenant — Impossible d'insérer une ligne avec un tenant_id différent du contexte</li>
+    <li>UPDATE cross-tenant — Impossible de modifier une ligne d'un autre tenant</li>
+    <li>DELETE cross-tenant — Impossible de supprimer une ligne d'un autre tenant</li>
+    <li>Transaction avec SET LOCAL — Le contexte tenant est correctement propagé dans les transactions</li>
+    <li>Connection pool reuse — Après libération d'une connexion, le contexte tenant est nettoyé</li>
+    <li>Payload API bypass — Les requêtes via l'API Payload respectent l'isolation RLS</li>
+    <li>Drizzle direct query — Les requêtes Drizzle directes sont filtrées par RLS</li>
+    <li>Async job context propagation — Les jobs asynchrones propagent le contexte tenant correctement</li>
+</ul>
+
+<p class="body-text"><strong>Critère de succès :</strong> Un utilisateur du Tenant B ne récupère <strong>JAMAIS</strong> une donnée du Tenant A, même avec des paramètres de requête manipulés.</p>
+
+<div class="highlight-box-warning">
+    <div class="hl-title">Statut : EN ATTENTE DE VALIDATION</div>
+    <div class="hl-text">Le PoC RLS est le prérequis absolument bloquant. Aucun développement métier ne doit commencer avant que ce PoC soit validé avec succès sur les 9 cas de test ci-dessus. L'ensemble de l'architecture de sécurité repose sur cette validation.</div>
+</div>
+
+<!-- ── Section 5 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 05</div>
+    <h2 class="section-title">ADR-002 : Monolithe Modulaire vs Microservices</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text"><strong>Contexte :</strong> V1 a besoin de simplicité, d'itération rapide et d'un déploiement unique. Les microservices apportent de la complexité opérationnelle (orchestration, sérialisation, cohérence distribuée, observabilité multi-service) qui n'est pas justifiée pour un premier produit.</p>
+
+<p class="body-text"><strong>Décision :</strong> Adopter le monolithe modulaire. Les modules communiquent via des interfaces typées (synchrone) et des événements persistés (asynchrone), mais sont déployés ensemble.</p>
+
+<p class="body-text"><strong>Conséquences :</strong></p>
+
+<div class="card">
+    <div class="card-title">Avantages & Inconvénients</div>
+    <p><strong>Avantages :</strong></p>
+    <p>• Transaction DB unique — cohérence ACID native pour les opérations critiques</p>
+    <p>• Déploiement simple — un artefact, un processus, une base</p>
+    <p>• Limites de modules via interfaces — extraction future possible sans refactorisation</p>
+    <p>• Pas de overhead réseau inter-service — performances optimales</p>
+    <p>• Debugging simple — un seul call stack, un seul log stream</p>
+    <p><strong>Inconvénients :</strong></p>
+    <p>• Coupling potentiel — discipline requise pour respecter les limites de modules</p>
+    <p>• Scaling global — impossible de scaler un module indépendamment en V1</p>
+    <p>• Déploiement global — un changement nécessite un redéploiement complet</p>
+    <p><strong>Mitigation :</strong> Le chemin d'extraction est préservé. Les interfaces de chaque module sont documentées. Si un module nécessite un scaling indépendant en V2+, il peut être extrait en microservice avec un effort mesuré.</p>
+</div>
+
+<!-- ── Section 6 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 06</div>
+    <h2 class="section-title">ADR-003 : Redis comme Transport d'Événements</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text"><strong>Contexte :</strong> Les modules doivent communiquer de manière asynchrone pour le découplage — par exemple, lorsqu'une vente est complétée, le module Commissions doit calculer les commissions, le module Stock doit libérer les réservations, et le module Notifications doit informer les parties prenantes.</p>
+
+<p class="body-text"><strong>Décision :</strong> Utiliser Redis Pub/Sub comme transport d'événements. Redis n'est <strong>JAMAIS</strong> la source de vérité.</p>
+
+<div class="card-accent">
+    <div class="card-title">Principe fondamental : Persist First, Publish After</div>
+    <p>Les événements sont d'abord <strong>persistés dans PostgreSQL</strong> (table order_events, audit_events), puis <strong>publiés vers Redis</strong>. Les subscribers sont fire-and-forget.</p>
+    <p>Si Redis est indisponible, les événements sont toujours en base. Un processus de re-scan peut republier les événements non distribués.</p>
+    <p>Redis est un <strong>transport</strong>, pas un event store. La source de vérité est PostgreSQL, toujours.</p>
+</div>
+
+<!-- ── Section 7 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 07</div>
+    <h2 class="section-title">Défense en Profondeur</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">La sécurité de SALES OS repose sur <strong>5 barrières concentriques</strong>. Même si une barrière est compromise, les barrières suivantes continuent de protéger les données. C'est le modèle de défense en profondeur (defense in depth).</p>
+
+<div class="code-block">Authentication → RBAC → Tenant Context → Business Authorization → PostgreSQL RLS → Data</div>
+
+<p class="body-text"><strong>1. Authentication</strong> — Vérification de l'identité de l'utilisateur (JWT, session). Sans authentification valide, aucune requête n'atteint la logique métier.</p>
+
+<p class="body-text"><strong>2. RBAC (Role-Based Access Control)</strong> — Vérification des permissions de l'utilisateur selon son rôle (SuperAdmin, Admin, Manager, Agent, Caissier, Lecteur). Un Agent ne peut pas accéder aux fonctions d'administration.</p>
+
+<p class="body-text"><strong>3. Tenant Context</strong> — Le contexte tenant est injecté dans chaque requête via <code>set_tenant_context(tenant_id)</code>. Ce contexte est propagé à PostgreSQL via la session variable <code>app.current_tenant</code>.</p>
+
+<p class="body-text"><strong>4. Business Authorization</strong> — Règles métier au-delà du RBAC : un Manager ne voit que les données de sa maison, un Agent ne voit que ses propres commissions, un Caissier ne peut enregistrer que des paiements.</p>
+
+<p class="body-text"><strong>5. PostgreSQL RLS</strong> — Dernière ligne de défense. Même si toutes les barrières applicatives sont contournées, PostgreSQL refuse toute donnée d'un autre tenant. C'est la garantie absolue d'isolation.</p>
+
+<!-- ── Section 8 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 08</div>
+    <h2 class="section-title">Matrice RBAC V1</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">La matrice RBAC définit les permissions de chaque rôle. ✓ = autorisé, ✗ = interdit. Les annotations entre parenthèses indiquent des restrictions supplémentaires au-delà du rôle.</p>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Action</th>
+            <th>SuperAdmin</th>
+            <th>Admin</th>
+            <th>Manager</th>
+            <th>Agent</th>
+            <th>Caissier</th>
+            <th>Lecteur</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Gérer tenants</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Gérer utilisateurs</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Gérer maisons</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Voir toutes maisons</td><td>✓</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Gérer agents</td><td>✓</td><td>✓</td><td>✓(maison)</td><td>✗</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Créer commandes</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Voir commandes</td><td>✓</td><td>✓</td><td>✓</td><td>✓(propres)</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Valider commandes</td><td>✓</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Enregistrer ventes</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Enregistrer paiements</td><td>✓</td><td>✓</td><td>✓</td><td>✗</td><td>✓</td><td>✗</td></tr>
+        <tr><td>Voir paiements</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Gérer produits</td><td>✓</td><td>✓</td><td>✓(maison)</td><td>✗</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Gérer stocks</td><td>✓</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Voir commissions</td><td>✓</td><td>✓</td><td>✓</td><td>✓(propres)</td><td>✗</td><td>✓</td></tr>
+        <tr><td>Valider commissions</td><td>✓</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Gérer objectifs</td><td>✓</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td></tr>
+        <tr><td>Voir dashboard</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Voir analytics</td><td>✓</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td><td>✓</td></tr>
+        <tr><td>Accès audit</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td><td>✗</td></tr>
+    </tbody>
+</table>
+
+<!-- ── Section 9 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 09</div>
+    <h2 class="section-title">Modèle de Données : Core</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Les tables Core constituent le socle multi-tenant et organisationnel. Chaque table porte <code>tenant_id</code> pour l'isolation RLS.</p>
+
+<div class="sub-title">tenants</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK, DEFAULT gen_random_uuid()</td></tr>
+        <tr><td>name</td><td>VARCHAR(100)</td><td>NOT NULL</td></tr>
+        <tr><td>slug</td><td>VARCHAR(50)</td><td>NOT NULL, UNIQUE</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>active, suspended, archived</td></tr>
+        <tr><td>settings</td><td>JSONB</td><td>DEFAULT '{}'</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+        <tr><td>updated_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">users</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>email</td><td>VARCHAR(255)</td><td>NOT NULL, UNIQUE per tenant</td></tr>
+        <tr><td>password_hash</td><td>VARCHAR(255)</td><td>NOT NULL</td></tr>
+        <tr><td>first_name</td><td>VARCHAR(100)</td><td>NOT NULL</td></tr>
+        <tr><td>last_name</td><td>VARCHAR(100)</td><td>NOT NULL</td></tr>
+        <tr><td>role</td><td>ENUM</td><td>super_admin, admin, manager, agent, cashier, viewer</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>active, inactive, suspended</td></tr>
+        <tr><td>last_login</td><td>TIMESTAMPTZ</td><td>NULL</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">houses</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>name</td><td>VARCHAR(100)</td><td>NOT NULL</td></tr>
+        <tr><td>code</td><td>VARCHAR(20)</td><td>NOT NULL, UNIQUE per tenant</td></tr>
+        <tr><td>address</td><td>TEXT</td><td>NULL</td></tr>
+        <tr><td>city</td><td>VARCHAR(100)</td><td>NULL</td></tr>
+        <tr><td>country</td><td>VARCHAR(2)</td><td>NULL</td></tr>
+        <tr><td>manager_id</td><td>UUID</td><td>FK→users, NULL</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>active, inactive</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">agents</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>user_id</td><td>UUID</td><td>FK→users, NOT NULL</td></tr>
+        <tr><td>house_id</td><td>UUID</td><td>FK→houses, NOT NULL</td></tr>
+        <tr><td>code</td><td>VARCHAR(20)</td><td>NOT NULL</td></tr>
+        <tr><td>commission_rate</td><td>DECIMAL(5,2)</td><td>DEFAULT 0</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>active, inactive</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">customers</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>house_id</td><td>UUID</td><td>FK→houses, NOT NULL</td></tr>
+        <tr><td>first_name</td><td>VARCHAR(100)</td><td>NOT NULL</td></tr>
+        <tr><td>last_name</td><td>VARCHAR(100)</td><td>NOT NULL</td></tr>
+        <tr><td>phone</td><td>VARCHAR(20)</td><td>NULL</td></tr>
+        <tr><td>email</td><td>VARCHAR(255)</td><td>NULL</td></tr>
+        <tr><td>address</td><td>TEXT</td><td>NULL</td></tr>
+        <tr><td>client_account_id</td><td>UUID</td><td>NULL (PRÉPARÉ digital)</td></tr>
+        <tr><td>agent_referent_id</td><td>UUID</td><td>FK→agents, NULL (PRÉPARÉ digital)</td></tr>
+        <tr><td>order_source</td><td>ENUM</td><td>manual, digital, referral (PRÉPARÉ)</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>active, inactive</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<!-- ── Section 10 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 10</div>
+    <h2 class="section-title">Modèle de Données : Business</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Les tables Business constituent le cœur transactionnel de la plateforme. Elles capturent l'intégralité du cycle commercial : produit → commande → vente → paiement → stock → commission.</p>
+
+<div class="sub-title">products</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>house_id</td><td>UUID</td><td>FK→houses, NOT NULL</td></tr>
+        <tr><td>name</td><td>VARCHAR(200)</td><td>NOT NULL</td></tr>
+        <tr><td>sku</td><td>VARCHAR(50)</td><td>NOT NULL</td></tr>
+        <tr><td>description</td><td>TEXT</td><td>NULL</td></tr>
+        <tr><td>unit_price</td><td>DECIMAL(12,2)</td><td>NOT NULL</td></tr>
+        <tr><td>currency</td><td>VARCHAR(3)</td><td>DEFAULT 'USD'</td></tr>
+        <tr><td>category</td><td>VARCHAR(50)</td><td>NULL</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>active, inactive, discontinued</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">orders</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>house_id</td><td>UUID</td><td>FK→houses, NOT NULL</td></tr>
+        <tr><td>customer_id</td><td>UUID</td><td>FK→customers, NOT NULL</td></tr>
+        <tr><td>source</td><td>ENUM</td><td>client, agent, digital (PRÉPARÉ)</td></tr>
+        <tr><td>agent_id</td><td>UUID</td><td>FK→agents, NULL (apporteur)</td></tr>
+        <tr><td>seller_id</td><td>UUID</td><td>FK→users, NULL (vendeur)</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>draft, formalized, confirmed, cancelled, completed</td></tr>
+        <tr><td>total_amount</td><td>DECIMAL(12,2)</td><td>DEFAULT 0</td></tr>
+        <tr><td>currency</td><td>VARCHAR(3)</td><td>DEFAULT 'USD'</td></tr>
+        <tr><td>notes</td><td>TEXT</td><td>NULL</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+        <tr><td>updated_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">order_items</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>order_id</td><td>UUID</td><td>FK→orders, NOT NULL</td></tr>
+        <tr><td>product_id</td><td>UUID</td><td>FK→products, NOT NULL</td></tr>
+        <tr><td>quantity</td><td>INTEGER</td><td>NOT NULL, CHECK > 0</td></tr>
+        <tr><td>unit_price</td><td>DECIMAL(12,2)</td><td>NOT NULL</td></tr>
+        <tr><td>discount</td><td>DECIMAL(5,2)</td><td>DEFAULT 0</td></tr>
+        <tr><td>total</td><td>DECIMAL(12,2)</td><td>NOT NULL</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">order_events</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>order_id</td><td>UUID</td><td>FK→orders, NOT NULL</td></tr>
+        <tr><td>event_type</td><td>ENUM</td><td>created, formalized, confirmed, cancelled, converted, completed</td></tr>
+        <tr><td>payload</td><td>JSONB</td><td>DEFAULT '{}'</td></tr>
+        <tr><td>triggered_by</td><td>UUID</td><td>FK→users, NULL</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">sales</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>order_id</td><td>UUID</td><td>FK→orders, NULL</td></tr>
+        <tr><td>house_id</td><td>UUID</td><td>FK→houses, NOT NULL</td></tr>
+        <tr><td>agent_id</td><td>UUID</td><td>FK→agents, NULL</td></tr>
+        <tr><td>seller_id</td><td>UUID</td><td>FK→users, NULL</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>pending, completed, refunded</td></tr>
+        <tr><td>total_amount</td><td>DECIMAL(12,2)</td><td>DEFAULT 0</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">payments</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>sale_id</td><td>UUID</td><td>FK→sales, NOT NULL</td></tr>
+        <tr><td>amount</td><td>DECIMAL(12,2)</td><td>NOT NULL</td></tr>
+        <tr><td>method</td><td>ENUM</td><td>cash, mobile_money, bank_transfer, card</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>pending, completed, failed, refunded</td></tr>
+        <tr><td>reference</td><td>VARCHAR(100)</td><td>NULL</td></tr>
+        <tr><td>paid_at</td><td>TIMESTAMPTZ</td><td>NULL</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">stock</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>house_id</td><td>UUID</td><td>FK→houses, NOT NULL</td></tr>
+        <tr><td>product_id</td><td>UUID</td><td>FK→products, NOT NULL</td></tr>
+        <tr><td>quantity</td><td>INTEGER</td><td>DEFAULT 0</td></tr>
+        <tr><td>reserved</td><td>INTEGER</td><td>DEFAULT 0</td></tr>
+        <tr><td>available</td><td>INTEGER</td><td>GENERATED ALWAYS AS (quantity - reserved) STORED</td></tr>
+        <tr><td>updated_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+        <tr><td colspan="3" style="text-align:left;font-weight:600;color:var(--c-accent-light)">UNIQUE(tenant_id, house_id, product_id)</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">stock_movements</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>house_id</td><td>UUID</td><td>FK→houses, NOT NULL</td></tr>
+        <tr><td>product_id</td><td>UUID</td><td>FK→products, NOT NULL</td></tr>
+        <tr><td>type</td><td>ENUM</td><td>in, out, adjust, reserve, release</td></tr>
+        <tr><td>quantity</td><td>INTEGER</td><td>NOT NULL</td></tr>
+        <tr><td>reference</td><td>VARCHAR(100)</td><td>NULL</td></tr>
+        <tr><td>reason</td><td>TEXT</td><td>NULL</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">commissions</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>sale_id</td><td>UUID</td><td>FK→sales, NOT NULL</td></tr>
+        <tr><td>agent_id</td><td>UUID</td><td>FK→agents, NOT NULL</td></tr>
+        <tr><td>type</td><td>ENUM</td><td>percentage, fixed</td></tr>
+        <tr><td>rate</td><td>DECIMAL(5,2)</td><td>NOT NULL</td></tr>
+        <tr><td>amount</td><td>DECIMAL(12,2)</td><td>NOT NULL</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>calculated, validated, paid</td></tr>
+        <tr><td>calculated_at</td><td>TIMESTAMPTZ</td><td>NOT NULL</td></tr>
+        <tr><td>paid_at</td><td>TIMESTAMPTZ</td><td>NULL</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<!-- ── Section 11 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 11</div>
+    <h2 class="section-title">Modèle de Données : Intelligence</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Les tables Intelligence capturent les objectifs, l'audit et les métriques. Elles sont principalement en lecture pour le dashboard et les rapports, et alimentées par les événements du domaine Business.</p>
+
+<div class="sub-title">targets</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>agent_id</td><td>UUID</td><td>FK→agents, NULL</td></tr>
+        <tr><td>house_id</td><td>UUID</td><td>FK→houses, NULL</td></tr>
+        <tr><td>period</td><td>VARCHAR(20)</td><td>NOT NULL (ex: "2026-Q1")</td></tr>
+        <tr><td>type</td><td>ENUM</td><td>revenue, orders, units</td></tr>
+        <tr><td>value</td><td>DECIMAL(12,2)</td><td>NOT NULL</td></tr>
+        <tr><td>achieved</td><td>DECIMAL(12,2)</td><td>DEFAULT 0</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="sub-title">audit_events</div>
+<table class="data-table">
+    <thead>
+        <tr><th>Colonne</th><th>Type</th><th>Contrainte</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>id</td><td>UUID</td><td>PK</td></tr>
+        <tr><td>tenant_id</td><td>UUID</td><td>FK→tenants, NOT NULL</td></tr>
+        <tr><td>user_id</td><td>UUID</td><td>FK→users, NULL</td></tr>
+        <tr><td>action</td><td>VARCHAR(50)</td><td>NOT NULL</td></tr>
+        <tr><td>entity_type</td><td>VARCHAR(50)</td><td>NOT NULL</td></tr>
+        <tr><td>entity_id</td><td>UUID</td><td>NOT NULL</td></tr>
+        <tr><td>changes</td><td>JSONB</td><td>DEFAULT '{}'</td></tr>
+        <tr><td>ip_address</td><td>INET</td><td>NULL</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT now()</td></tr>
+    </tbody>
+</table>
+
+<div class="highlight-box">
+    <div class="hl-title">Convention d'isolation RLS</div>
+    <div class="hl-text">Toutes les tables métier contiennent <code>tenant_id</code> pour l'isolation RLS. Les index composites <code>(tenant_id, id)</code> sont créés systématiquement pour garantir les performances de filtrage tenant dans chaque requête.</div>
+</div>
+
+<!-- ── Section 12 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 12</div>
+    <h2 class="section-title">Politiques RLS</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Les politiques RLS sont la dernière ligne de défense de l'isolation multi-tenant. Elles sont activées sur chaque table métier et utilisent une variable de session PostgreSQL pour filtrer automatiquement toutes les requêtes.</p>
+
+<div class="code-block">-- Activation RLS par table
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE customers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+-- ... (toutes les tables métier)
+
+-- Politique d'isolation tenant
+CREATE POLICY tenant_isolation ON orders
+  USING (tenant_id = current_setting('app.current_tenant')::uuid);
+
+-- Même politique pour chaque table métier
+CREATE POLICY tenant_isolation ON customers
+  USING (tenant_id = current_setting('app.current_tenant')::uuid);
+
+-- Fonction de set du contexte tenant
+CREATE OR REPLACE FUNCTION set_tenant_context(p_tenant_id UUID)
+RETURNS VOID AS $$
+BEGIN
+  PERFORM set_config('app.current_tenant', p_tenant_id::text, true);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;</div>
+
+<div class="card-accent">
+    <div class="card-title">Obligation applicative</div>
+    <p>Avant chaque requête métier, l'application <strong>DOIT</strong> appeler <code>set_tenant_context(tenant_id)</code> pour positionner la variable de session PostgreSQL. C'est le fondement de l'isolation RLS — sans cette étape, les politiques RLS bloquent tout accès (denial-by-default).</p>
+</div>
+
+<!-- ── Section 13 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 13</div>
+    <h2 class="section-title">Order Engine : Façade Métier</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">L'Order Engine est la façade qui orchestre les trois sous-moteurs du cycle de commande. Le pattern façade garantit que la complexité interne est encapsulée — les modules appelants n'interagissent qu'avec une interface unifiée.</p>
+
+<div class="code-block">                 ORDER ENGINE (façade)
+                      │
+       ┌──────────────┼──────────────┐
+       ▼              ▼              ▼
+ Pricing         Allocation       Fulfillment
+ Engine           Engine            Engine</div>
+
+<p class="body-text"><strong>Pricing Engine V1</strong> — Calcule les totaux à partir des <code>order_items</code>, applique les remises simples (pourcentage ou montant fixe par ligne). Le calcul est déterministe et reproductible.</p>
+
+<p class="body-text"><strong>Allocation Engine V1</strong> — La maison (point de vente) est choisie manuellement par l'utilisateur lors de la création de la commande. L'allocation automatique (plus proche, meilleur stock) est différée en V2.</p>
+
+<p class="body-text"><strong>Fulfillment Engine V1</strong> — Gère les transitions de statut : <code>draft → formalized → confirmed → completed</code>. Chaque transition est validée (règles métier), enregistrée dans <code>order_events</code>, et publie un événement asynchrone pour les side effects.</p>
+
+<p class="body-text">Les interfaces sont séparées pour permettre une évolution future sans refactoring — par exemple, le Pricing Engine V2 pourra intégrer des tarifs dynamiques sans impacter l'Allocation ou le Fulfillment.</p>
+
+<!-- ── Section 14 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 14</div>
+    <h2 class="section-title">Commission Engine : Bounded Context</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Le Commission Engine est un <strong>bounded context isolé</strong> — il possède son propre modèle de données, ses propres règles et ses propres invariants. Il communique avec le reste de l'application uniquement via les événements (<code>SALE_COMPLETED</code>) et l'interface typée du module Sales.</p>
+
+<div class="code-block">Sale → Eligibility → Rule → Calculation → Commission → Validation → Payment</div>
+
+<p class="body-text"><strong>V1 — Commission simple :</strong> Pourcentage fixe par agent (<code>commission_rate</code> sur la table <code>agents</code>). Calcul automatique lors de la complétion d'une vente. Validation manuelle par un Manager ou Admin avant paiement.</p>
+
+<p class="body-text"><strong>V2 — Commissions avancées (différé) :</strong> Paliers progressifs, bonus sur objectifs, split commission entre apporteur et vendeur, règles par maison et par catégorie de produit.</p>
+
+<!-- ── Section 15 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 15</div>
+    <h2 class="section-title">Triple Attribution des Transactions</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Chaque transaction commerciale enregistre <strong>trois dimensions d'attribution</strong> qui permettent de mesurer indépendamment l'acquisition, la conversion et l'exécution de la vente.</p>
+
+<ul class="content-list">
+    <li><strong>Source</strong> — L'origine de la transaction : client direct, agent apporteur, canal digital</li>
+    <li><strong>Agent apporteur</strong> — L'agent qui a apporté l'affaire (acquisition)</li>
+    <li><strong>Vendeur</strong> — L'utilisateur qui a exécuté la vente (conversion et closing)</li>
+</ul>
+
+<div class="card">
+    <div class="card-title">Exemple de Triple Attribution</div>
+    <p><strong>Commande #1001</strong> — Source : CLIENT, Agent : Patrick, Vendeur : Marie, Maison : Kinshasa</p>
+    <p>Cette attribution permet de mesurer séparément : la performance d'acquisition (Patrick), la performance de conversion (Marie), le volume de ventes (Maison Kinshasa), et les commissions associées à chaque acteur.</p>
+</div>
+
+<p class="body-text">Cette triple attribution est une caractéristique distinctive de SALES OS. Elle permet une analyse fine des performances qui n'est pas possible avec une attribution unique.</p>
+
+<!-- ── Section 16 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 16</div>
+    <h2 class="section-title">Event Schema & Contrats</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Chaque événement suit un schéma strict qui garantit la traçabilité, le debugging et la reproductibilité. Le schéma est versionné pour permettre l'évolution sans casser les subscribers existants.</p>
+
+<div class="code-block">{
+  "event_id": "uuid",
+  "event_type": "ORDER_CREATED",
+  "aggregate_type": "order",
+  "aggregate_id": "uuid",
+  "tenant_id": "uuid",
+  "timestamp": "ISO-8601",
+  "version": 1,
+  "payload": { ... },
+  "metadata": {
+    "triggered_by": "uuid",
+    "correlation_id": "uuid",
+    "source_module": "orders"
+  }
+}</div>
+
+<p class="body-text"><strong>Événements V1 :</strong></p>
+
+<ul class="content-list">
+    <li><strong>ORDER_CREATED</strong> — Commande créée (statut draft)</li>
+    <li><strong>ORDER_FORMALIZED</strong> — Commande formalisée (statut formalized)</li>
+    <li><strong>ORDER_CONFIRMED</strong> — Commande confirmée (statut confirmed)</li>
+    <li><strong>ORDER_CANCELLED</strong> — Commande annulée</li>
+    <li><strong>ORDER_COMPLETED</strong> — Commande complétée (statut completed)</li>
+    <li><strong>SALE_CREATED</strong> — Vente enregistrée</li>
+    <li><strong>SALE_COMPLETED</strong> — Vente complétée</li>
+    <li><strong>PAYMENT_RECEIVED</strong> — Paiement reçu</li>
+    <li><strong>STOCK_MOVEMENT_CREATED</strong> — Mouvement de stock enregistré</li>
+    <li><strong>COMMISSION_CALCULATED</strong> — Commission calculée</li>
+</ul>
+
+<div class="card-accent">
+    <div class="card-title">Persist First, Publish After</div>
+    <p>Les événements sont <strong>persistés dans PostgreSQL</strong> en premier (tables <code>order_events</code>, <code>audit_events</code>), puis <strong>publiés vers Redis</strong>. Redis est un <strong>transport uniquement</strong> — jamais la source de vérité. Si Redis est indisponible, les événements restent en base et peuvent être re-processés.</p>
+</div>
+
+<!-- ── Section 17 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 17</div>
+    <h2 class="section-title">Communication Inter-Modules</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Deux modes de communication coexistent, chacun adapté à un cas d'usage précis :</p>
+
+<p class="body-text"><strong>Synchrone</strong> — Appel direct de fonction via interface typée. Utilisé pour les requêtes et les commandes au sein d'une même transaction. Garantit la cohérence immédiate.</p>
+
+<p class="body-text"><strong>Asynchrone</strong> — Événement via Redis Pub/Sub. Utilisé pour les side effects, les notifications et les réactions cross-module. Découplage temporel : l'émetteur ne dépend pas du consommateur.</p>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>De</th>
+            <th>Vers</th>
+            <th>Mode</th>
+            <th>Événement/Interface</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Orders</td><td>Stock</td><td>Synchrone</td><td>reserveStock(orderId, items[])</td></tr>
+        <tr><td>Orders</td><td>Sales</td><td>Synchrone</td><td>createSaleFromOrder(order)</td></tr>
+        <tr><td>Sales</td><td>Payments</td><td>Synchrone</td><td>recordPayment(saleId, amount, method)</td></tr>
+        <tr><td>Sales</td><td>Commissions</td><td>Asynchrone</td><td>SALE_COMPLETED → calculate</td></tr>
+        <tr><td>Sales</td><td>Stock</td><td>Asynchrone</td><td>SALE_COMPLETED → commitReservation</td></tr>
+        <tr><td>Payments</td><td>Notifications</td><td>Asynchrone</td><td>PAYMENT_RECEIVED → notify</td></tr>
+        <tr><td>Any</td><td>Audit</td><td>Asynchrone</td><td>* → logAuditEvent</td></tr>
+    </tbody>
+</table>
+
+<!-- ── Section 18 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 18</div>
+    <h2 class="section-title">Gestion d'Erreurs & Transactions</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">La stratégie de gestion d'erreurs distingue les opérations critiques (qui exigent la cohérence immédiate) des side effects (qui tolèrent l'asynchronisme et le retry).</p>
+
+<p class="body-text"><strong>Opérations business-critiques</strong> (commande → vente → paiement → stock → commission) utilisent des <strong>transactions DB atomiques</strong> au sein d'une seule boundary de module. Si une étape échoue, toute la transaction est rollback — pas de données partielles.</p>
+
+<p class="body-text"><strong>Side effects cross-module</strong> utilisent des <strong>événements asynchrones avec retry</strong> : 3 tentatives, backoff exponentiel (1s, 2s, 4s). Si un side effect échoue définitivement après 3 tentatives, il est enregistré dans <code>audit_events</code> avec <code>status=failed</code> pour résolution manuelle.</p>
+
+<div class="card-accent">
+    <div class="card-title">Boundaries de Transaction</div>
+    <p><strong>Transaction 1 (synchrone, atomique) :</strong> Order → Order Items → Stock Reservation → Sale → Payment</p>
+    <p><strong>Event 1 (asynchrone, retry) :</strong> SALE_COMPLETED → Commission Calculation</p>
+    <p><strong>Event 2 (asynchrone, retry) :</strong> SALE_COMPLETED → Stock Commit</p>
+    <p><strong>Event 3 (asynchrone, retry) :</strong> PAYMENT_RECEIVED → Notification</p>
+    <p><strong>Pas de Saga en V1</strong> — La complexité des compensations distribuées n'est pas justifiée. Les side effects sont conçus pour être idempotents et retryables.</p>
+</div>
+
+<!-- ── Section 19 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 19</div>
+    <h2 class="section-title">Temps Réel & Déploiement</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text"><strong>V1 — Polling Refresh :</strong> Le frontend utilise SWR (stale-while-revalidate) avec revalidation périodique. Simple, fiable, pas de connexion persistante. Suffisant pour les volumes V1.</p>
+
+<p class="body-text"><strong>V3 — WebSocket/SSE :</strong> Connexion persistante via Redis Pub/Sub → WebSocket/SSE. Push temps réel pour les dashboards, notifications et mises à jour de statut.</p>
+
+<div class="code-block">V1 Architecture:
+┌─────────────┐     ┌─────────────────┐     ┌─────────────┐
+│  Next.js    │────▶│  Payload CMS    │────▶│ PostgreSQL  │
+│  (Frontend) │◀────│  (API + Admin)  │◀────│   (RLS)     │
+└─────────────┘     └────────┬────────┘     └─────────────┘
+                             │
+                    ┌────────▼────────┐
+                    │     Redis       │
+                    │  (Cache/Events) │
+                    └─────────────────┘
+
+V2+ Deployment Split:
+┌─────────────┐     ┌─────────────────┐     ┌─────────────┐
+│  Next.js    │     │  Payload CMS    │     │ PostgreSQL  │
+│  (separate) │────▶│  (API only)     │────▶│   (RLS)     │
+└─────────────┘     └─────────────────┘     └─────────────┘</div>
+
+<p class="body-text">En V1, Next.js et Payload sont déployés ensemble (single deployment). En V2+, le frontend Next.js peut être déployé séparément pour un scaling indépendant, le backend Payload restant sur sa propre infrastructure.</p>
+
+<!-- ── Section 20 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 20</div>
+    <h2 class="section-title">Migrations, CI/CD & Observabilité V1</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text"><strong>Migrations :</strong> Payload CMS gère son propre schéma via Drizzle. Les tables business personnalisées utilisent des fichiers de migration séparés dans <code>/src/migrations/</code>. L'ordre d'exécution est : migrations Payload en premier, puis migrations custom.</p>
+
+<p class="body-text"><strong>CI/CD :</strong> GitHub Actions → lint → test → build → deploy. Les tests incluent les tests d'isolation cross-tenant (RLS) qui échouent le build si une fuite de données est détectée.</p>
+
+<p class="body-text"><strong>Observabilité V1 :</strong></p>
+
+<ul class="content-list">
+    <li>Logs structurés (JSON) — chaque log contient tenant_id, user_id, action, timestamp</li>
+    <li>Health endpoint — <code>/health</code> vérifie DB, Redis, stockage S3</li>
+    <li>Error tracking — Sentry ou équivalent pour la capture et l'agrégation des exceptions</li>
+</ul>
+
+<p class="body-text"><strong>Observabilité V2 (différé) :</strong> Métriques (Prometheus/Grafana), dashboards opérationnels, alertes proactives, distributed tracing.</p>
+
+<!-- ── Section 21 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 21</div>
+    <h2 class="section-title">Production Readiness Checklist</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Liste des prérequis avant la mise en production. Chaque item doit être validé et documenté.</p>
+
+<ul class="content-list">
+    <li>☐ PoC Payload + PostgreSQL RLS validé</li>
+    <li>☐ Tests cross-tenant automatisés en CI/CD</li>
+    <li>☐ Modèle de données validé et migré</li>
+    <li>☐ Workflows V1 validés (Client → Commande → Vente → Paiement → Stock → Commission → Target)</li>
+    <li>☐ Matrice RBAC implémentée</li>
+    <li>☐ Backup et restauration testés</li>
+    <li>☐ Logs structurés opérationnels</li>
+    <li>☐ CI/CD pipeline fonctionnel</li>
+    <li>☐ Monitoring de base actif</li>
+</ul>
+
+<!-- ── Section 22 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 22</div>
+    <h2 class="section-title">Scope V1 : Délimité & Réaliste</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Le scope V1 est délibérément limité pour garantir la livraison dans les temps. Chaque module est classifié selon son niveau de maturité.</p>
+
+<div class="card">
+    <div class="card-title"><span class="tag-implemented">Implémenté</span> — V1</div>
+    <p>Auth · Tenants · Users · RBAC · Houses · CRM (Customers) · Products · Orders (+ Order Engine) · Sales · Payments · Stock · Commissions (+ Commission Engine simple) · Targets · Dashboard · Audit</p>
+</div>
+
+<div class="card">
+    <div class="card-title"><span class="tag-prepared">Préparé</span> — Modèle + Champs</div>
+    <p>Digital Client (<code>client_account_id</code>, <code>order_source</code>, <code>agent_referent_id</code>) · Deployment Split · Event Schema</p>
+</div>
+
+<div class="card">
+    <div class="card-title"><span class="tag-deferred">Différé</span> — V2+</div>
+    <p>Digital Commerce (panier, checkout) · Real-time push · Advanced Commissions (tiers, bonus) · Analytics avancés · Forecasting · IA/Recommandations · SaaS multi-entreprise commercialisé · Mobile · API publique</p>
+</div>
+
+<!-- ── Section 23 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 23</div>
+    <h2 class="section-title">Phase 0 : Pré-Ingénierie</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Avant de coder, une phase de pré-ingénierie de 1-2 semaines est requise. Elle garantit que les fondations sont validées et que les décisions d'architecture sont confirmées avant l'investissement de développement.</p>
+
+<ul class="content-list">
+    <li><strong>PoC Payload + PostgreSQL RLS</strong> — 3 jours</li>
+    <li><strong>Modèle de données détaillé + validation</strong> — 3 jours</li>
+    <li><strong>Matrice RBAC + tests cross-tenant</strong> — 2 jours</li>
+    <li><strong>Spécifications fonctionnelles V1 workflows</strong> — 4 jours</li>
+    <li><strong>ADRs + contrats inter-modules</strong> — 2 jours</li>
+</ul>
+
+<p class="body-text"><strong>Total : ~14 jours ouvrés</strong></p>
+
+<div class="highlight-box">
+    <div class="hl-title">Investissement stratégique</div>
+    <div class="hl-text">La Phase 0 est un investissement de 2 semaines qui garantit que les 8-12 semaines de développement qui suivent ne seront pas remises en cause par un problème d'architecture fondamental. C'est l'assurance qualité la plus rentable du projet.</div>
+</div>
+
+<!-- ── Section 24 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 24</div>
+    <h2 class="section-title">Phase 1 : Implémentation V1</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Planning réaliste basé sur l'expérience. Chaque semaine cible un périmètre défini avec des livrables mesurables.</p>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Semaine</th>
+            <th>Périmètre</th>
+            <th>Modules</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>1-2</td><td>Fondations</td><td>Auth, Tenants, Users, RBAC, RLS policies</td></tr>
+        <tr><td>3-4</td><td>Core CRM</td><td>Houses, Agents, Customers, Products</td></tr>
+        <tr><td>5-6</td><td>Moteur Commandes</td><td>Orders, Order Engine (Pricing, Allocation)</td></tr>
+        <tr><td>7-8</td><td>Ventes & Paiements</td><td>Sales, Payments, Fulfillment Engine</td></tr>
+        <tr><td>9-10</td><td>Stock & Commissions</td><td>Stock, Stock Movements, Commission Engine</td></tr>
+        <tr><td>11-12</td><td>Intelligence & Finalisation</td><td>Targets, Dashboard, Audit, Tests E2E, Déploiement</td></tr>
+    </tbody>
+</table>
+
+<p class="body-text"><strong>Total : 12 semaines (3 mois)</strong> pour un développeur senior, ou <strong>6-8 semaines</strong> pour une équipe de 2-3 développeurs.</p>
+
+<!-- ── Section 25 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 25</div>
+    <h2 class="section-title">Roadmap V1 → V4</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">La roadmap est progressive et réaliste. Chaque version s'appuie sur la précédente sans la remettre en cause.</p>
+
+<div class="card">
+    <div class="card-title"><span class="tag-implemented">V1</span> — Commercial Core (3 mois)</div>
+    <p>Multi-tenant, 14 modules, moteurs simples (Pricing, Allocation, Fulfillment, Commission), audit, dashboard de base. Le noyau commercial est opérationnel de bout en bout.</p>
+</div>
+
+<div class="card">
+    <div class="card-title"><span class="tag-prepared">V2</span> — Operational Excellence (2-3 mois)</div>
+    <p>Commissions avancées (paliers, bonus, split), stocks avancés (alertes, réapprovisionnement), notifications temps réel, analytics détaillés, observabilité complète (métriques, dashboards, alertes).</p>
+</div>
+
+<div class="card">
+    <div class="card-title"><span class="tag-prepared">V3</span> — Real-Time & Intelligence (2-3 mois)</div>
+    <p>Temps réel (WebSocket/SSE), event processing avancé, automatisations (règles métier, workflows), recommandations basées sur l'historique, forecasting prédictif.</p>
+</div>
+
+<div class="card">
+    <div class="card-title"><span class="tag-deferred">V4</span> — Vision</div>
+    <p>Digital Commerce (panier, checkout, paiement en ligne), SaaS multi-entreprise commercialisé, IA avancée (recommandations, pricing dynamique), Mobile (app native), API publique pour intégrations tierces.</p>
+</div>
+
+<!-- ── Section 26 ── -->
+<div class="chapter-header">
+    <div class="section-number">Section 26</div>
+    <h2 class="section-title">Score & Validation</h2>
+</div>
+<div class="divider"></div>
+
+<p class="body-text">Évaluation de l'architecture selon 8 dimensions critiques. Chaque score est justifié par rapport aux exigences du projet.</p>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Dimension</th>
+            <th>Cible</th>
+            <th>Justification</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Vision</td><td>9.5/10</td><td>Noyau commercial solide, frontières ouvertes</td></tr>
+        <tr><td>Modèle métier</td><td>9/10</td><td>Triple attribution, moteurs isolés</td></tr>
+        <tr><td>Architecture</td><td>9.5/10</td><td>Modular monolith, RLS, defense in depth</td></tr>
+        <tr><td>Sécurité</td><td>9/10</td><td>5 barrières, PoC RLS obligatoire</td></tr>
+        <tr><td>Multi-tenant</td><td>9.5/10</td><td>RLS + RBAC + tenant context</td></tr>
+        <tr><td>Scalabilité</td><td>9/10</td><td>Deployment split ready, extraction path</td></tr>
+        <tr><td>Opérations</td><td>8.5/10</td><td>Backup, CI/CD, logs — monitoring V2</td></tr>
+        <tr><td>Roadmap</td><td>9/10</td><td>V1→V4 progressif et réaliste</td></tr>
+    </tbody>
+</table>
+
+<p class="body-text"><strong>Production-readiness : 7.5/10 → 9.5/10</strong> après Phase 0 + validation PoC. L'écart est comblé par la validation des prérequis (PoC RLS, tests cross-tenant, backup testé) qui sont les conditions sine qua non du lancement.</p>
+
+</div><!-- end main-content -->
+
+<!-- ════════════════════════════════════════════════ ENDING PAGE ════════════════════════════════════════════════ -->
+<div class="ending">
+    <div style="text-align:center;margin-bottom:40px;">
+        <div class="section-number" style="margin-bottom:16px;">Validation</div>
+        <div class="ending-title" style="margin-bottom:8px;">Validation du propriétaire</div>
+        <div class="ending-subtitle">Approbation de l'architecture de référence</div>
+    </div>
+
+    <div style="width:100%;max-width:480px;margin:0 auto 30px auto;">
+        <p style="font-size:11px;line-height:1.7;color:var(--c-text);margin-bottom:24px;text-align:center;">J'ai pris connaissance de l'architecture de référence ci-dessus et j'approuve le lancement de la Phase 0 (pré-ingénierie) et de la Phase 1 (implémentation V1) pour le projet SALES OS.</p>
+
+        <div style="margin-bottom:20px;">
+            <div class="sig-label" style="margin-bottom:4px;">Observations</div>
+            <div class="sig-dots"></div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+            <div class="sig-label" style="margin-bottom:4px;">Nom du propriétaire</div>
+            <div class="sig-dots"></div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+            <div class="sig-label" style="margin-bottom:4px;">Date</div>
+            <div class="sig-dots"></div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+            <div class="sig-label" style="margin-bottom:4px;">Signature</div>
+            <div class="sig-dots"></div>
+        </div>
+    </div>
+
+    <div class="conclusion-box" style="margin-top:30px;">
+        <p><strong>Architecture Implementation-Ready — SALES OS V1</strong></p>
+        <p><span class="highlight">Noyau commercial solide, frontières ouvertes, prêt pour l'ingénierie</span></p>
+    </div>
+</div>
+
+</body>
+</html>
