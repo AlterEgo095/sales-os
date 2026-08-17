@@ -5,6 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const tenants = await db.tenant.findMany({
       orderBy: { createdAt: "desc" },
+      include: { houses: true },
     })
     return NextResponse.json(tenants)
   } catch (error) {

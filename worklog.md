@@ -263,3 +263,35 @@ Created 23 Next.js App Router API route files covering all SALES OS modules with
 - `src/app/api/targets/route.ts` — new
 - `src/app/api/targets/[id]/route.ts` — new
 - `src/app/api/stats/route.ts` — rewritten (enhanced with topProducts + parallel queries)
+
+---
+Task ID: V1
+Agent: main
+Task: SALES OS V1 — Core Fonctionnel Implementation
+
+Work Log:
+- Created navigation store (Zustand) at `src/store/navigation.ts` with ViewId type and setActiveView
+- Built App Sidebar component using shadcn/ui Sidebar with dark navy theme at `src/components/layout/app-sidebar.tsx`
+- Built DashboardView with live stats, recent orders, quick actions, and module shortcuts
+- Built CustomersView with full CRUD (list, create, edit, delete), search, source/status badges
+- Built ProductsView with full CRUD, search, category/status badges, price formatting
+- Built OrdersView with create, status workflow (draft→formalized→confirmed→completed/cancelled), detail dialog
+- Built AgentsView with CRUD, user/house selects, commission rate display
+- Built PaymentsView with create, status management, method badges, stats cards
+- Built StockView with inventory table, availability color coding, stock adjustment dialog
+- Built SettingsView with platform status overview (IMPLEMENTE/PREPARE/DIFFERE)
+- Rewrote page.tsx as App Shell with SidebarProvider + conditional view rendering
+- Fixed tenants API to include houses relation for proper tenant/houseId resolution
+- Fixed default exports in dashboard-view and orders-view to named exports
+- All views verified with Agent Browser (navigation, CRUD operations, responsive)
+- Customer creation flow tested end-to-end (Alice Mutombo created successfully)
+- Lint passes clean, no console errors, mobile responsive verified
+
+Stage Summary:
+- V1 Core Fonctionnel is COMPLETE
+- All 8 module views implemented: Dashboard, Customers, Products, Orders, Agents, Payments, Stock, Settings
+- Full navigation with sidebar (9 views)
+- CRUD operations functional for all business entities
+- Order status workflow implemented (draft→formalized→confirmed→completed/cancelled)
+- Dark navy theme consistent across all views
+- Mobile responsive with collapsible sidebar
