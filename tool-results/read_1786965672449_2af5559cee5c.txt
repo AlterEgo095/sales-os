@@ -1,0 +1,2002 @@
+     1→<!DOCTYPE html>
+     2→<html lang="fr">
+     3→<head>
+     4→<meta charset="UTF-8">
+     5→<title>Cahier des Charges — SALES OS</title>
+     6→<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+     7→<style>
+     8→@page {
+     9→    size: 720px 1020px;
+    10→    margin: 0;
+    11→}
+    12→
+    13→:root {
+    14→    --c-bg: #0a0f1a;
+    15→    --c-bg-cover: #060b14;
+    16→    --c-surface: #111827;
+    17→    --c-surface-2: #1a2236;
+    18→    --c-accent: #3b82f6;
+    19→    --c-accent-light: #60a5fa;
+    20→    --c-accent-dim: #1e40af;
+    21→    --c-text: #e5e7eb;
+    22→    --c-text-muted: #9ca3af;
+    23→    --c-text-bright: #f9fafb;
+    24→    --c-border: #1f2937;
+    25→    --c-border-light: #374151;
+    26→    --c-success: #10b981;
+    27→    --c-warning: #f59e0b;
+    28→    --c-danger: #ef4444;
+    29→    --c-code-bg: #0d1117;
+    30→    --c-table-header: #111827;
+    31→    --c-table-stripe: #0f1520;
+    32→}
+    33→
+    34→html, body {
+    35→    margin: 0;
+    36→    padding: 0;
+    37→    width: 720px;
+    38→    background: var(--c-bg);
+    39→    color: var(--c-text);
+    40→    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    41→    font-size: 11px;
+    42→    line-height: 1.65;
+    43→    -webkit-font-smoothing: antialiased;
+    44→}
+    45→
+    46→@media screen {
+    47→    html {
+    48→        height: auto;
+    49→        display: flex;
+    50→        justify-content: center;
+    51→        background: #1a1a2e;
+    52→    }
+    53→    body {
+    54→        transform-origin: top center;
+    55→        margin: 20px auto;
+    56→    }
+    57→}
+    58→
+    59→/* ===== COVER PAGE ===== */
+    60→.cover {
+    61→    width: 720px;
+    62→    height: 1020px;
+    63→    box-sizing: border-box;
+    64→    break-after: page;
+    65→    overflow: hidden;
+    66→    display: flex;
+    67→    flex-direction: column;
+    68→    justify-content: center;
+    69→    align-items: center;
+    70→    position: relative;
+    71→    background: var(--c-bg-cover);
+    72→}
+    73→
+    74→.cover-bg-elements {
+    75→    position: absolute;
+    76→    inset: 0;
+    77→    z-index: 0;
+    78→    pointer-events: none;
+    79→}
+    80→
+    81→.cover-circle-1 {
+    82→    position: absolute;
+    83→    right: -60px;
+    84→    top: 10%;
+    85→    width: 300px;
+    86→    height: 300px;
+    87→    border-radius: 50%;
+    88→    border: 1px solid rgba(59, 130, 246, 0.06);
+    89→}
+    90→
+    91→.cover-circle-2 {
+    92→    position: absolute;
+    93→    left: -120px;
+    94→    bottom: 20%;
+    95→    width: 500px;
+    96→    height: 500px;
+    97→    border-radius: 50%;
+    98→    border: 1px solid rgba(59, 130, 246, 0.05);
+    99→}
+   100→
+   101→.cover-line-v {
+   102→    position: absolute;
+   103→    left: 72px;
+   104→    top: 0;
+   105→    width: 0.5px;
+   106→    height: 100%;
+   107→    background: rgba(59, 130, 246, 0.03);
+   108→}
+   109→
+   110→.cover-line-h {
+   111→    position: absolute;
+   112→    left: 0;
+   113→    top: 540px;
+   114→    width: 100%;
+   115→    height: 0.5px;
+   116→    background: rgba(59, 130, 246, 0.03);
+   117→}
+   118→
+   119→.cover-watermark {
+   120→    position: absolute;
+   121→    left: 4%;
+   122→    top: 50%;
+   123→    transform: translateY(-50%) rotate(-90deg);
+   124→    transform-origin: center center;
+   125→    font-size: 160px;
+   126→    font-family: 'Inter', sans-serif;
+   127→    font-weight: 900;
+   128→    color: rgba(59, 130, 246, 0.03);
+   129→    white-space: nowrap;
+   130→    line-height: 1;
+   131→    letter-spacing: 8px;
+   132→}
+   133→
+   134→.cover-content {
+   135→    position: relative;
+   136→    z-index: 1;
+   137→    text-align: center;
+   138→    padding: 0 80px;
+   139→}
+   140→
+   141→.cover-badge {
+   142→    display: inline-block;
+   143→    background: rgba(59, 130, 246, 0.1);
+   144→    border: 1px solid rgba(59, 130, 246, 0.2);
+   145→    color: var(--c-accent-light);
+   146→    padding: 6px 20px;
+   147→    border-radius: 100px;
+   148→    font-size: 10px;
+   149→    font-weight: 600;
+   150→    letter-spacing: 2px;
+   151→    text-transform: uppercase;
+   152→    margin-bottom: 48px;
+   153→}
+   154→
+   155→.cover-title {
+   156→    font-family: 'Inter', sans-serif;
+   157→    font-size: 64px;
+   158→    font-weight: 900;
+   159→    color: var(--c-text-bright);
+   160→    line-height: 1.0;
+   161→    letter-spacing: -2px;
+   162→    margin-bottom: 16px;
+   163→}
+   164→
+   165→.cover-title span {
+   166→    color: var(--c-accent);
+   167→}
+   168→
+   169→.cover-subtitle {
+   170→    font-family: 'Playfair Display', serif;
+   171→    font-size: 18px;
+   172→    font-style: italic;
+   173→    color: var(--c-text-muted);
+   174→    margin-bottom: 56px;
+   175→    line-height: 1.4;
+   176→}
+   177→
+   178→.cover-meta {
+   179→    display: flex;
+   180→    justify-content: center;
+   181→    gap: 32px;
+   182→    margin-bottom: 56px;
+   183→}
+   184→
+   185→.cover-meta-item {
+   186→    text-align: center;
+   187→}
+   188→
+   189→.cover-meta-label {
+   190→    font-size: 9px;
+   191→    font-weight: 600;
+   192→    color: var(--c-text-muted);
+   193→    letter-spacing: 1.5px;
+   194→    text-transform: uppercase;
+   195→    margin-bottom: 4px;
+   196→}
+   197→
+   198→.cover-meta-value {
+   199→    font-size: 13px;
+   200→    font-weight: 700;
+   201→    color: var(--c-text-bright);
+   202→}
+   203→
+   204→.cover-divider {
+   205→    width: 60px;
+   206→    height: 2px;
+   207→    background: var(--c-accent);
+   208→    margin: 0 auto 32px;
+   209→}
+   210→
+   211→.cover-status {
+   212→    font-size: 10px;
+   213→    color: var(--c-warning);
+   214→    font-weight: 500;
+   215→    letter-spacing: 0.5px;
+   216→}
+   217→
+   218→.cover-footer {
+   219→    position: absolute;
+   220→    bottom: 40px;
+   221→    left: 0;
+   222→    right: 0;
+   223→    text-align: center;
+   224→    z-index: 1;
+   225→}
+   226→
+   227→.cover-footer-text {
+   228→    font-size: 9px;
+   229→    color: rgba(255,255,255,0.25);
+   230→    letter-spacing: 1px;
+   231→    text-transform: uppercase;
+   232→}
+   233→
+   234→/* ===== MAIN CONTENT ===== */
+   235→.main-content {
+   236→    padding: 50px 60px 40px 60px;
+   237→}
+   238→
+   239→/* Chapter headers */
+   240→.chapter-header {
+   241→    break-after: avoid;
+   242→    break-inside: avoid;
+   243→    margin-top: 28px;
+   244→    margin-bottom: 16px;
+   245→}
+   246→
+   247→.section-number {
+   248→    display: inline-block;
+   249→    font-size: 10px;
+   250→    font-weight: 700;
+   251→    color: var(--c-accent);
+   252→    letter-spacing: 1.5px;
+   253→    text-transform: uppercase;
+   254→    margin-bottom: 6px;
+   255→}
+   256→
+   257→.section-title {
+   258→    font-family: 'Inter', sans-serif;
+   259→    font-size: 22px;
+   260→    font-weight: 800;
+   261→    color: var(--c-text-bright);
+   262→    line-height: 1.2;
+   263→    margin-bottom: 8px;
+   264→}
+   265→
+   266→.section-subtitle {
+   267→    font-family: 'Inter', sans-serif;
+   268→    font-size: 15px;
+   269→    font-weight: 700;
+   270→    color: var(--c-accent-light);
+   271→    margin-bottom: 8px;
+   272→}
+   273→
+   274→.divider {
+   275→    width: 40px;
+   276→    height: 2px;
+   277→    background: var(--c-accent);
+   278→    margin-bottom: 16px;
+   279→}
+   280→
+   281→/* Body text */
+   282→.body-text {
+   283→    font-size: 11px;
+   284→    line-height: 1.7;
+   285→    color: var(--c-text);
+   286→    margin-bottom: 12px;
+   287→}
+   288→
+   289→.body-text strong {
+   290→    color: var(--c-text-bright);
+   291→    font-weight: 700;
+   292→}
+   293→
+   294→/* Lists */
+   295→ul.content-list {
+   296→    list-style: none;
+   297→    padding: 0;
+   298→    margin: 0 0 14px 0;
+   299→}
+   300→
+   301→ul.content-list li {
+   302→    position: relative;
+   303→    padding-left: 18px;
+   304→    margin-bottom: 6px;
+   305→    font-size: 11px;
+   306→    line-height: 1.65;
+   307→    color: var(--c-text);
+   308→}
+   309→
+   310→ul.content-list li::before {
+   311→    content: '';
+   312→    position: absolute;
+   313→    left: 0;
+   314→    top: 7px;
+   315→    width: 6px;
+   316→    height: 6px;
+   317→    border-radius: 50%;
+   318→    background: var(--c-accent);
+   319→}
+   320→
+   321→ol.content-list-ol {
+   322→    padding: 0 0 0 20px;
+   323→    margin: 0 0 14px 0;
+   324→}
+   325→
+   326→ol.content-list-ol li {
+   327→    margin-bottom: 6px;
+   328→    font-size: 11px;
+   329→    line-height: 1.65;
+   330→    color: var(--c-text);
+   331→}
+   332→
+   333→ol.content-list-ol li::marker {
+   334→    color: var(--c-accent);
+   335→    font-weight: 700;
+   336→}
+   337→
+   338→/* Blockquote */
+   339→blockquote {
+   340→    border-left: 3px solid var(--c-accent);
+   341→    background: rgba(59, 130, 246, 0.06);
+   342→    padding: 12px 18px;
+   343→    margin: 14px 0;
+   344→    border-radius: 0 6px 6px 0;
+   345→}
+   346→
+   347→blockquote p {
+   348→    margin: 0 0 6px 0;
+   349→    font-size: 11.5px;
+   350→    font-weight: 600;
+   351→    color: var(--c-text-bright);
+   352→    line-height: 1.5;
+   353→    font-style: italic;
+   354→}
+   355→
+   356→blockquote p:last-child {
+   357→    margin-bottom: 0;
+   358→}
+   359→
+   360→/* Code blocks / Tree diagrams */
+   361→.code-block {
+   362→    background: var(--c-code-bg);
+   363→    border: 1px solid var(--c-border);
+   364→    border-radius: 6px;
+   365→    padding: 14px 18px;
+   366→    margin: 14px 0;
+   367→    font-family: 'Courier New', Consolas, monospace;
+   368→    font-size: 10.5px;
+   369→    line-height: 1.6;
+   370→    color: var(--c-accent-light);
+   371→    overflow-x: auto;
+   372→    white-space: pre;
+   373→    break-inside: avoid;
+   374→}
+   375→
+   376→/* Tables */
+   377→.data-table {
+   378→    width: 100%;
+   379→    border-collapse: collapse;
+   380→    margin: 14px 0;
+   381→    font-size: 10.5px;
+   382→    break-inside: avoid;
+   383→}
+   384→
+   385→.data-table thead th {
+   386→    background: var(--c-table-header);
+   387→    color: var(--c-text-bright);
+   388→    font-weight: 700;
+   389→    padding: 10px 14px;
+   390→    text-align: left;
+   391→    border-bottom: 2px solid var(--c-accent-dim);
+   392→    font-size: 10px;
+   393→    letter-spacing: 0.5px;
+   394→    text-transform: uppercase;
+   395→}
+   396→
+   397→.data-table tbody td {
+   398→    padding: 9px 14px;
+   399→    border-bottom: 1px solid var(--c-border);
+   400→    color: var(--c-text);
+   401→}
+   402→
+   403→.data-table tbody tr:nth-child(even) td {
+   404→    background: var(--c-table-stripe);
+   405→}
+   406→
+   407→.data-table tbody tr:last-child td {
+   408→    border-bottom: none;
+   409→}
+   410→
+   411→/* Cards */
+   412→.card {
+   413→    background: var(--c-surface);
+   414→    border: 1px solid var(--c-border);
+   415→    border-radius: 8px;
+   416→    padding: 16px 18px;
+   417→    margin: 10px 0;
+   418→    break-inside: avoid;
+   419→}
+   420→
+   421→.card-title {
+   422→    font-size: 12px;
+   423→    font-weight: 700;
+   424→    color: var(--c-accent-light);
+   425→    margin-bottom: 8px;
+   426→}
+   427→
+   428→.card p, .card li {
+   429→    font-size: 10.5px;
+   430→    line-height: 1.6;
+   431→    color: var(--c-text);
+   432→}
+   433→
+   434→/* Role cards */
+   435→.role-card {
+   436→    background: var(--c-surface);
+   437→    border-left: 3px solid var(--c-accent);
+   438→    border-radius: 0 8px 8px 0;
+   439→    padding: 14px 18px;
+   440→    margin: 10px 0;
+   441→    break-inside: avoid;
+   442→}
+   443→
+   444→.role-title {
+   445→    font-size: 13px;
+   446→    font-weight: 700;
+   447→    color: var(--c-text-bright);
+   448→    margin-bottom: 4px;
+   449→}
+   450→
+   451→.role-desc {
+   452→    font-size: 10.5px;
+   453→    color: var(--c-text-muted);
+   454→    margin-bottom: 8px;
+   455→    font-style: italic;
+   456→}
+   457→
+   458→/* Checkbox list */
+   459→.checkbox-list {
+   460→    list-style: none;
+   461→    padding: 0;
+   462→    margin: 10px 0;
+   463→}
+   464→
+   465→.checkbox-list li {
+   466→    padding: 5px 0;
+   467→    font-size: 11px;
+   468→    color: var(--c-text);
+   469→    break-inside: avoid;
+   470→}
+   471→
+   472→.checkbox-list li span.box {
+   473→    display: inline-block;
+   474→    width: 14px;
+   475→    height: 14px;
+   476→    border: 1.5px solid var(--c-border-light);
+   477→    border-radius: 3px;
+   478→    margin-right: 8px;
+   479→    vertical-align: middle;
+   480→}
+   481→
+   482→/* Status indicators */
+   483→.status-active {
+   484→    display: inline-block;
+   485→    width: 8px;
+   486→    height: 8px;
+   487→    border-radius: 50%;
+   488→    margin-right: 6px;
+   489→    vertical-align: middle;
+   490→}
+   491→
+   492→.status-green { background: var(--c-success); }
+   493→.status-yellow { background: var(--c-warning); }
+   494→.status-orange { background: #f97316; }
+   495→
+   496→/* Roadmap items */
+   497→.roadmap-item {
+   498→    display: flex;
+   499→    align-items: flex-start;
+   500→    margin: 8px 0;
+   501→    break-inside: avoid;
+   502→}
+   503→
+   504→.roadmap-badge {
+   505→    flex-shrink: 0;
+   506→    background: rgba(59, 130, 246, 0.15);
+   507→    border: 1px solid rgba(59, 130, 246, 0.25);
+   508→    color: var(--c-accent-light);
+   509→    padding: 3px 10px;
+   510→    border-radius: 4px;
+   511→    font-size: 9px;
+   512→    font-weight: 700;
+   513→    letter-spacing: 0.5px;
+   514→    margin-right: 12px;
+   515→    min-width: 28px;
+   516→    text-align: center;
+   517→}
+   518→
+   519→.roadmap-text {
+   520→    font-size: 11px;
+   521→    color: var(--c-text);
+   522→    line-height: 1.5;
+   523→}
+   524→
+   525→.roadmap-text strong {
+   526→    color: var(--c-text-bright);
+   527→}
+   528→
+   529→/* Flow diagram */
+   530→.flow-step {
+   531→    display: flex;
+   532→    align-items: center;
+   533→    justify-content: center;
+   534→    margin: 3px 0;
+   535→}
+   536→
+   537→.flow-box {
+   538→    background: var(--c-surface);
+   539→    border: 1px solid var(--c-border-light);
+   540→    padding: 8px 20px;
+   541→    border-radius: 6px;
+   542→    font-size: 10.5px;
+   543→    font-weight: 600;
+   544→    color: var(--c-accent-light);
+   545→    text-align: center;
+   546→    min-width: 140px;
+   547→}
+   548→
+   549→.flow-arrow {
+   550→    text-align: center;
+   551→    color: var(--c-accent);
+   552→    font-size: 14px;
+   553→    margin: 2px 0;
+   554→}
+   555→
+   556→/* Ending / Signature page */
+   557→.ending {
+   558→    width: 720px;
+   559→    height: 1020px;
+   560→    box-sizing: border-box;
+   561→    break-before: page;
+   562→    overflow: hidden;
+   563→    display: flex;
+   564→    flex-direction: column;
+   565→    justify-content: center;
+   566→    padding: 60px 80px;
+   567→    position: relative;
+   568→    background: var(--c-bg-cover);
+   569→}
+   570→
+   571→.ending-title {
+   572→    font-size: 24px;
+   573→    font-weight: 800;
+   574→    color: var(--c-text-bright);
+   575→    margin-bottom: 8px;
+   576→}
+   577→
+   578→.ending-subtitle {
+   579→    font-size: 13px;
+   580→    color: var(--c-accent-light);
+   581→    font-weight: 600;
+   582→    margin-bottom: 24px;
+   583→}
+   584→
+   585→.sig-line {
+   586→    border-bottom: 1px solid var(--c-border-light);
+   587→    padding-bottom: 6px;
+   588→    margin-bottom: 18px;
+   589→    font-size: 11px;
+   590→    color: var(--c-text-muted);
+   591→}
+   592→
+   593→.sig-field {
+   594→    margin-bottom: 24px;
+   595→}
+   596→
+   597→.sig-label {
+   598→    font-size: 10px;
+   599→    color: var(--c-text-muted);
+   600→    text-transform: uppercase;
+   601→    letter-spacing: 1px;
+   602→    margin-bottom: 6px;
+   603→}
+   604→
+   605→.sig-dots {
+   606→    border-bottom: 1px solid var(--c-border-light);
+   607→    height: 24px;
+   608→    margin-bottom: 16px;
+   609→}
+   610→
+   611→/* Conclusion box */
+   612→.conclusion-box {
+   613→    background: rgba(59, 130, 246, 0.08);
+   614→    border: 1px solid rgba(59, 130, 246, 0.15);
+   615→    border-radius: 10px;
+   616→    padding: 24px;
+   617→    margin: 20px 0;
+   618→    text-align: center;
+   619→}
+   620→
+   621→.conclusion-box p {
+   622→    font-size: 12px;
+   623→    line-height: 1.7;
+   624→    color: var(--c-text);
+   625→    margin-bottom: 8px;
+   626→}
+   627→
+   628→.conclusion-box strong {
+   629→    color: var(--c-text-bright);
+   630→}
+   631→
+   632→.conclusion-box .highlight {
+   633→    color: var(--c-accent-light);
+   634→    font-weight: 700;
+   635→}
+   636→
+   637→/* Principle banner */
+   638→.principle-banner {
+   639→    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.04));
+   640→    border: 1px solid rgba(59, 130, 246, 0.2);
+   641→    border-radius: 8px;
+   642→    padding: 18px 24px;
+   643→    margin: 16px 0;
+   644→    text-align: center;
+   645→    break-inside: avoid;
+   646→}
+   647→
+   648→.principle-banner p {
+   649→    font-size: 12px;
+   650→    font-weight: 700;
+   651→    color: var(--c-accent-light);
+   652→    letter-spacing: 1px;
+   653→    margin: 0;
+   654→}
+   655→
+   656→/* Acceptance criteria group */
+   657→.criteria-group {
+   658→    margin: 12px 0;
+   659→    break-inside: avoid;
+   660→}
+   661→
+   662→.criteria-title {
+   663→    font-size: 12px;
+   664→    font-weight: 700;
+   665→    color: var(--c-accent-light);
+   666→    margin-bottom: 6px;
+   667→    padding-bottom: 4px;
+   668→    border-bottom: 1px solid var(--c-border);
+   669→}
+   670→
+   671→/* Validation checklist */
+   672→.validation-item {
+   673→    display: flex;
+   674→    align-items: center;
+   675→    padding: 8px 0;
+   676→    border-bottom: 1px solid var(--c-border);
+   677→    break-inside: avoid;
+   678→}
+   679→
+   680→.validation-label {
+   681→    flex: 1;
+   682→    font-size: 11px;
+   683→    color: var(--c-text);
+   684→}
+   685→
+   686→.validation-checkbox {
+   687→    display: inline-flex;
+   688→    gap: 16px;
+   689→    flex-shrink: 0;
+   690→    margin-left: 12px;
+   691→}
+   692→
+   693→.validation-checkbox span {
+   694→    font-size: 10px;
+   695→    color: var(--c-text-muted);
+   696→    padding: 2px 8px;
+   697→    border: 1px solid var(--c-border-light);
+   698→    border-radius: 3px;
+   699→}
+   700→
+   701→/* Sub-heading (h3 equivalent) */
+   702→.sub-heading {
+   703→    font-size: 13px;
+   704→    font-weight: 700;
+   705→    color: var(--c-text-bright);
+   706→    margin: 14px 0 6px 0;
+   707→}
+   708→
+   709→/* Example block */
+   710→.example-block {
+   711→    background: var(--c-surface-2);
+   712→    border-radius: 6px;
+   713→    padding: 12px 16px;
+   714→    margin: 10px 0;
+   715→    font-size: 10.5px;
+   716→    color: var(--c-text-muted);
+   717→    break-inside: avoid;
+   718→}
+   719→
+   720→.example-block strong {
+   721→    color: var(--c-text);
+   722→}
+   723→
+   724→/* Accent text */
+   725→.accent-text {
+   726→    color: var(--c-accent-light);
+   727→    font-weight: 600;
+   728→}
+   729→
+   730→/* Inline code */
+   731→code {
+   732→    font-family: 'Courier New', Consolas, monospace;
+   733→    font-size: 10px;
+   734→    background: var(--c-code-bg);
+   735→    padding: 2px 6px;
+   736→    border-radius: 3px;
+   737→    color: var(--c-accent-light);
+   738→}
+   739→</style>
+   740→</head>
+   741→<body>
+   742→
+   743→<!-- ===== COVER PAGE ===== -->
+   744→<div class="cover">
+   745→    <div class="cover-bg-elements">
+   746→        <div class="cover-circle-1"></div>
+   747→        <div class="cover-circle-2"></div>
+   748→        <div class="cover-watermark">SALES OS</div>
+   749→    </div>
+   750→    <div class="cover-content">
+   751→        <div class="cover-badge">Cahier des Charges</div>
+   752→        <div class="cover-title">SALES <span>OS</span></div>
+   753→        <div class="cover-subtitle">Plateforme de gestion, suivi et pilotage des ventes</div>
+   754→        <div class="cover-divider"></div>
+   755→        <div class="cover-meta">
+   756→            <div class="cover-meta-item">
+   757→                <div class="cover-meta-label">Version</div>
+   758→                <div class="cover-meta-value">2.1</div>
+   759→            </div>
+   760→            <div class="cover-meta-item">
+   761→                <div class="cover-meta-label">Date</div>
+   762→                <div class="cover-meta-value">Mars 2026</div>
+   763→            </div>
+   764→            <div class="cover-meta-item">
+   765→                <div class="cover-meta-label">Statut</div>
+   766→                <div class="cover-meta-value">Proposition</div>
+   767→            </div>
+   768→        </div>
+   769→        <div class="cover-status">Document de reference pour validation du proprietaire</div>
+   770→    </div>
+   771→    <div class="cover-footer">
+   772→        <div class="cover-footer-text">Confidentiel — SALES OS V2.1</div>
+   773→    </div>
+   774→</div>
+   775→
+   776→<!-- ===== MAIN CONTENT ===== -->
+   777→<div class="main-content">
+   778→
+   779→<!-- Section 1 -->
+   780→<div class="chapter-header">
+   781→    <div class="section-number">Section 1</div>
+   782→    <div class="section-title">Presentation du projet</div>
+   783→    <div class="divider"></div>
+   784→</div>
+   785→
+   786→<div class="sub-heading">1.1 Nom</div>
+   787→<div class="body-text"><strong>SALES OS</strong></div>
+   788→
+   789→<div class="sub-heading">1.2 Nature du projet</div>
+   790→<div class="body-text">SALES OS est une application web de <strong>gestion et de pilotage commercial</strong> destinee a centraliser l'ensemble du cycle de vente d'une entreprise.</div>
+   791→<div class="body-text">La plateforme permettra notamment de gerer :</div>
+   792→<ul class="content-list">
+   793→    <li>les maisons / points de vente</li>
+   794→    <li>les utilisateurs</li>
+   795→    <li>les agents de terrain</li>
+   796→    <li>les portefeuilles clients</li>
+   797→    <li>les prospects et clients</li>
+   798→    <li>les produits</li>
+   799→    <li>les commandes</li>
+   800→    <li>les ventes</li>
+   801→    <li>les paiements</li>
+   802→    <li>les stocks</li>
+   803→    <li>les commissions</li>
+   804→    <li>les objectifs commerciaux</li>
+   805→    <li>les performances</li>
+   806→</ul>
+   807→<div class="body-text">La solution sera concue des le depart avec une architecture permettant son evolution vers un <strong>SaaS multi-entreprises</strong>, sans que cette evolution soit necessairement activee commercialement dans le MVP.</div>
+   808→
+   809→<!-- Section 2 -->
+   810→<div class="chapter-header">
+   811→    <div class="section-number">Section 2</div>
+   812→    <div class="section-title">Contexte et problematique</div>
+   813→    <div class="divider"></div>
+   814→</div>
+   815→
+   816→<div class="body-text">L'activite commerciale de l'entreprise implique plusieurs maisons, agents, clients et operations de vente. Lorsque ces informations sont suivi separement, plusieurs difficultes peuvent apparaitre :</div>
+   817→<ul class="content-list">
+   818→    <li>manque de visibilite globale</li>
+   819→    <li>difficulte a connaitre les performances de chaque maison</li>
+   820→    <li>difficulte a mesurer la performance des agents</li>
+   821→    <li>perte ou duplication d'informations clients</li>
+   822→    <li>difficulte a suivre les commandes non finalisees</li>
+   823→    <li>erreurs dans le calcul des commissions</li>
+   824→    <li>manque de visibilite sur les paiements</li>
+   825→    <li>difficulte a suivre les stocks</li>
+   826→    <li>absence d'un historique centralise des operations</li>
+   827→    <li>difficulte a mesurer l'atteinte des objectifs mensuels</li>
+   828→</ul>
+   829→<div class="body-text">SALES OS doit resoudre ces problemes en mettant en place <strong>un systeme commercial centralise, securise et structure</strong>.</div>
+   830→
+   831→<!-- Section 3 -->
+   832→<div class="chapter-header">
+   833→    <div class="section-number">Section 3</div>
+   834→    <div class="section-title">Vision du produit</div>
+   835→    <div class="divider"></div>
+   836→</div>
+   837→
+   838→<div class="body-text">SALES OS doit devenir le <strong>centre de pilotage commercial de l'entreprise</strong>. Le proprietaire doit pouvoir acceder a une vision globale de l'activite :</div>
+   839→<blockquote>
+   840→    <p>Combien avons-nous vendu ?</p>
+   841→    <p>Quelle maison vend le plus ?</p>
+   842→    <p>Quel agent apporte le plus de clients ?</p>
+   843→    <p>Quels clients sont reguliers ?</p>
+   844→    <p>Quelles commandes sont encore en attente ?</p>
+   845→    <p>Combien de commissions ont ete generees ?</p>
+   846→    <p>Ou en sommes-nous par rapport a notre objectif mensuel ?</p>
+   847→    <p>Quelle est la contribution de chaque maison ?</p>
+   848→</blockquote>
+   849→<div class="body-text">L'objectif est donc de transformer les donnees commerciales en <strong>informations directement exploitables pour la prise de decision</strong>.</div>
+   850→
+   851→<!-- Section 4 -->
+   852→<div class="chapter-header">
+   853→    <div class="section-number">Section 4</div>
+   854→    <div class="section-title">Objectif general</div>
+   855→    <div class="divider"></div>
+   856→</div>
+   857→
+   858→<div class="body-text">Mettre en place une plateforme permettant de :</div>
+   859→<blockquote>
+   860→    <p>Centraliser, securiser, suivre, mesurer et piloter l'ensemble du processus commercial de l'entreprise, de la prospection jusqu'a l'analyse des performances.</p>
+   861→</blockquote>
+   862→
+   863→<!-- Section 5 -->
+   864→<div class="chapter-header">
+   865→    <div class="section-number">Section 5</div>
+   866→    <div class="section-title">Objectifs specifiques</div>
+   867→    <div class="divider"></div>
+   868→</div>
+   869→
+   870→<div class="body-text">La plateforme devra permettre de :</div>
+   871→<ol class="content-list-ol">
+   872→    <li>gerer plusieurs maisons ou points de vente</li>
+   873→    <li>gerer les utilisateurs et leurs droits</li>
+   874→    <li>gerer les agents de terrain</li>
+   875→    <li>enregistrer les clients apportes par les agents</li>
+   876→    <li>constituer et gerer le portefeuille de chaque agent</li>
+   877→    <li>suivre le cycle de vie des clients</li>
+   878→    <li>gerer les produits</li>
+   879→    <li>enregistrer les commandes</li>
+   880→    <li>distinguer clairement les commandes des ventes</li>
+   881→    <li>enregistrer les ventes</li>
+   882→    <li>suivre les paiements</li>
+   883→    <li>suivre les stocks</li>
+   884→    <li>calculer les commissions</li>
+   885→    <li>definir un objectif mensuel</li>
+   886→    <li>mesurer la contribution de chaque maison</li>
+   887→    <li>suivre les performances des agents</li>
+   888→    <li>suivre les commandes en attente</li>
+   889→    <li>identifier les clients reguliers</li>
+   890→    <li>fournir un tableau de bord central</li>
+   891→    <li>assurer la tracabilite des operations</li>
+   892→    <li>securiser les acces</li>
+   893→    <li>preparer techniquement l'evolution vers plusieurs entreprises</li>
+   894→</ol>
+   895→
+   896→<!-- Section 6 -->
+   897→<div class="chapter-header">
+   898→    <div class="section-number">Section 6</div>
+   899→    <div class="section-title">Perimetre fonctionnel</div>
+   900→    <div class="divider"></div>
+   901→</div>
+   902→
+   903→<div class="body-text">La plateforme sera organisee autour des modules suivants :</div>
+   904→
+   905→<table class="data-table">
+   906→    <thead>
+   907→        <tr>
+   908→            <th>Module</th>
+   909→            <th>Fonction</th>
+   910→        </tr>
+   911→    </thead>
+   912→    <tbody>
+   913→        <tr><td>Administration</td><td>Utilisateurs, roles, maisons et parametres</td></tr>
+   914→        <tr><td>Agents</td><td>Gestion des agents et performances</td></tr>
+   915→        <tr><td>CRM</td><td>Prospects, clients et portefeuilles</td></tr>
+   916→        <tr><td>Commandes</td><td>Creation et suivi des commandes</td></tr>
+   917→        <tr><td>Ventes</td><td>Enregistrement et suivi des ventes</td></tr>
+   918→        <tr><td>Catalogue</td><td>Produits, categories et prix</td></tr>
+   919→        <tr><td>Stocks</td><td>Stocks et mouvements</td></tr>
+   920→        <tr><td>Paiements</td><td>Encaissements et soldes</td></tr>
+   921→        <tr><td>Commissions</td><td>Calcul et suivi des commissions</td></tr>
+   922→        <tr><td>Objectifs</td><td>Targets et progression</td></tr>
+   923→        <tr><td>Dashboard</td><td>Pilotage global</td></tr>
+   924→        <tr><td>Audit</td><td>Historique des operations</td></tr>
+   925→        <tr><td>Securite</td><td>Authentification et permissions</td></tr>
+   926→        <tr><td>Notifications</td><td>Alertes et evenements</td></tr>
+   927→    </tbody>
+   928→</table>
+   929→
+   930→<!-- Section 7 -->
+   931→<div class="chapter-header">
+   932→    <div class="section-number">Section 7</div>
+   933→    <div class="section-title">Utilisateurs et roles</div>
+   934→    <div class="divider"></div>
+   935→</div>
+   936→
+   937→<div class="role-card">
+   938→    <div class="role-title">7.1 Gestionnaire principal</div>
+   939→    <div class="role-desc">Le gestionnaire principal represente la direction de l'entreprise.</div>
+   940→    <div class="body-text">Il dispose d'une vision globale et peut notamment :</div>
+   941→    <ul class="content-list">
+   942→        <li>gerer les maisons</li>
+   943→        <li>gerer les utilisateurs</li>
+   944→        <li>gerer les agents</li>
+   945→        <li>consulter les clients</li>
+   946→        <li>consulter les ventes</li>
+   947→        <li>gerer les produits</li>
+   948→        <li>suivre les stocks</li>
+   949→        <li>definir les objectifs</li>
+   950→        <li>gerer les regles de commission</li>
+   951→        <li>consulter les rapports</li>
+   952→        <li>controler les performances</li>
+   953→    </ul>
+   954→</div>
+   955→
+   956→<div class="role-card">
+   957→    <div class="role-title">7.2 Responsable de maison</div>
+   958→    <div class="role-desc">Il gere l'activite de sa maison.</div>
+   959→    <div class="body-text">Il peut, selon ses permissions :</div>
+   960→    <ul class="content-list">
+   961→        <li>consulter ses agents</li>
+   962→        <li>suivre les clients</li>
+   963→        <li>suivre les commandes</li>
+   964→        <li>suivre les ventes</li>
+   965→        <li>consulter le stock</li>
+   966→        <li>suivre les performances de la maison</li>
+   967→    </ul>
+   968→    <div class="body-text">Il ne doit pas acceder aux donnees des autres maisons si ses permissions ne l'y autorisent pas.</div>
+   969→</div>
+   970→
+   971→<div class="role-card">
+   972→    <div class="role-title">7.3 Agent de terrain</div>
+   973→    <div class="role-desc">L'agent est charge notamment de developper et gerer son portefeuille commercial.</div>
+   974→    <div class="body-text">Il peut :</div>
+   975→    <ul class="content-list">
+   976→        <li>enregistrer des prospects</li>
+   977→        <li>creer des clients</li>
+   978→        <li>gerer son portefeuille</li>
+   979→        <li>creer des commandes</li>
+   980→        <li>suivre ses ventes</li>
+   981→        <li>consulter ses commissions</li>
+   982→        <li>suivre ses performances</li>
+   983→    </ul>
+   984→</div>
+   985→
+   986→<div class="role-card">
+   987→    <div class="role-title">7.4 Vendeur</div>
+   988→    <div class="role-desc">Le vendeur peut effectuer les operations commerciales qui lui sont attribuees.</div>
+   989→    <ul class="content-list">
+   990→        <li>consulter les produits</li>
+   991→        <li>creer ou traiter une commande</li>
+   992→        <li>enregistrer une vente</li>
+   993→        <li>consulter les informations necessaires a la vente</li>
+   994→    </ul>
+   995→</div>
+   996→
+   997→<div class="role-card">
+   998→    <div class="role-title">7.5 Caissier / gestionnaire financier</div>
+   999→    <div class="role-desc">Il peut :</div>
+  1000→    <ul class="content-list">
+  1001→        <li>enregistrer les paiements</li>
+  1002→        <li>consulter les ventes concernees</li>
+  1003→        <li>suivre les soldes</li>
+  1004→        <li>gerer les operations financieres autorisees</li>
+  1005→    </ul>
+  1006→</div>
+  1007→
+  1008→<div class="role-card">
+  1009→    <div class="role-title">7.6 Gestionnaire de stock</div>
+  1010→    <div class="role-desc">Il peut :</div>
+  1011→    <ul class="content-list">
+  1012→        <li>gerer les produits</li>
+  1013→        <li>enregistrer les entrees</li>
+  1014→        <li>enregistrer les sorties</li>
+  1015→        <li>effectuer les ajustements autorises</li>
+  1016→        <li>suivre les niveaux de stock</li>
+  1017→    </ul>
+  1018→</div>
+  1019→
+  1020→<!-- Section 8 -->
+  1021→<div class="chapter-header">
+  1022→    <div class="section-number">Section 8</div>
+  1023→    <div class="section-title">Gestion des maisons</div>
+  1024→    <div class="divider"></div>
+  1025→</div>
+  1026→
+  1027→<div class="body-text">Une <strong>maison</strong> represente un point de vente, une agence ou une unite commerciale.</div>
+  1028→
+  1029→<div class="example-block"><strong>Exemple :</strong></div>
+  1030→<div class="code-block">ENTREPRISE
+  1031→│
+  1032→├── Maison Kinshasa
+  1033→├── Maison Lubumbashi
+  1034→├── Maison Goma
+  1035→└── Maison Matadi</div>
+  1036→
+  1037→<div class="body-text">Chaque maison peut disposer de :</div>
+  1038→<ul class="content-list">
+  1039→    <li>responsable</li>
+  1040→    <li>utilisateurs</li>
+  1041→    <li>agents</li>
+  1042→    <li>clients</li>
+  1043→    <li>commandes</li>
+  1044→    <li>ventes</li>
+  1045→    <li>stock</li>
+  1046→    <li>statistiques</li>
+  1047→</ul>
+  1048→<div class="body-text">La direction dispose d'une vue consolidee de toutes les maisons.</div>
+  1049→
+  1050→<!-- Section 9 -->
+  1051→<div class="chapter-header">
+  1052→    <div class="section-number">Section 9</div>
+  1053→    <div class="section-title">Gestion des agents</div>
+  1054→    <div class="divider"></div>
+  1055→</div>
+  1056→
+  1057→<div class="body-text">Chaque agent dispose d'un profil commercial. Le systeme conserve notamment :</div>
+  1058→<ul class="content-list">
+  1059→    <li>identite</li>
+  1060→    <li>maison</li>
+  1061→    <li>statut</li>
+  1062→    <li>portefeuille</li>
+  1063→    <li>clients apportes</li>
+  1064→    <li>ventes</li>
+  1065→    <li>performances</li>
+  1066→    <li>commissions</li>
+  1067→</ul>
+  1068→<div class="body-text">La direction pourra comparer les performances des agents.</div>
+  1069→
+  1070→<!-- Section 10 -->
+  1071→<div class="chapter-header">
+  1072→    <div class="section-number">Section 10</div>
+  1073→    <div class="section-title">Portefeuille client de l'agent</div>
+  1074→    <div class="divider"></div>
+  1075→</div>
+  1076→
+  1077→<div class="body-text">Tout client apporte par un agent doit etre enregistre dans son portefeuille.</div>
+  1078→
+  1079→<div class="code-block">AGENT
+  1080→  ↓
+  1081→PORTEFEUILLE
+  1082→  ↓
+  1083→CLIENT
+  1084→  ↓
+  1085→COMMANDES
+  1086→  ↓
+  1087→VENTES</div>
+  1088→
+  1089→<div class="body-text">Le systeme conserve l'agent ayant initialement enregistre le client. Cela permet de determiner clairement l'origine commerciale d'un client.</div>
+  1090→
+  1091→<!-- Section 11 -->
+  1092→<div class="chapter-header">
+  1093→    <div class="section-number">Section 11</div>
+  1094→    <div class="section-title">Attribution et transfert des clients</div>
+  1095→    <div class="divider"></div>
+  1096→</div>
+  1097→
+  1098→<div class="body-text">Un client possede un <strong>agent referent</strong>.</div>
+  1099→<div class="body-text">Lorsqu'un agent enregistre un nouveau client, le systeme verifie les eventuels doublons.</div>
+  1100→<div class="body-text">Si le client existe deja :</div>
+  1101→<ul class="content-list">
+  1102→    <li>une alerte est affichee</li>
+  1103→    <li>le systeme indique qu'un autre agent est deja associe</li>
+  1104→    <li>le nouveau rattachement ne peut pas etre effectue automatiquement</li>
+  1105→</ul>
+  1106→<div class="body-text">Le transfert d'un client vers un autre agent necessite l'autorisation d'un responsable habilite.</div>
+  1107→<div class="body-text">L'historique conserve :</div>
+  1108→<ul class="content-list">
+  1109→    <li>ancien agent</li>
+  1110→    <li>nouvel agent</li>
+  1111→    <li>date</li>
+  1112→    <li>utilisateur ayant effectue le transfert</li>
+  1113→    <li>motif, si renseigne</li>
+  1114→</ul>
+  1115→
+  1116→<!-- Section 12 -->
+  1117→<div class="chapter-header">
+  1118→    <div class="section-number">Section 12</div>
+  1119→    <div class="section-title">Gestion des clients</div>
+  1120→    <div class="divider"></div>
+  1121→</div>
+  1122→
+  1123→<div class="body-text">Le systeme distingue notamment :</div>
+  1124→<div class="code-block">Prospect → Nouveau client → Client actif → Client regulier → Client inactif</div>
+  1125→
+  1126→<div class="body-text">Les criteres permettant de qualifier un client de <em>regulier</em> ou <em>inactif</em> pourront etre configures.</div>
+  1127→<div class="body-text">Pour chaque client :</div>
+  1128→<ul class="content-list">
+  1129→    <li>nom</li>
+  1130→    <li>telephone</li>
+  1131→    <li>email</li>
+  1132→    <li>adresse</li>
+  1133→    <li>agent referent</li>
+  1134→    <li>maison</li>
+  1135→    <li>historique</li>
+  1136→    <li>commandes</li>
+  1137→    <li>ventes</li>
+  1138→    <li>montant des achats</li>
+  1139→    <li>frequence d'achat</li>
+  1140→    <li>derniere activite</li>
+  1141→</ul>
+  1142→<div class="body-text">La recherche devra permettre de retrouver rapidement un client.</div>
+  1143→
+  1144→<!-- Section 13 -->
+  1145→<div class="chapter-header">
+  1146→    <div class="section-number">Section 13</div>
+  1147→    <div class="section-title">Commandes</div>
+  1148→    <div class="divider"></div>
+  1149→</div>
+  1150→
+  1151→<div class="body-text">Une commande represente une <strong>intention d'achat</strong>. Elle ne constitue pas automatiquement une vente.</div>
+  1152→<div class="body-text">Les etats sont :</div>
+  1153→<div class="code-block">Brouillon
+  1154→   ↓
+  1155→En attente
+  1156→   ↓
+  1157→Formalisee
+  1158→   ↓
+  1159→Confirmee
+  1160→   ↓
+  1161→Transformee en vente</div>
+  1162→
+  1163→<div class="body-text">Une commande peut egalement etre : <strong>Annulee</strong></div>
+  1164→<div class="body-text">Le gestionnaire pourra consulter les commandes non encore transformees en ventes. Cela permettra notamment de suivre les <strong>opportunites commerciales en attente</strong>.</div>
+  1165→
+  1166→<!-- Section 14 -->
+  1167→<div class="chapter-header">
+  1168→    <div class="section-number">Section 14</div>
+  1169→    <div class="section-title">Ventes</div>
+  1170→    <div class="divider"></div>
+  1171→</div>
+  1172→
+  1173→<div class="body-text">Une vente represente une transaction effectivement confirmee.</div>
+  1174→<div class="body-text">Une vente pourra etre creee :</div>
+  1175→<blockquote>
+  1176→    <p>soit directement,</p>
+  1177→    <p>soit a partir d'une commande existante.</p>
+  1178→</blockquote>
+  1179→<div class="body-text">Chaque vente doit conserver :</div>
+  1180→<ul class="content-list">
+  1181→    <li>entreprise</li>
+  1182→    <li>maison</li>
+  1183→    <li>client</li>
+  1184→    <li>agent apporteur</li>
+  1185→    <li>vendeur</li>
+  1186→    <li>produits</li>
+  1187→    <li>quantites</li>
+  1188→    <li>prix</li>
+  1189→    <li>montant</li>
+  1190→    <li>date</li>
+  1191→    <li>mode de paiement</li>
+  1192→    <li>etat du paiement</li>
+  1193→</ul>
+  1194→
+  1195→<!-- Section 15 -->
+  1196→<div class="chapter-header">
+  1197→    <div class="section-number">Section 15</div>
+  1198→    <div class="section-title">Agent apporteur et vendeur</div>
+  1199→    <div class="divider"></div>
+  1200→</div>
+  1201→
+  1202→<div class="body-text">Afin d'eviter toute ambiguite, le systeme distinguera :</div>
+  1203→
+  1204→<div class="sub-heading">Agent apporteur</div>
+  1205→<div class="body-text">Agent ayant cree ou acquis le client.</div>
+  1206→
+  1207→<div class="sub-heading">Vendeur</div>
+  1208→<div class="body-text">Personne ayant effectivement realise la vente.</div>
+  1209→
+  1210→<div class="example-block"><strong>Exemple :</strong></div>
+  1211→<div class="code-block">Patrick
+  1212→  ↓
+  1213→apporte Jean
+  1214→  ↓
+  1215→Jean appartient au portefeuille de Patrick
+  1216→  ↓
+  1217→Jean achete a la Maison B
+  1218→  ↓
+  1219→Marie realise la vente</div>
+  1220→
+  1221→<div class="body-text">Le systeme conserve donc : <strong>Agent apporteur = Patrick</strong> / <strong>Vendeur = Marie</strong></div>
+  1222→<div class="body-text">Les regles de commission determineront ensuite qui est remunere.</div>
+  1223→
+  1224→<!-- Section 16 -->
+  1225→<div class="chapter-header">
+  1226→    <div class="section-number">Section 16</div>
+  1227→    <div class="section-title">Produits et catalogue</div>
+  1228→    <div class="divider"></div>
+  1229→</div>
+  1230→
+  1231→<div class="body-text">Chaque entreprise possede son propre catalogue. Un produit peut comporter :</div>
+  1232→<ul class="content-list">
+  1233→    <li>reference</li>
+  1234→    <li>nom</li>
+  1235→    <li>categorie</li>
+  1236→    <li>description</li>
+  1237→    <li>unite</li>
+  1238→    <li>prix</li>
+  1239→    <li>statut actif/inactif</li>
+  1240→    <li>image</li>
+  1241→    <li>suivi de stock</li>
+  1242→</ul>
+  1243→<div class="body-text">Les produits sont isoles par entreprise.</div>
+  1244→
+  1245→<!-- Section 17 -->
+  1246→<div class="chapter-header">
+  1247→    <div class="section-number">Section 17</div>
+  1248→    <div class="section-title">Gestion des stocks</div>
+  1249→    <div class="divider"></div>
+  1250→</div>
+  1251→
+  1252→<div class="body-text">Le stock est suivi par maison. Le systeme enregistre :</div>
+  1253→
+  1254→<div class="sub-heading">Entrees</div>
+  1255→<ul class="content-list">
+  1256→    <li>reception</li>
+  1257→    <li>retour</li>
+  1258→    <li>approvisionnement</li>
+  1259→</ul>
+  1260→
+  1261→<div class="sub-heading">Sorties</div>
+  1262→<ul class="content-list">
+  1263→    <li>vente</li>
+  1264→    <li>transfert</li>
+  1265→    <li>sortie autorisee</li>
+  1266→</ul>
+  1267→
+  1268→<div class="sub-heading">Ajustements</div>
+  1269→<ul class="content-list">
+  1270→    <li>inventaire</li>
+  1271→    <li>casse</li>
+  1272→    <li>perte</li>
+  1273→    <li>correction autorisee</li>
+  1274→</ul>
+  1275→
+  1276→<div class="body-text">Le stock disponible est recalcule apres chaque operation.</div>
+  1277→
+  1278→<!-- Section 18 -->
+  1279→<div class="chapter-header">
+  1280→    <div class="section-number">Section 18</div>
+  1281→    <div class="section-title">Stock insuffisant</div>
+  1282→    <div class="divider"></div>
+  1283→</div>
+  1284→
+  1285→<div class="body-text">Le comportement en cas de stock insuffisant sera configurable.</div>
+  1286→
+  1287→<div class="card">
+  1288→    <div class="card-title">Mode strict</div>
+  1289→    <p>La vente est bloquee si le stock disponible est insuffisant.</p>
+  1290→</div>
+  1291→
+  1292→<div class="card">
+  1293→    <div class="card-title">Mode souple</div>
+  1294→    <p>La vente peut etre enregistree avec une alerte.</p>
+  1295→</div>
+  1296→
+  1297→<div class="body-text">Cette configuration appartient au gestionnaire principal.</div>
+  1298→
+  1299→<!-- Section 19 -->
+  1300→<div class="chapter-header">
+  1301→    <div class="section-number">Section 19</div>
+  1302→    <div class="section-title">Paiements</div>
+  1303→    <div class="divider"></div>
+  1304→</div>
+  1305→
+  1306→<div class="body-text">Une vente peut etre payee :</div>
+  1307→<ul class="content-list">
+  1308→    <li>integralement</li>
+  1309→    <li>partiellement</li>
+  1310→    <li>ulterieurement</li>
+  1311→</ul>
+  1312→<div class="body-text">Une vente peut donc avoir plusieurs paiements.</div>
+  1313→
+  1314→<div class="example-block"><strong>Exemple :</strong></div>
+  1315→<div class="code-block">VENTE : 1 000 $
+  1316→
+  1317→Paiement 1 : 300 $
+  1318→Paiement 2 : 400 $
+  1319→----------------
+  1320→Solde :       300 $</div>
+  1321→
+  1322→<div class="body-text"><strong>Etats financiers :</strong></div>
+  1323→<div class="code-block">Impaye → Partiellement paye → Paye → Rembourse</div>
+  1324→<div class="body-text">La vente et son paiement doivent rester deux notions distinctes.</div>
+  1325→
+  1326→<!-- Section 20 -->
+  1327→<div class="chapter-header">
+  1328→    <div class="section-number">Section 20</div>
+  1329→    <div class="section-title">Commissions</div>
+  1330→    <div class="divider"></div>
+  1331→</div>
+  1332→
+  1333→<div class="body-text">SALES OS integrera un moteur de commissions.</div>
+  1334→<div class="body-text">Dans le MVP, une regle simple pourra etre utilisee :</div>
+  1335→<blockquote>
+  1336→    <p>Pourcentage fixe sur une vente eligible.</p>
+  1337→</blockquote>
+  1338→
+  1339→<div class="example-block"><strong>Exemple :</strong> Vente : 500 $ — Commission : 10 % — Commission = 50 $</div>
+  1340→
+  1341→<div class="body-text">Le systeme conservera le lien :</div>
+  1342→<div class="code-block">Vente
+  1343→ ↓
+  1344→Agent beneficiaire
+  1345→ ↓
+  1346→Regle appliquee
+  1347→ ↓
+  1348→Commission</div>
+  1349→
+  1350→<!-- Section 21 -->
+  1351→<div class="chapter-header">
+  1352→    <div class="section-number">Section 21</div>
+  1353→    <div class="section-title">Evolution du moteur de commissions</div>
+  1354→    <div class="divider"></div>
+  1355→</div>
+  1356→
+  1357→<div class="body-text">Dans les versions futures, les regles pourront prendre en compte :</div>
+  1358→<ul class="content-list">
+  1359→    <li>pourcentage</li>
+  1360→    <li>montant fixe</li>
+  1361→    <li>produit</li>
+  1362→    <li>categorie</li>
+  1363→    <li>vendeur</li>
+  1364→    <li>agent apporteur</li>
+  1365→    <li>paliers</li>
+  1366→    <li>bonus</li>
+  1367→    <li>objectifs</li>
+  1368→</ul>
+  1369→<div class="body-text">Une entreprise pourra donc definir ses propres regles.</div>
+  1370→
+  1371→<!-- Section 22 -->
+  1372→<div class="chapter-header">
+  1373→    <div class="section-number">Section 22</div>
+  1374→    <div class="section-title">Cycle de vie de la commission</div>
+  1375→    <div class="divider"></div>
+  1376→</div>
+  1377→
+  1378→<div class="code-block">EN ATTENTE
+  1379→     ↓
+  1380→VALIDEE
+  1381→     ↓
+  1382→PAYABLE
+  1383→     ↓
+  1384→PAYEE</div>
+  1385→
+  1386→<div class="card">
+  1387→    <div class="card-title">En attente</div>
+  1388→    <p>Commission calculee mais pas encore validee.</p>
+  1389→</div>
+  1390→<div class="card">
+  1391→    <div class="card-title">Validee</div>
+  1392→    <p>Commission controlee par un responsable habilite.</p>
+  1393→</div>
+  1394→<div class="card">
+  1395→    <div class="card-title">Payable</div>
+  1396→    <p>Commission prete a etre versee.</p>
+  1397→</div>
+  1398→<div class="card">
+  1399→    <div class="card-title">Payee</div>
+  1400→    <p>Commission effectivement versee.</p>
+  1401→</div>
+  1402→
+  1403→<div class="body-text">Une annulation ou un remboursement doit pouvoir entrainer une revision de la commission selon les regles de l'entreprise.</div>
+  1404→
+  1405→<!-- Section 23 -->
+  1406→<div class="chapter-header">
+  1407→    <div class="section-number">Section 23</div>
+  1408→    <div class="section-title">Objectifs commerciaux</div>
+  1409→    <div class="divider"></div>
+  1410→</div>
+  1411→
+  1412→<div class="body-text">Le gestionnaire principal pourra definir un objectif mensuel.</div>
+  1413→
+  1414→<div class="example-block"><strong>Exemple :</strong> Target : 3 000 pieces</div>
+  1415→
+  1416→<div class="body-text">Le dashboard affichera :</div>
+  1417→<div class="code-block">OBJECTIF :       3 000
+  1418→REALISE :        2 100
+  1419→RESTANT :         900
+  1420→PROGRESSION :      70 %</div>
+  1421→
+  1422→<div class="body-text">L'objectif pourra etre exprime selon les besoins :</div>
+  1423→<ul class="content-list">
+  1424→    <li>quantite</li>
+  1425→    <li>chiffre d'affaires</li>
+  1426→    <li>nombre de ventes</li>
+  1427→</ul>
+  1428→
+  1429→<!-- Section 24 -->
+  1430→<div class="chapter-header">
+  1431→    <div class="section-number">Section 24</div>
+  1432→    <div class="section-title">Objectifs par maison</div>
+  1433→    <div class="divider"></div>
+  1434→</div>
+  1435→
+  1436→<div class="body-text">Le gestionnaire pourra definir une contribution cible pour chaque maison.</div>
+  1437→
+  1438→<div class="example-block"><strong>Exemple :</strong></div>
+  1439→<div class="code-block">Target global : 3 000 pieces
+  1440→
+  1441→Kinshasa       1 200
+  1442→Lubumbashi       800
+  1443→Goma             600
+  1444→Matadi           400</div>
+  1445→
+  1446→<div class="body-text">Le systeme permettra de comparer : <strong>Objectif prevu vs Realise.</strong></div>
+  1447→
+  1448→<!-- Section 25 -->
+  1449→<div class="chapter-header">
+  1450→    <div class="section-number">Section 25</div>
+  1451→    <div class="section-title">Contribution des maisons</div>
+  1452→    <div class="divider"></div>
+  1453→</div>
+  1454→
+  1455→<div class="body-text">Le dashboard indiquera la contribution reelle de chaque maison.</div>
+  1456→
+  1457→<div class="example-block"><strong>Exemple :</strong></div>
+  1458→<table class="data-table">
+  1459→    <thead>
+  1460→        <tr>
+  1461→            <th>Maison</th>
+  1462→            <th>Realise</th>
+  1463→            <th>Contribution</th>
+  1464→        </tr>
+  1465→    </thead>
+  1466→    <tbody>
+  1467→        <tr><td>Kinshasa</td><td>1 000</td><td>33,3 %</td></tr>
+  1468→        <tr><td>Lubumbashi</td><td>650</td><td>21,7 %</td></tr>
+  1469→        <tr><td>Goma</td><td>300</td><td>10,0 %</td></tr>
+  1470→        <tr><td>Matadi</td><td>150</td><td>5,0 %</td></tr>
+  1471→    </tbody>
+  1472→</table>
+  1473→
+  1474→<div class="body-text">La direction pourra ainsi identifier immediatement les maisons qui contribuent le plus a l'objectif.</div>
+  1475→
+  1476→<!-- Section 26 -->
+  1477→<div class="chapter-header">
+  1478→    <div class="section-number">Section 26</div>
+  1479→    <div class="section-title">Tableau de bord de direction</div>
+  1480→    <div class="divider"></div>
+  1481→</div>
+  1482→
+  1483→<div class="body-text">Le tableau de bord principal devra presenter une vision synthetique.</div>
+  1484→
+  1485→<div class="sub-heading">Ventes</div>
+  1486→<ul class="content-list">
+  1487→    <li>CA</li>
+  1488→    <li>quantite vendue</li>
+  1489→    <li>nombre de ventes</li>
+  1490→    <li>panier moyen</li>
+  1491→</ul>
+  1492→
+  1493→<div class="sub-heading">Clients</div>
+  1494→<ul class="content-list">
+  1495→    <li>prospects</li>
+  1496→    <li>nouveaux clients</li>
+  1497→    <li>clients actifs</li>
+  1498→    <li>clients reguliers</li>
+  1499→    <li>clients inactifs</li>
+  1500→</ul>
+  1501→
+  1502→<div class="sub-heading">Commandes</div>
+  1503→<ul class="content-list">
+  1504→    <li>brouillons</li>
+  1505→    <li>en attente</li>
+  1506→    <li>formalisees</li>
+  1507→    <li>confirmees</li>
+  1508→</ul>
+  1509→
+  1510→<div class="sub-heading">Maisons</div>
+  1511→<ul class="content-list">
+  1512→    <li>ventes</li>
+  1513→    <li>objectifs</li>
+  1514→    <li>progression</li>
+  1515→    <li>contribution</li>
+  1516→</ul>
+  1517→
+  1518→<div class="sub-heading">Agents</div>
+  1519→<ul class="content-list">
+  1520→    <li>clients apportes</li>
+  1521→    <li>portefeuille</li>
+  1522→    <li>ventes</li>
+  1523→    <li>commissions</li>
+  1524→</ul>
+  1525→
+  1526→<div class="sub-heading">Stocks</div>
+  1527→<ul class="content-list">
+  1528→    <li>produits disponibles</li>
+  1529→    <li>produits faibles</li>
+  1530→    <li>ruptures</li>
+  1531→</ul>
+  1532→
+  1533→<div class="sub-heading">Paiements</div>
+  1534→<ul class="content-list">
+  1535→    <li>encaisse</li>
+  1536→    <li>restant du</li>
+  1537→    <li>partiellement paye</li>
+  1538→</ul>
+  1539→
+  1540→<!-- Section 27 -->
+  1541→<div class="chapter-header">
+  1542→    <div class="section-number">Section 27</div>
+  1543→    <div class="section-title">Suivi en temps reel</div>
+  1544→    <div class="divider"></div>
+  1545→</div>
+  1546→
+  1547→<div class="body-text">Le <strong>MVP</strong> devra permettre une actualisation reguliere des donnees critiques du tableau de bord.</div>
+  1548→<div class="body-text">Les evenements importants pourront etre affiches sous forme d'activite :</div>
+  1549→
+  1550→<div class="code-block"><span class="status-active status-green"></span> Nouvelle vente — Kinshasa
+  1551→<span class="status-active status-green"></span> Nouveau client — Patrick
+  1552→<span class="status-active status-yellow"></span> Commande en attente — Goma
+  1553→<span class="status-active status-orange"></span> Stock faible — Lubumbashi</div>
+  1554→
+  1555→<div class="body-text">Le <strong>temps reel avance par WebSocket/SSE et notifications push</strong> constitue une evolution ulterieure. Cette distinction evite de surcharger le MVP.</div>
+  1556→
+  1557→<!-- Section 28 -->
+  1558→<div class="chapter-header">
+  1559→    <div class="section-number">Section 28</div>
+  1560→    <div class="section-title">Notifications</div>
+  1561→    <div class="divider"></div>
+  1562→</div>
+  1563→
+  1564→<div class="body-text">Les alertes de base pourront concerner :</div>
+  1565→<ul class="content-list">
+  1566→    <li>commande en attente</li>
+  1567→    <li>stock faible</li>
+  1568→    <li>objectif en retard</li>
+  1569→    <li>nouveau client</li>
+  1570→    <li>nouvelle vente</li>
+  1571→    <li>commission validee</li>
+  1572→</ul>
+  1573→<div class="body-text">Les canaux avances :</div>
+  1574→<ul class="content-list">
+  1575→    <li>SMS</li>
+  1576→    <li>WhatsApp</li>
+  1577→    <li>Email</li>
+  1578→    <li>Push</li>
+  1579→</ul>
+  1580→<div class="body-text">seront developpes progressivement.</div>
+  1581→
+  1582→<!-- Section 29 -->
+  1583→<div class="chapter-header">
+  1584→    <div class="section-number">Section 29</div>
+  1585→    <div class="section-title">Authentification</div>
+  1586→    <div class="divider"></div>
+  1587→</div>
+  1588→
+  1589→<div class="body-text">Chaque utilisateur dispose d'un compte personnel. Le systeme utilise :</div>
+  1590→<div class="code-block">Identifiant
+  1591→    ↓
+  1592→Mot de passe
+  1593→    ↓
+  1594→OTP
+  1595→    ↓
+  1596→Autorisation</div>
+  1597→
+  1598→<div class="body-text">Le mot de passe possede une duree de validite configurable, par exemple <strong>30 a 60 jours</strong>.</div>
+  1599→<div class="body-text">Le gestionnaire principal peut :</div>
+  1600→<ul class="content-list">
+  1601→    <li>activer un utilisateur</li>
+  1602→    <li>desactiver un utilisateur</li>
+  1603→    <li>reinitialiser son acces</li>
+  1604→    <li>revoquer ses sessions</li>
+  1605→</ul>
+  1606→<div class="body-text">Le mecanisme OTP devra etre concu pour etre securise et operationnel sans dependre d'une intervention manuelle du gestionnaire a chaque connexion.</div>
+  1607→
+  1608→<!-- Section 30 -->
+  1609→<div class="chapter-header">
+  1610→    <div class="section-number">Section 30</div>
+  1611→    <div class="section-title">Permissions</div>
+  1612→    <div class="divider"></div>
+  1613→</div>
+  1614→
+  1615→<div class="body-text">Les permissions seront definies par :</div>
+  1616→<div class="body-text"><strong>Role + entreprise + maison + perimetre personnel.</strong></div>
+  1617→<div class="body-text">Les actions pourront etre :</div>
+  1618→<ul class="content-list">
+  1619→    <li>consulter</li>
+  1620→    <li>creer</li>
+  1621→    <li>modifier</li>
+  1622→    <li>valider</li>
+  1623→    <li>annuler</li>
+  1624→    <li>supprimer</li>
+  1625→</ul>
+  1626→<div class="body-text">Certaines operations sensibles devront obligatoirement etre validees par un responsable.</div>
+  1627→
+  1628→<!-- Section 31 -->
+  1629→<div class="chapter-header">
+  1630→    <div class="section-number">Section 31</div>
+  1631→    <div class="section-title">Audit et tracabilite</div>
+  1632→    <div class="divider"></div>
+  1633→</div>
+  1634→
+  1635→<div class="body-text">Les operations sensibles seront enregistrees.</div>
+  1636→
+  1637→<div class="example-block"><strong>Exemple :</strong></div>
+  1638→<div class="code-block">Utilisateur : Patrick
+  1639→Maison      : Kinshasa
+  1640→Action      : Creation d'une vente
+  1641→Montant     : 500 $
+  1642→Date        : 17/08/2026 14:32
+  1643→Resultat    : Succes</div>
+  1644→
+  1645→<div class="body-text">L'audit permettra de repondre a :</div>
+  1646→<blockquote>
+  1647→    <p>Qui a fait quoi, quand, ou et sur quelle donnee ?</p>
+  1648→</blockquote>
+  1649→<div class="body-text">Les transferts de clients, validations de commissions, modifications sensibles et operations financieres devront notamment etre tracables.</div>
+  1650→
+  1651→<!-- Section 32 -->
+  1652→<div class="chapter-header">
+  1653→    <div class="section-number">Section 32</div>
+  1654→    <div class="section-title">Architecture multi-tenant</div>
+  1655→    <div class="divider"></div>
+  1656→</div>
+  1657→
+  1658→<div class="body-text">Meme si la premiere utilisation concerne une seule entreprise, le modele de donnees integrera des la V1 la notion de :</div>
+  1659→<div class="body-text"><strong>Tenant = entreprise cliente.</strong></div>
+  1660→<div class="body-text">Chaque donnee metier importante sera rattachee au tenant.</div>
+  1661→
+  1662→<div class="code-block">SALES OS
+  1663→│
+  1664→├── TENANT A
+  1665→│   ├── Maisons
+  1666→│   ├── Agents
+  1667→│   ├── Clients
+  1668→│   └── Ventes
+  1669→│
+  1670→├── TENANT B
+  1671→│   ├── Maisons
+  1672→│   ├── Agents
+  1673→│   ├── Clients
+  1674→│   └── Ventes
+  1675→│
+  1676→└── TENANT C</div>
+  1677→
+  1678→<div class="body-text">Une entreprise ne pourra jamais acceder aux donnees d'une autre. Cette isolation sera appliquee au niveau de la couche de donnees et verifiee par des tests specifiques.</div>
+  1679→
+  1680→<!-- Section 33 -->
+  1681→<div class="chapter-header">
+  1682→    <div class="section-number">Section 33</div>
+  1683→    <div class="section-title">Architecture technique cible</div>
+  1684→    <div class="divider"></div>
+  1685→</div>
+  1686→
+  1687→<div class="body-text">Le MVP sera developpe sous forme de <strong>monolithe modulaire</strong>.</div>
+  1688→
+  1689→<div class="code-block">                 NEXT.JS / REACT
+  1690→                       │
+  1691→                       ▼
+  1692→              APPLICATION CORE
+  1693→                       │
+  1694→              ┌────────┴────────┐
+  1695→              │                 │
+  1696→         PAYLOAD CMS       LOGIQUE METIER
+  1697→              │                 │
+  1698→              └────────┬────────┘
+  1699→                       ▼
+  1700→                  POSTGRESQL
+  1701→                 SOURCE DE VERITE
+  1702→                       │
+  1703→                     REDIS
+  1704→          Cache / Sessions / Jobs</div>
+  1705→
+  1706→<div class="sub-heading">Technologies cibles</div>
+  1707→<ul class="content-list">
+  1708→    <li><strong>Frontend :</strong> Next.js / React</li>
+  1709→    <li><strong>Backend / administration :</strong> Payload CMS + logique metier</li>
+  1710→    <li><strong>Base de donnees :</strong> PostgreSQL</li>
+  1711→    <li><strong>Cache / jobs / temps reel futur :</strong> Redis</li>
+  1712→    <li><strong>API :</strong> API versionnee</li>
+  1713→    <li><strong>Deploiement :</strong> infrastructure web securisee</li>
+  1714→</ul>
+  1715→<div class="body-text">Le choix technologique pourra etre ajuste lors de la conception technique sans modifier les fonctionnalites validees par le present cahier des charges.</div>
+  1716→
+  1717→<!-- Section 34 -->
+  1718→<div class="chapter-header">
+  1719→    <div class="section-number">Section 34</div>
+  1720→    <div class="section-title">Principe "PostgreSQL source de verite"</div>
+  1721→    <div class="divider"></div>
+  1722→</div>
+  1723→
+  1724→<div class="body-text">Toutes les donnees critiques sont conservees dans PostgreSQL.</div>
+  1725→<div class="body-text">Redis pourra etre utilise pour :</div>
+  1726→<ul class="content-list">
+  1727→    <li>cache</li>
+  1728→    <li>sessions</li>
+  1729→    <li>taches</li>
+  1730→    <li>evenements</li>
+  1731→    <li>temps reel</li>
+  1732→</ul>
+  1733→<div class="body-text">Redis ne constituera jamais la source principale des ventes, paiements, stocks ou commissions.</div>
+  1734→
+  1735→<!-- Section 35 -->
+  1736→<div class="chapter-header">
+  1737→    <div class="section-number">Section 35</div>
+  1738→    <div class="section-title">Evolution architecturale</div>
+  1739→    <div class="divider"></div>
+  1740→</div>
+  1741→
+  1742→<div class="body-text">La premiere version n'utilisera pas une architecture microservices complexe. Le systeme sera organise en modules :</div>
+  1743→<div class="code-block">AUTH
+  1744→TENANT
+  1745→USERS
+  1746→HOUSES
+  1747→CRM
+  1748→SALES
+  1749→ORDERS
+  1750→PAYMENTS
+  1751→STOCK
+  1752→COMMISSIONS
+  1753→TARGETS
+  1754→REPORTING
+  1755→AUDIT</div>
+  1756→
+  1757→<div class="body-text">Si la plateforme atteint une taille importante, certains modules pourront ulterieurement devenir des services independants.</div>
+  1758→
+  1759→<!-- Section 36 -->
+  1760→<div class="chapter-header">
+  1761→    <div class="section-number">Section 36</div>
+  1762→    <div class="section-title">MVP — Version 1</div>
+  1763→    <div class="divider"></div>
+  1764→</div>
+  1765→
+  1766→<div class="body-text">Le MVP constitue le <strong>perimetre contractuel initial</strong>.</div>
+  1767→
+  1768→<div class="card">
+  1769→    <div class="card-title">Socle</div>
+  1770→    <ul class="content-list">
+  1771→        <li>authentification</li>
+  1772→        <li>utilisateurs</li>
+  1773→        <li>roles</li>
+  1774→        <li>permissions</li>
+  1775→        <li>entreprise / tenant</li>
+  1776→        <li>maisons</li>
+  1777→        <li>audit de base</li>
+  1778→    </ul>
+  1779→</div>
+  1780→
+  1781→<div class="card">
+  1782→    <div class="card-title">Commercial</div>
+  1783→    <ul class="content-list">
+  1784→        <li>agents</li>
+  1785→        <li>prospects</li>
+  1786→        <li>clients</li>
+  1787→        <li>portefeuille</li>
+  1788→        <li>produits</li>
+  1789→        <li>commandes</li>
+  1790→        <li>ventes</li>
+  1791→    </ul>
+  1792→</div>
+  1793→
+  1794→<div class="card">
+  1795→    <div class="card-title">Finance</div>
+  1796→    <ul class="content-list">
+  1797→        <li>paiements simples</li>
+  1798→        <li>commissions a pourcentage fixe</li>
+  1799→    </ul>
+  1800→</div>
+  1801→
+  1802→<div class="card">
+  1803→    <div class="card-title">Performance</div>
+  1804→    <ul class="content-list">
+  1805→        <li>target mensuel</li>
+  1806→        <li>objectifs par maison</li>
+  1807→        <li>contribution des maisons</li>
+  1808→        <li>dashboard central</li>
+  1809→    </ul>
+  1810→</div>
+  1811→
+  1812→<div class="card">
+  1813→    <div class="card-title">Stock</div>
+  1814→    <ul class="content-list">
+  1815→        <li>catalogue</li>
+  1816→        <li>stock simple</li>
+  1817→        <li>alertes de stock faible</li>
+  1818→    </ul>
+  1819→</div>
+  1820→
+  1821→<!-- Section 37 -->
+  1822→<div class="chapter-header">
+  1823→    <div class="section-number">Section 37</div>
+  1824→    <div class="section-title">Ce qui n'est pas dans le MVP</div>
+  1825→    <div class="divider"></div>
+  1826→</div>
+  1827→
+  1828→<div class="body-text">Pour eviter toute ambiguite, les fonctionnalites suivantes ne sont <strong>pas incluses dans le perimetre initial</strong>, sauf accord complementaire :</div>
+  1829→<ul class="content-list">
+  1830→    <li>IA</li>
+  1831→    <li>forecasting avance</li>
+  1832→    <li>mode offline</li>
+  1833→    <li>application mobile native</li>
+  1834→    <li>facturation SaaS</li>
+  1835→    <li>abonnements</li>
+  1836→    <li>white-label</li>
+  1837→    <li>marketplace</li>
+  1838→    <li>integrations bancaires complexes</li>
+  1839→    <li>WhatsApp automatise</li>
+  1840→    <li>SMS avance</li>
+  1841→    <li>comptabilite complete</li>
+  1842→    <li>caisse avancee</li>
+  1843→    <li>microservices distribues</li>
+  1844→</ul>
+  1845→<div class="body-text">Ces fonctionnalites pourront etre ajoutees ulterieurement.</div>
+  1846→
+  1847→<!-- Section 38 -->
+  1848→<div class="chapter-header">
+  1849→    <div class="section-number">Section 38</div>
+  1850→    <div class="section-title">Roadmap</div>
+  1851→    <div class="divider"></div>
+  1852→</div>
+  1853→
+  1854→<div class="roadmap-item">
+  1855→    <div class="roadmap-badge">V1</div>
+  1856→    <div class="roadmap-text"><strong>MVP commercial</strong> — Gestion fondamentale de l'activite.</div>
+  1857→</div>
+  1858→<div class="roadmap-item">
+  1859→    <div class="roadmap-badge">V2</div>
+  1860→    <div class="roadmap-text"><strong>Operations avancees</strong> — Stock avance, transferts inter-maisons, notifications, temps reel ameliore.</div>
+  1861→</div>
+  1862→<div class="roadmap-item">
+  1863→    <div class="roadmap-badge">V3</div>
+  1864→    <div class="roadmap-text"><strong>Intelligence commerciale</strong> — Analytics avance, forecasting, automatisations.</div>
+  1865→</div>
+  1866→<div class="roadmap-item">
+  1867→    <div class="roadmap-badge">V4</div>
+  1868→    <div class="roadmap-text"><strong>SaaS</strong> — Plusieurs entreprises actives, abonnements, plans, facturation, limites.</div>
+  1869→</div>
+  1870→<div class="roadmap-item">
+  1871→    <div class="roadmap-badge">V5</div>
+  1872→    <div class="roadmap-text"><strong>IA</strong> — Recommandations, detection d'anomalies, previsions, assistant decisionnel.</div>
+  1873→</div>
+  1874→<div class="roadmap-item">
+  1875→    <div class="roadmap-badge">V6</div>
+  1876→    <div class="roadmap-text"><strong>Mobilite et integrations</strong> — Offline, Mobile Money, API publiques, integrations externes.</div>
+  1877→</div>
+  1878→<div class="roadmap-item">
+  1879→    <div class="roadmap-badge">V7</div>
+  1880→    <div class="roadmap-text"><strong>Ecosysteme</strong> — White-label, extensions, marketplace, ecosysteme partenaires.</div>
+  1881→</div>
+  1882→
+  1883→<!-- Section 39 -->
+  1884→<div class="chapter-header">
+  1885→    <div class="section-number">Section 39</div>
+  1886→    <div class="section-title">Exigences non fonctionnelles</div>
+  1887→    <div class="divider"></div>
+  1888→</div>
+  1889→
+  1890→<div class="sub-heading">Performance</div>
+  1891→<div class="body-text">Pour le MVP :</div>
+  1892→<ul class="content-list">
+  1893→    <li>cible initiale d'au moins 50 utilisateurs simultanes</li>
+  1894→    <li>pages principales idealement chargees en moins de 2 secondes dans des conditions normales</li>
+  1895→    <li>pagination et recherche pour les grandes listes</li>
+  1896→</ul>
+  1897→
+  1898→<div class="sub-heading">Securite</div>
+  1899→<ul class="content-list">
+  1900→    <li>mots de passe haches</li>
+  1901→    <li>HTTPS</li>
+  1902→    <li>protection contre les injections</li>
+  1903→    <li>protection XSS</li>
+  1904→    <li>protection CSRF lorsque pertinente</li>
+  1905→    <li>controle des permissions</li>
+  1906→    <li>isolation tenant</li>
+  1907→    <li>audit</li>
+  1908→    <li>gestion securisee des sessions</li>
+  1909→</ul>
+  1910→
+  1911→<div class="sub-heading">Disponibilite</div>
+  1912→<div class="body-text">Objectif initial : <strong>99,5 % hors maintenance planifiee</strong>, sous reserve de l'infrastructure d'hebergement.</div>
+  1913→
+  1914→<div class="sub-heading">Sauvegardes</div>
+  1915→<ul class="content-list">
+  1916→    <li>sauvegardes automatiques</li>
+  1917→    <li>conservation de plusieurs versions</li>
+  1918→    <li>procedure de restauration testee</li>
+  1919→</ul>
+  1920→
+  1921→<div class="sub-heading">Compatibilite</div>
+  1922→<div class="body-text">Navigateurs modernes : Chrome, Edge, Firefox, Safari. Interface responsive et prioritairement adaptee aux smartphones pour les agents.</div>
+  1923→
+  1924→<!-- Section 40 -->
+  1925→<div class="chapter-header">
+  1926→    <div class="section-number">Section 40</div>
+  1927→    <div class="section-title">Criteres d'acceptation du MVP</div>
+  1928→    <div class="divider"></div>
+  1929→</div>
+  1930→
+  1931→<div class="body-text">Le MVP sera considere comme fonctionnel lorsque :</div>
+  1932→
+  1933→<div class="criteria-group">
+  1934→    <div class="criteria-title">Securite</div>
+  1935→    <ul class="content-list">
+  1936→        <li>un utilisateur ne peut acceder qu'a ses donnees autorisees</li>
+  1937→        <li>les tenants sont isoles</li>
+  1938→        <li>les permissions fonctionnent</li>
+  1939→        <li>les acces sont journalises</li>
+  1940→    </ul>
+  1941→</div>
+  1942→
+  1943→<div class="criteria-group">
+  1944→    <div class="criteria-title">Clients</div>
+  1945→    <ul class="content-list">
+  1946→        <li>un agent peut creer un prospect</li>
+  1947→        <li>le prospect peut devenir client</li>
+  1948→        <li>le client est ajoute au portefeuille de l'agent</li>
+  1949→        <li>les doublons sont detectes</li>
+  1950→    </ul>
+  1951→</div>
+  1952→
+  1953→<div class="criteria-group">
+  1954→    <div class="criteria-title">Commandes</div>
+  1955→    <ul class="content-list">
+  1956→        <li>une commande peut etre creee</li>
+  1957→        <li>son statut peut evoluer</li>
+  1958→        <li>elle ne devient une vente qu'apres conversion explicite</li>
+  1959→    </ul>
+  1960→</div>
+  1961→
+  1962→<div class="criteria-group">
+  1963→    <div class="criteria-title">Ventes</div>
+  1964→    <ul class="content-list">
+  1965→        <li>une vente peut etre creee</li>
+  1966→        <li>elle est liee au client, agent, vendeur, maison et produits</li>
+  1967→        <li>le stock est mis a jour lorsque le produit est suivi</li>
+  1968→    </ul>
+  1969→</div>
+  1970→
+  1971→<div class="criteria-group">
+  1972→    <div class="criteria-title">Paiements</div>
+  1973→    <ul class="content-list">
+  1974→        <li>un paiement peut etre enregistre</li>
+  1975→        <li>les paiements partiels sont possibles</li>
+  1976→        <li>le solde restant est calcule</li>
+  1977→    </ul>
+  1978→</div>
+  1979→
+  1980→<div class="criteria-group">
+  1981→    <div class="criteria-title">Commissions</div>
+  1982→    <ul class="content-list">
+  1983→        <li>une commission est automatiquement calculee</li>
+  1984→        <li>elle est associee a la bonne vente et au bon beneficiaire</li>
+  1985→        <li>elle peut etre validee</li>
+  1986→    </ul>
+  1987→</div>
+  1988→
+  1989→<div class="criteria-group">
+  1990→    <div class="criteria-title">Objectifs</div>
+  1991→    <ul class="content-list">
+  1992→        <li>le gestionnaire peut definir un target</li>
+  1993→        <li>les realisations sont calculees</li>
+  1994→        <li>la contribution des maisons est affichee</li>
+  1995→    </ul>
+  1996→</div>
+  1997→
+  1998→<div class="criteria-group">
+  1999→    <div class="criteria-title">Dashboard</div>
+  2000→    <ul class="content-list">
+
+[showing lines 1-2000 of 2279; use offset=2001 with limit to continue reading]
