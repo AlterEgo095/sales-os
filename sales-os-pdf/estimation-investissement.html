@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Estimation Technique — SALES OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+@page {
+    size: 720px 1020px;
+    margin: 0;
+}
+
+:root {
+    --c-bg: #0a0f1a;
+    --c-bg-cover: #060b14;
+    --c-surface: #111827;
+    --c-surface-2: #1a2236;
+    --c-accent: #3b82f6;
+    --c-accent-light: #60a5fa;
+    --c-accent-dim: #1e40af;
+    --c-text: #e5e7eb;
+    --c-text-muted: #9ca3af;
+    --c-text-bright: #f9fafb;
+    --c-border: #1f2937;
+    --c-border-light: #374151;
+    --c-success: #10b981;
+    --c-warning: #f59e0b;
+    --c-code-bg: #0d1117;
+    --c-table-header: #111827;
+    --c-table-stripe: #0f1520;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 720px;
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+}
+
+@media screen {
+    html {
+        height: auto;
+        display: flex;
+        justify-content: center;
+        background: #1a1a2e;
+    }
+    body {
+        transform-origin: top center;
+        margin: 20px auto;
+    }
+}
+
+/* ===== COVER ===== */
+.cover {
+    width: 720px;
+    height: 1020px;
+    box-sizing: border-box;
+    break-after: page;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: var(--c-bg-cover);
+}
+
+.cover-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.cover-circle-1 {
+    position: absolute;
+    right: -50px;
+    top: 12%;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    border: 1px solid rgba(59, 130, 246, 0.06);
+}
+
+.cover-circle-2 {
+    position: absolute;
+    left: -100px;
+    bottom: 18%;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    border: 1px solid rgba(59, 130, 246, 0.04);
+}
+
+.cover-watermark {
+    position: absolute;
+    left: 4%;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: center center;
+    font-size: 140px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    color: rgba(59, 130, 246, 0.03);
+    white-space: nowrap;
+    line-height: 1;
+    letter-spacing: 8px;
+}
+
+.cover-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 80px;
+}
+
+.cover-badge {
+    display: inline-block;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    color: var(--c-accent-light);
+    padding: 6px 20px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 44px;
+}
+
+.cover-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--c-text-bright);
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+}
+
+.cover-title span {
+    color: var(--c-accent);
+}
+
+.cover-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--c-text-muted);
+    margin-bottom: 52px;
+    line-height: 1.4;
+}
+
+.cover-amount-box {
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 20px 40px;
+    margin-bottom: 40px;
+    display: inline-block;
+}
+
+.cover-amount-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.cover-amount-value {
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--c-accent-light);
+    letter-spacing: -1px;
+}
+
+.cover-amount-value span {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--c-text-muted);
+    margin-left: 4px;
+}
+
+.cover-meta {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.cover-meta-item {
+    text-align: center;
+}
+
+.cover-meta-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.cover-meta-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-text-bright);
+}
+
+.cover-footer {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 1;
+}
+
+.cover-footer-text {
+    font-size: 9px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    padding: 50px 60px 40px 60px;
+}
+
+.chapter-header {
+    break-after: avoid;
+    break-inside: avoid;
+    margin-top: 28px;
+    margin-bottom: 16px;
+}
+
+.section-number {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--c-accent);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--c-text-bright);
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.divider {
+    width: 40px;
+    height: 2px;
+    background: var(--c-accent);
+    margin-bottom: 16px;
+}
+
+.body-text {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--c-text);
+    margin-bottom: 12px;
+}
+
+.body-text strong {
+    color: var(--c-text-bright);
+    font-weight: 700;
+}
+
+/* ===== BUDGET TABLE ===== */
+.budget-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 16px 0;
+    font-size: 10.5px;
+}
+
+.budget-table thead th {
+    background: var(--c-table-header);
+    color: var(--c-text-bright);
+    font-weight: 700;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 9.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.budget-table thead th:first-child {
+    border-radius: 8px 0 0 0;
+}
+.budget-table thead th:nth-child(2) {
+    border-radius: 0 0 0 0;
+}
+.budget-table thead th:last-child {
+    border-radius: 0 8px 0 0;
+    text-align: right;
+}
+
+.budget-table tbody td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--c-border);
+    color: var(--c-text);
+}
+
+.budget-table tbody td:last-child {
+    text-align: right;
+    font-weight: 700;
+    color: var(--c-text-bright);
+    font-variant-numeric: tabular-nums;
+}
+
+.budget-table tbody td:first-child {
+    font-weight: 600;
+    color: var(--c-accent-light);
+}
+
+.budget-table tbody tr:nth-child(even) td {
+    background: var(--c-table-stripe);
+}
+
+/* Total row */
+.budget-table tbody tr.total-row td {
+    background: rgba(59, 130, 246, 0.08);
+    border-top: 2px solid var(--c-accent-dim);
+    border-bottom: none;
+    font-weight: 800;
+    color: var(--c-text-bright);
+    padding: 14px 16px;
+}
+
+.budget-table tbody tr.total-row td:first-child {
+    color: var(--c-accent-light);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.budget-table tbody tr.total-row td:last-child {
+    font-size: 14px;
+    color: var(--c-accent-light);
+}
+
+.budget-table tbody tr.total-row td:first-child {
+    border-radius: 0 0 0 8px;
+}
+.budget-table tbody tr.total-row td:last-child {
+    border-radius: 0 0 8px 0;
+}
+
+/* ===== CARDS ===== */
+.card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 10px 0;
+    break-inside: avoid;
+}
+
+.card-accent {
+    background: var(--c-surface);
+    border-left: 3px solid var(--c-accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 10px 0;
+    break-inside: avoid;
+}
+
+.card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-accent-light);
+    margin-bottom: 8px;
+}
+
+.card p, .card-accent p {
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: var(--c-text);
+    margin-bottom: 6px;
+}
+
+.card p:last-child, .card-accent p:last-child {
+    margin-bottom: 0;
+}
+
+/* ===== LISTS ===== */
+ul.content-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px 0;
+}
+
+ul.content-list li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    line-height: 1.65;
+    color: var(--c-text);
+}
+
+ul.content-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-accent);
+}
+
+/* ===== BLOCKQUOTE ===== */
+blockquote {
+    border-left: 3px solid var(--c-accent);
+    background: rgba(59, 130, 246, 0.06);
+    padding: 14px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+}
+
+blockquote p {
+    margin: 0 0 6px 0;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--c-text-bright);
+    line-height: 1.5;
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* ===== RECURRING TABLE ===== */
+.recurring-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 14px 0;
+}
+
+.recurring-item {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    break-inside: avoid;
+}
+
+.recurring-label {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.recurring-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--c-accent-light);
+}
+
+.recurring-value span {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--c-text-muted);
+    margin-left: 2px;
+}
+
+/* ===== BREAKDOWN BAR ===== */
+.breakdown-container {
+    margin: 20px 0;
+    break-inside: avoid;
+}
+
+.breakdown-bar {
+    display: flex;
+    height: 32px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.breakdown-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8.5px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.3px;
+}
+
+.breakdown-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.breakdown-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9.5px;
+    color: var(--c-text-muted);
+}
+
+.breakdown-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* ===== HIGHLIGHT BOX ===== */
+.highlight-box {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.04));
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin: 20px 0;
+    break-inside: avoid;
+}
+
+.highlight-box .hl-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--c-accent-light);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.highlight-box .hl-text {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--c-text);
+}
+
+.highlight-box .hl-amount {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--c-accent-light);
+    margin: 10px 0 4px;
+}
+
+.highlight-box .hl-amount span {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--c-text-muted);
+}
+
+/* ===== ENDING ===== */
+.ending {
+    width: 720px;
+    height: 1020px;
+    box-sizing: border-box;
+    break-before: page;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    position: relative;
+    background: var(--c-bg-cover);
+}
+
+.ending-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--c-text-bright);
+    margin-bottom: 8px;
+}
+
+.ending-subtitle {
+    font-size: 13px;
+    color: var(--c-accent-light);
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.sig-label {
+    font-size: 10px;
+    color: var(--c-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.sig-dots {
+    border-bottom: 1px solid var(--c-border-light);
+    height: 24px;
+    margin-bottom: 16px;
+}
+
+.conclusion-box {
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.conclusion-box p {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--c-text);
+    margin-bottom: 8px;
+}
+
+.conclusion-box strong {
+    color: var(--c-text-bright);
+}
+
+.conclusion-box .highlight {
+    color: var(--c-accent-light);
+    font-weight: 700;
+}
+
+/* Sub-heading */
+.sub-heading {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text-bright);
+    margin: 14px 0 6px 0;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+    <div class="cover-bg">
+        <div class="cover-circle-1"></div>
+        <div class="cover-circle-2"></div>
+        <div class="cover-watermark">SALES OS</div>
+    </div>
+    <div class="cover-content">
+        <div class="cover-badge">Estimation Technique</div>
+        <div class="cover-title">INVESTISSEMENT<br>INITIAL <span>SALES OS</span></div>
+        <div class="cover-subtitle">Budget previsionnel pour la premiere annee</div>
+        <div class="cover-amount-box">
+            <div class="cover-amount-label">Investissement initial estimatif</div>
+            <div class="cover-amount-value">605 <span>USD</span></div>
+        </div>
+        <div class="cover-meta">
+            <div class="cover-meta-item">
+                <div class="cover-meta-label">Projet</div>
+                <div class="cover-meta-value">SALES OS MVP V1</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="cover-meta-label">Date</div>
+                <div class="cover-meta-value">Mars 2026</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="cover-meta-label">Statut</div>
+                <div class="cover-meta-value">Estimation</div>
+            </div>
+        </div>
+    </div>
+    <div class="cover-footer">
+        <div class="cover-footer-text">Confidentiel — SALES OS — Estimation Investissement Initial</div>
+    </div>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+
+<!-- Section 1: Budget -->
+<div class="chapter-header">
+    <div class="section-number">1</div>
+    <div class="section-title">Budget previsionnel detaille</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">L'investissement initial necessaire pour mettre en ligne et rendre operationnelle la premiere version de <strong>SALES OS</strong> est estime a environ <strong>605 USD</strong>.</div>
+
+<table class="budget-table">
+    <thead>
+        <tr>
+            <th style="width:28%">Poste</th>
+            <th style="width:52%">Description</th>
+            <th style="width:20%">Cout estimatif</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>VPS / Hebergement</td>
+            <td>Serveur necessaire pour heberger et faire fonctionner l'application pendant 1 an</td>
+            <td>120 $</td>
+        </tr>
+        <tr>
+            <td>Nom de domaine</td>
+            <td>Adresse officielle de la plateforme pendant 1 an</td>
+            <td>15 $</td>
+        </tr>
+        <tr>
+            <td>Sauvegardes</td>
+            <td>Mise en place d'une solution de sauvegarde des donnees</td>
+            <td>20 $</td>
+        </tr>
+        <tr>
+            <td>Deploiement & config.</td>
+            <td>Installation du serveur, configuration de l'environnement, base de donnees, securite et mise en ligne</td>
+            <td>50 $</td>
+        </tr>
+        <tr>
+            <td>Developpement du MVP</td>
+            <td>Conception et developpement de la premiere version fonctionnelle de SALES OS</td>
+            <td>350 $</td>
+        </tr>
+        <tr>
+            <td>Tests & corrections</td>
+            <td>Tests fonctionnels, corrections des anomalies et stabilisation avant livraison</td>
+            <td>50 $</td>
+        </tr>
+        <tr class="total-row">
+            <td>TOTAL INITIAL ESTIMATIF</td>
+            <td></td>
+            <td>≈ 605 $</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Section 2: Visual Breakdown -->
+<div class="chapter-header">
+    <div class="section-number">2</div>
+    <div class="section-title">Repartition de l'investissement</div>
+    <div class="divider"></div>
+</div>
+
+<div class="breakdown-container">
+    <div class="breakdown-bar">
+        <div class="breakdown-segment" style="width:57.9%; background:#1e40af;">Developpement MVP</div>
+        <div class="breakdown-segment" style="width:19.8%; background:#2563eb;">VPS / Hebergement</div>
+        <div class="breakdown-segment" style="width:8.3%; background:#3b82f6;">Deploiement</div>
+        <div class="breakdown-segment" style="width:8.3%; background:#60a5fa;">Tests</div>
+        <div class="breakdown-segment" style="width:5.8%; background:#93c5fd; color:#1e3a5c;">Autres</div>
+    </div>
+    <div class="breakdown-legend">
+        <div class="breakdown-legend-item">
+            <div class="breakdown-legend-dot" style="background:#1e40af;"></div>
+            Developpement MVP — 350 $ (57,9 %)
+        </div>
+        <div class="breakdown-legend-item">
+            <div class="breakdown-legend-dot" style="background:#2563eb;"></div>
+            VPS / Hebergement — 120 $ (19,8 %)
+        </div>
+        <div class="breakdown-legend-item">
+            <div class="breakdown-legend-dot" style="background:#3b82f6;"></div>
+            Deploiement — 50 $ (8,3 %)
+        </div>
+        <div class="breakdown-legend-item">
+            <div class="breakdown-legend-dot" style="background:#60a5fa;"></div>
+            Tests — 50 $ (8,3 %)
+        </div>
+        <div class="breakdown-legend-item">
+            <div class="breakdown-legend-dot" style="background:#93c5fd;"></div>
+            Domaine + Sauvegardes — 35 $ (5,8 %)
+        </div>
+    </div>
+</div>
+
+<div class="body-text">Le <strong>developpement</strong> represente le poste principal avec pres de <strong>58 %</strong> du budget total. L'infrastructure technique (VPS + domaine + sauvegardes) represente environ <strong>26 %</strong>, et les frais de deploiement, tests et stabilisation completent le budget.</div>
+
+<!-- Section 3: Coverage -->
+<div class="chapter-header">
+    <div class="section-number">3</div>
+    <div class="section-title">Ce que couvre cet investissement</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le budget de <strong>605 USD</strong> correspond a la mise en place de la <strong>premiere version fonctionnelle (MVP)</strong> de SALES OS. Il comprend notamment :</div>
+
+<ul class="content-list">
+    <li>l'hebergement de la plateforme pendant la premiere annee</li>
+    <li>le nom de domaine officiel</li>
+    <li>la sauvegarde des donnees</li>
+    <li>la configuration et le deploiement complet du serveur</li>
+    <li>le developpement des fonctionnalites principales du MVP</li>
+    <li>les tests et corrections necessaires a la mise en production</li>
+</ul>
+
+<div class="card-accent">
+    <div class="card-title">Perimetre du MVP V1</div>
+    <p>Le MVP couvre les fonctionnalites essentielles du cahier des charges : gestion des maisons, agents, clients, commandes, ventes, paiements, commissions, objectifs, dashboard et stocks — dans leur version initiale et fonctionnelle.</p>
+</div>
+
+<!-- Section 4: Recurring Costs -->
+<div class="chapter-header">
+    <div class="section-number">4</div>
+    <div class="section-title">Frais recurrents annuels</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le cout initial ne signifie pas que toutes les evolutions futures sont incluses. Apres la premiere annee, certains frais recurrents devront etre renouveles :</div>
+
+<div class="recurring-grid">
+    <div class="recurring-item">
+        <div class="recurring-label">VPS / Hebergement</div>
+        <div class="recurring-value">120 <span>$/an</span></div>
+    </div>
+    <div class="recurring-item">
+        <div class="recurring-label">Nom de domaine</div>
+        <div class="recurring-value">15 <span>$/an</span></div>
+    </div>
+    <div class="recurring-item">
+        <div class="recurring-label">Sauvegardes</div>
+        <div class="recurring-value">20 <span>$/an</span></div>
+    </div>
+    <div class="recurring-item" style="border: 1px solid rgba(59, 130, 246, 0.2); background: rgba(59, 130, 246, 0.06);">
+        <div class="recurring-label">Total recurrent annuel</div>
+        <div class="recurring-value">≈ 155 <span>$/an</span></div>
+    </div>
+</div>
+
+<div class="body-text">Les nouvelles fonctionnalites ou evolutions importantes feront l'objet d'une <strong>estimation separee</strong>, selon les besoins de l'entreprise.</div>
+
+<!-- Section 5: Summary -->
+<div class="chapter-header">
+    <div class="section-number">5</div>
+    <div class="section-title">Synthese</div>
+    <div class="divider"></div>
+</div>
+
+<div class="highlight-box">
+    <div class="hl-title">Investissement initial estimatif</div>
+    <div class="hl-amount">605 <span>USD</span></div>
+    <div class="hl-text">Objectif : mettre en production une premiere version <strong>stable et fonctionnelle</strong> de SALES OS, prete a etre utilisee pour la gestion reelle de l'activite commerciale de l'entreprise.</div>
+</div>
+
+<div class="card">
+    <div class="card-title">Rappel important</div>
+    <p>Ce budget couvre le <strong>MVP V1</strong> tel que defini dans le cahier des charges. Les evolutions futures (temps reel avance, analytics, forecasting, IA, architecture SaaS multi-entreprises) feront l'objet de devis complementaires.</p>
+</div>
+
+</div><!-- end main-content -->
+
+<!-- ===== ENDING / SIGNATURE ===== -->
+<div class="ending">
+    <div class="section-number">Validation</div>
+    <div class="ending-title">Validation du proprietaire</div>
+    <div class="ending-subtitle">Approbation du budget previsionnel</div>
+    <div class="divider" style="margin-bottom: 24px;"></div>
+
+    <div style="margin-bottom: 24px;">
+        <div class="body-text" style="font-size: 11.5px; color: var(--c-text); line-height: 1.7;">
+            J'ai pris connaissance de l'estimation technique ci-dessus et j'approuve le budget previsionnel de <strong style="color: var(--c-accent-light);">605 USD</strong> pour le lancement du MVP SALES OS V1.
+        </div>
+    </div>
+
+    <div class="sig-label">Observations</div>
+    <div class="sig-dots"></div>
+    <div class="sig-dots"></div>
+
+    <div style="display: flex; gap: 32px; margin-top: 16px;">
+        <div style="flex: 1;">
+            <div class="sig-label">Nom du proprietaire</div>
+            <div class="sig-dots"></div>
+        </div>
+        <div style="flex: 1;">
+            <div class="sig-label">Date</div>
+            <div class="sig-dots"></div>
+        </div>
+    </div>
+
+    <div style="margin-top: 8px;">
+        <div class="sig-label">Signature</div>
+        <div class="sig-dots" style="height: 48px;"></div>
+    </div>
+
+    <div class="conclusion-box" style="margin-top: 32px;">
+        <p><span class="highlight">605 USD</span> — Investissement initial estimatif</p>
+        <p>Mise en production d'une premiere version <strong>stable et fonctionnelle</strong> de SALES OS</p>
+    </div>
+</div>
+
+</body>
+</html>
