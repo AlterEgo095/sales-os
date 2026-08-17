@@ -1,0 +1,2278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Cahier des Charges — SALES OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+@page {
+    size: 720px 1020px;
+    margin: 0;
+}
+
+:root {
+    --c-bg: #0a0f1a;
+    --c-bg-cover: #060b14;
+    --c-surface: #111827;
+    --c-surface-2: #1a2236;
+    --c-accent: #3b82f6;
+    --c-accent-light: #60a5fa;
+    --c-accent-dim: #1e40af;
+    --c-text: #e5e7eb;
+    --c-text-muted: #9ca3af;
+    --c-text-bright: #f9fafb;
+    --c-border: #1f2937;
+    --c-border-light: #374151;
+    --c-success: #10b981;
+    --c-warning: #f59e0b;
+    --c-danger: #ef4444;
+    --c-code-bg: #0d1117;
+    --c-table-header: #111827;
+    --c-table-stripe: #0f1520;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 720px;
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+}
+
+@media screen {
+    html {
+        height: auto;
+        display: flex;
+        justify-content: center;
+        background: #1a1a2e;
+    }
+    body {
+        transform-origin: top center;
+        margin: 20px auto;
+    }
+}
+
+/* ===== COVER PAGE ===== */
+.cover {
+    width: 720px;
+    height: 1020px;
+    box-sizing: border-box;
+    break-after: page;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: var(--c-bg-cover);
+}
+
+.cover-bg-elements {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.cover-circle-1 {
+    position: absolute;
+    right: -60px;
+    top: 10%;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 1px solid rgba(59, 130, 246, 0.06);
+}
+
+.cover-circle-2 {
+    position: absolute;
+    left: -120px;
+    bottom: 20%;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    border: 1px solid rgba(59, 130, 246, 0.05);
+}
+
+.cover-line-v {
+    position: absolute;
+    left: 72px;
+    top: 0;
+    width: 0.5px;
+    height: 100%;
+    background: rgba(59, 130, 246, 0.03);
+}
+
+.cover-line-h {
+    position: absolute;
+    left: 0;
+    top: 540px;
+    width: 100%;
+    height: 0.5px;
+    background: rgba(59, 130, 246, 0.03);
+}
+
+.cover-watermark {
+    position: absolute;
+    left: 4%;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: center center;
+    font-size: 160px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    color: rgba(59, 130, 246, 0.03);
+    white-space: nowrap;
+    line-height: 1;
+    letter-spacing: 8px;
+}
+
+.cover-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 80px;
+}
+
+.cover-badge {
+    display: inline-block;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    color: var(--c-accent-light);
+    padding: 6px 20px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+}
+
+.cover-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 64px;
+    font-weight: 900;
+    color: var(--c-text-bright);
+    line-height: 1.0;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+}
+
+.cover-title span {
+    color: var(--c-accent);
+}
+
+.cover-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--c-text-muted);
+    margin-bottom: 56px;
+    line-height: 1.4;
+}
+
+.cover-meta {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 56px;
+}
+
+.cover-meta-item {
+    text-align: center;
+}
+
+.cover-meta-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.cover-meta-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text-bright);
+}
+
+.cover-divider {
+    width: 60px;
+    height: 2px;
+    background: var(--c-accent);
+    margin: 0 auto 32px;
+}
+
+.cover-status {
+    font-size: 10px;
+    color: var(--c-warning);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.cover-footer {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 1;
+}
+
+.cover-footer-text {
+    font-size: 9px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    padding: 50px 60px 40px 60px;
+}
+
+/* Chapter headers */
+.chapter-header {
+    break-after: avoid;
+    break-inside: avoid;
+    margin-top: 28px;
+    margin-bottom: 16px;
+}
+
+.section-number {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--c-accent);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--c-text-bright);
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.section-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--c-accent-light);
+    margin-bottom: 8px;
+}
+
+.divider {
+    width: 40px;
+    height: 2px;
+    background: var(--c-accent);
+    margin-bottom: 16px;
+}
+
+/* Body text */
+.body-text {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--c-text);
+    margin-bottom: 12px;
+}
+
+.body-text strong {
+    color: var(--c-text-bright);
+    font-weight: 700;
+}
+
+/* Lists */
+ul.content-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px 0;
+}
+
+ul.content-list li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    line-height: 1.65;
+    color: var(--c-text);
+}
+
+ul.content-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-accent);
+}
+
+ol.content-list-ol {
+    padding: 0 0 0 20px;
+    margin: 0 0 14px 0;
+}
+
+ol.content-list-ol li {
+    margin-bottom: 6px;
+    font-size: 11px;
+    line-height: 1.65;
+    color: var(--c-text);
+}
+
+ol.content-list-ol li::marker {
+    color: var(--c-accent);
+    font-weight: 700;
+}
+
+/* Blockquote */
+blockquote {
+    border-left: 3px solid var(--c-accent);
+    background: rgba(59, 130, 246, 0.06);
+    padding: 12px 18px;
+    margin: 14px 0;
+    border-radius: 0 6px 6px 0;
+}
+
+blockquote p {
+    margin: 0 0 6px 0;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--c-text-bright);
+    line-height: 1.5;
+    font-style: italic;
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Code blocks / Tree diagrams */
+.code-block {
+    background: var(--c-code-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: var(--c-accent-light);
+    overflow-x: auto;
+    white-space: pre;
+    break-inside: avoid;
+}
+
+/* Tables */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 10.5px;
+    break-inside: avoid;
+}
+
+.data-table thead th {
+    background: var(--c-table-header);
+    color: var(--c-text-bright);
+    font-weight: 700;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--c-accent-dim);
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.data-table tbody td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--c-border);
+    color: var(--c-text);
+}
+
+.data-table tbody tr:nth-child(even) td {
+    background: var(--c-table-stripe);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Cards */
+.card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 10px 0;
+    break-inside: avoid;
+}
+
+.card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-accent-light);
+    margin-bottom: 8px;
+}
+
+.card p, .card li {
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: var(--c-text);
+}
+
+/* Role cards */
+.role-card {
+    background: var(--c-surface);
+    border-left: 3px solid var(--c-accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 10px 0;
+    break-inside: avoid;
+}
+
+.role-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text-bright);
+    margin-bottom: 4px;
+}
+
+.role-desc {
+    font-size: 10.5px;
+    color: var(--c-text-muted);
+    margin-bottom: 8px;
+    font-style: italic;
+}
+
+/* Checkbox list */
+.checkbox-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.checkbox-list li {
+    padding: 5px 0;
+    font-size: 11px;
+    color: var(--c-text);
+    break-inside: avoid;
+}
+
+.checkbox-list li span.box {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--c-border-light);
+    border-radius: 3px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* Status indicators */
+.status-active {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.status-green { background: var(--c-success); }
+.status-yellow { background: var(--c-warning); }
+.status-orange { background: #f97316; }
+
+/* Roadmap items */
+.roadmap-item {
+    display: flex;
+    align-items: flex-start;
+    margin: 8px 0;
+    break-inside: avoid;
+}
+
+.roadmap-badge {
+    flex-shrink: 0;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: var(--c-accent-light);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-right: 12px;
+    min-width: 28px;
+    text-align: center;
+}
+
+.roadmap-text {
+    font-size: 11px;
+    color: var(--c-text);
+    line-height: 1.5;
+}
+
+.roadmap-text strong {
+    color: var(--c-text-bright);
+}
+
+/* Flow diagram */
+.flow-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 3px 0;
+}
+
+.flow-box {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border-light);
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--c-accent-light);
+    text-align: center;
+    min-width: 140px;
+}
+
+.flow-arrow {
+    text-align: center;
+    color: var(--c-accent);
+    font-size: 14px;
+    margin: 2px 0;
+}
+
+/* Ending / Signature page */
+.ending {
+    width: 720px;
+    height: 1020px;
+    box-sizing: border-box;
+    break-before: page;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    position: relative;
+    background: var(--c-bg-cover);
+}
+
+.ending-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--c-text-bright);
+    margin-bottom: 8px;
+}
+
+.ending-subtitle {
+    font-size: 13px;
+    color: var(--c-accent-light);
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.sig-line {
+    border-bottom: 1px solid var(--c-border-light);
+    padding-bottom: 6px;
+    margin-bottom: 18px;
+    font-size: 11px;
+    color: var(--c-text-muted);
+}
+
+.sig-field {
+    margin-bottom: 24px;
+}
+
+.sig-label {
+    font-size: 10px;
+    color: var(--c-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.sig-dots {
+    border-bottom: 1px solid var(--c-border-light);
+    height: 24px;
+    margin-bottom: 16px;
+}
+
+/* Conclusion box */
+.conclusion-box {
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.conclusion-box p {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--c-text);
+    margin-bottom: 8px;
+}
+
+.conclusion-box strong {
+    color: var(--c-text-bright);
+}
+
+.conclusion-box .highlight {
+    color: var(--c-accent-light);
+    font-weight: 700;
+}
+
+/* Principle banner */
+.principle-banner {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.04));
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+    padding: 18px 24px;
+    margin: 16px 0;
+    text-align: center;
+    break-inside: avoid;
+}
+
+.principle-banner p {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-accent-light);
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+/* Acceptance criteria group */
+.criteria-group {
+    margin: 12px 0;
+    break-inside: avoid;
+}
+
+.criteria-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-accent-light);
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--c-border);
+}
+
+/* Validation checklist */
+.validation-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--c-border);
+    break-inside: avoid;
+}
+
+.validation-label {
+    flex: 1;
+    font-size: 11px;
+    color: var(--c-text);
+}
+
+.validation-checkbox {
+    display: inline-flex;
+    gap: 16px;
+    flex-shrink: 0;
+    margin-left: 12px;
+}
+
+.validation-checkbox span {
+    font-size: 10px;
+    color: var(--c-text-muted);
+    padding: 2px 8px;
+    border: 1px solid var(--c-border-light);
+    border-radius: 3px;
+}
+
+/* Sub-heading (h3 equivalent) */
+.sub-heading {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text-bright);
+    margin: 14px 0 6px 0;
+}
+
+/* Example block */
+.example-block {
+    background: var(--c-surface-2);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 10px 0;
+    font-size: 10.5px;
+    color: var(--c-text-muted);
+    break-inside: avoid;
+}
+
+.example-block strong {
+    color: var(--c-text);
+}
+
+/* Accent text */
+.accent-text {
+    color: var(--c-accent-light);
+    font-weight: 600;
+}
+
+/* Inline code */
+code {
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 10px;
+    background: var(--c-code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--c-accent-light);
+}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER PAGE ===== -->
+<div class="cover">
+    <div class="cover-bg-elements">
+        <div class="cover-circle-1"></div>
+        <div class="cover-circle-2"></div>
+        <div class="cover-watermark">SALES OS</div>
+    </div>
+    <div class="cover-content">
+        <div class="cover-badge">Cahier des Charges</div>
+        <div class="cover-title">SALES <span>OS</span></div>
+        <div class="cover-subtitle">Plateforme de gestion, suivi et pilotage des ventes</div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta">
+            <div class="cover-meta-item">
+                <div class="cover-meta-label">Version</div>
+                <div class="cover-meta-value">2.1</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="cover-meta-label">Date</div>
+                <div class="cover-meta-value">Mars 2026</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="cover-meta-label">Statut</div>
+                <div class="cover-meta-value">Proposition</div>
+            </div>
+        </div>
+        <div class="cover-status">Document de reference pour validation du proprietaire</div>
+    </div>
+    <div class="cover-footer">
+        <div class="cover-footer-text">Confidentiel — SALES OS V2.1</div>
+    </div>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+
+<!-- Section 1 -->
+<div class="chapter-header">
+    <div class="section-number">Section 1</div>
+    <div class="section-title">Presentation du projet</div>
+    <div class="divider"></div>
+</div>
+
+<div class="sub-heading">1.1 Nom</div>
+<div class="body-text"><strong>SALES OS</strong></div>
+
+<div class="sub-heading">1.2 Nature du projet</div>
+<div class="body-text">SALES OS est une application web de <strong>gestion et de pilotage commercial</strong> destinee a centraliser l'ensemble du cycle de vente d'une entreprise.</div>
+<div class="body-text">La plateforme permettra notamment de gerer :</div>
+<ul class="content-list">
+    <li>les maisons / points de vente</li>
+    <li>les utilisateurs</li>
+    <li>les agents de terrain</li>
+    <li>les portefeuilles clients</li>
+    <li>les prospects et clients</li>
+    <li>les produits</li>
+    <li>les commandes</li>
+    <li>les ventes</li>
+    <li>les paiements</li>
+    <li>les stocks</li>
+    <li>les commissions</li>
+    <li>les objectifs commerciaux</li>
+    <li>les performances</li>
+</ul>
+<div class="body-text">La solution sera concue des le depart avec une architecture permettant son evolution vers un <strong>SaaS multi-entreprises</strong>, sans que cette evolution soit necessairement activee commercialement dans le MVP.</div>
+
+<!-- Section 2 -->
+<div class="chapter-header">
+    <div class="section-number">Section 2</div>
+    <div class="section-title">Contexte et problematique</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">L'activite commerciale de l'entreprise implique plusieurs maisons, agents, clients et operations de vente. Lorsque ces informations sont suivi separement, plusieurs difficultes peuvent apparaitre :</div>
+<ul class="content-list">
+    <li>manque de visibilite globale</li>
+    <li>difficulte a connaitre les performances de chaque maison</li>
+    <li>difficulte a mesurer la performance des agents</li>
+    <li>perte ou duplication d'informations clients</li>
+    <li>difficulte a suivre les commandes non finalisees</li>
+    <li>erreurs dans le calcul des commissions</li>
+    <li>manque de visibilite sur les paiements</li>
+    <li>difficulte a suivre les stocks</li>
+    <li>absence d'un historique centralise des operations</li>
+    <li>difficulte a mesurer l'atteinte des objectifs mensuels</li>
+</ul>
+<div class="body-text">SALES OS doit resoudre ces problemes en mettant en place <strong>un systeme commercial centralise, securise et structure</strong>.</div>
+
+<!-- Section 3 -->
+<div class="chapter-header">
+    <div class="section-number">Section 3</div>
+    <div class="section-title">Vision du produit</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">SALES OS doit devenir le <strong>centre de pilotage commercial de l'entreprise</strong>. Le proprietaire doit pouvoir acceder a une vision globale de l'activite :</div>
+<blockquote>
+    <p>Combien avons-nous vendu ?</p>
+    <p>Quelle maison vend le plus ?</p>
+    <p>Quel agent apporte le plus de clients ?</p>
+    <p>Quels clients sont reguliers ?</p>
+    <p>Quelles commandes sont encore en attente ?</p>
+    <p>Combien de commissions ont ete generees ?</p>
+    <p>Ou en sommes-nous par rapport a notre objectif mensuel ?</p>
+    <p>Quelle est la contribution de chaque maison ?</p>
+</blockquote>
+<div class="body-text">L'objectif est donc de transformer les donnees commerciales en <strong>informations directement exploitables pour la prise de decision</strong>.</div>
+
+<!-- Section 4 -->
+<div class="chapter-header">
+    <div class="section-number">Section 4</div>
+    <div class="section-title">Objectif general</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Mettre en place une plateforme permettant de :</div>
+<blockquote>
+    <p>Centraliser, securiser, suivre, mesurer et piloter l'ensemble du processus commercial de l'entreprise, de la prospection jusqu'a l'analyse des performances.</p>
+</blockquote>
+
+<!-- Section 5 -->
+<div class="chapter-header">
+    <div class="section-number">Section 5</div>
+    <div class="section-title">Objectifs specifiques</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">La plateforme devra permettre de :</div>
+<ol class="content-list-ol">
+    <li>gerer plusieurs maisons ou points de vente</li>
+    <li>gerer les utilisateurs et leurs droits</li>
+    <li>gerer les agents de terrain</li>
+    <li>enregistrer les clients apportes par les agents</li>
+    <li>constituer et gerer le portefeuille de chaque agent</li>
+    <li>suivre le cycle de vie des clients</li>
+    <li>gerer les produits</li>
+    <li>enregistrer les commandes</li>
+    <li>distinguer clairement les commandes des ventes</li>
+    <li>enregistrer les ventes</li>
+    <li>suivre les paiements</li>
+    <li>suivre les stocks</li>
+    <li>calculer les commissions</li>
+    <li>definir un objectif mensuel</li>
+    <li>mesurer la contribution de chaque maison</li>
+    <li>suivre les performances des agents</li>
+    <li>suivre les commandes en attente</li>
+    <li>identifier les clients reguliers</li>
+    <li>fournir un tableau de bord central</li>
+    <li>assurer la tracabilite des operations</li>
+    <li>securiser les acces</li>
+    <li>preparer techniquement l'evolution vers plusieurs entreprises</li>
+</ol>
+
+<!-- Section 6 -->
+<div class="chapter-header">
+    <div class="section-number">Section 6</div>
+    <div class="section-title">Perimetre fonctionnel</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">La plateforme sera organisee autour des modules suivants :</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Module</th>
+            <th>Fonction</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Administration</td><td>Utilisateurs, roles, maisons et parametres</td></tr>
+        <tr><td>Agents</td><td>Gestion des agents et performances</td></tr>
+        <tr><td>CRM</td><td>Prospects, clients et portefeuilles</td></tr>
+        <tr><td>Commandes</td><td>Creation et suivi des commandes</td></tr>
+        <tr><td>Ventes</td><td>Enregistrement et suivi des ventes</td></tr>
+        <tr><td>Catalogue</td><td>Produits, categories et prix</td></tr>
+        <tr><td>Stocks</td><td>Stocks et mouvements</td></tr>
+        <tr><td>Paiements</td><td>Encaissements et soldes</td></tr>
+        <tr><td>Commissions</td><td>Calcul et suivi des commissions</td></tr>
+        <tr><td>Objectifs</td><td>Targets et progression</td></tr>
+        <tr><td>Dashboard</td><td>Pilotage global</td></tr>
+        <tr><td>Audit</td><td>Historique des operations</td></tr>
+        <tr><td>Securite</td><td>Authentification et permissions</td></tr>
+        <tr><td>Notifications</td><td>Alertes et evenements</td></tr>
+    </tbody>
+</table>
+
+<!-- Section 7 -->
+<div class="chapter-header">
+    <div class="section-number">Section 7</div>
+    <div class="section-title">Utilisateurs et roles</div>
+    <div class="divider"></div>
+</div>
+
+<div class="role-card">
+    <div class="role-title">7.1 Gestionnaire principal</div>
+    <div class="role-desc">Le gestionnaire principal represente la direction de l'entreprise.</div>
+    <div class="body-text">Il dispose d'une vision globale et peut notamment :</div>
+    <ul class="content-list">
+        <li>gerer les maisons</li>
+        <li>gerer les utilisateurs</li>
+        <li>gerer les agents</li>
+        <li>consulter les clients</li>
+        <li>consulter les ventes</li>
+        <li>gerer les produits</li>
+        <li>suivre les stocks</li>
+        <li>definir les objectifs</li>
+        <li>gerer les regles de commission</li>
+        <li>consulter les rapports</li>
+        <li>controler les performances</li>
+    </ul>
+</div>
+
+<div class="role-card">
+    <div class="role-title">7.2 Responsable de maison</div>
+    <div class="role-desc">Il gere l'activite de sa maison.</div>
+    <div class="body-text">Il peut, selon ses permissions :</div>
+    <ul class="content-list">
+        <li>consulter ses agents</li>
+        <li>suivre les clients</li>
+        <li>suivre les commandes</li>
+        <li>suivre les ventes</li>
+        <li>consulter le stock</li>
+        <li>suivre les performances de la maison</li>
+    </ul>
+    <div class="body-text">Il ne doit pas acceder aux donnees des autres maisons si ses permissions ne l'y autorisent pas.</div>
+</div>
+
+<div class="role-card">
+    <div class="role-title">7.3 Agent de terrain</div>
+    <div class="role-desc">L'agent est charge notamment de developper et gerer son portefeuille commercial.</div>
+    <div class="body-text">Il peut :</div>
+    <ul class="content-list">
+        <li>enregistrer des prospects</li>
+        <li>creer des clients</li>
+        <li>gerer son portefeuille</li>
+        <li>creer des commandes</li>
+        <li>suivre ses ventes</li>
+        <li>consulter ses commissions</li>
+        <li>suivre ses performances</li>
+    </ul>
+</div>
+
+<div class="role-card">
+    <div class="role-title">7.4 Vendeur</div>
+    <div class="role-desc">Le vendeur peut effectuer les operations commerciales qui lui sont attribuees.</div>
+    <ul class="content-list">
+        <li>consulter les produits</li>
+        <li>creer ou traiter une commande</li>
+        <li>enregistrer une vente</li>
+        <li>consulter les informations necessaires a la vente</li>
+    </ul>
+</div>
+
+<div class="role-card">
+    <div class="role-title">7.5 Caissier / gestionnaire financier</div>
+    <div class="role-desc">Il peut :</div>
+    <ul class="content-list">
+        <li>enregistrer les paiements</li>
+        <li>consulter les ventes concernees</li>
+        <li>suivre les soldes</li>
+        <li>gerer les operations financieres autorisees</li>
+    </ul>
+</div>
+
+<div class="role-card">
+    <div class="role-title">7.6 Gestionnaire de stock</div>
+    <div class="role-desc">Il peut :</div>
+    <ul class="content-list">
+        <li>gerer les produits</li>
+        <li>enregistrer les entrees</li>
+        <li>enregistrer les sorties</li>
+        <li>effectuer les ajustements autorises</li>
+        <li>suivre les niveaux de stock</li>
+    </ul>
+</div>
+
+<!-- Section 8 -->
+<div class="chapter-header">
+    <div class="section-number">Section 8</div>
+    <div class="section-title">Gestion des maisons</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Une <strong>maison</strong> represente un point de vente, une agence ou une unite commerciale.</div>
+
+<div class="example-block"><strong>Exemple :</strong></div>
+<div class="code-block">ENTREPRISE
+│
+├── Maison Kinshasa
+├── Maison Lubumbashi
+├── Maison Goma
+└── Maison Matadi</div>
+
+<div class="body-text">Chaque maison peut disposer de :</div>
+<ul class="content-list">
+    <li>responsable</li>
+    <li>utilisateurs</li>
+    <li>agents</li>
+    <li>clients</li>
+    <li>commandes</li>
+    <li>ventes</li>
+    <li>stock</li>
+    <li>statistiques</li>
+</ul>
+<div class="body-text">La direction dispose d'une vue consolidee de toutes les maisons.</div>
+
+<!-- Section 9 -->
+<div class="chapter-header">
+    <div class="section-number">Section 9</div>
+    <div class="section-title">Gestion des agents</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Chaque agent dispose d'un profil commercial. Le systeme conserve notamment :</div>
+<ul class="content-list">
+    <li>identite</li>
+    <li>maison</li>
+    <li>statut</li>
+    <li>portefeuille</li>
+    <li>clients apportes</li>
+    <li>ventes</li>
+    <li>performances</li>
+    <li>commissions</li>
+</ul>
+<div class="body-text">La direction pourra comparer les performances des agents.</div>
+
+<!-- Section 10 -->
+<div class="chapter-header">
+    <div class="section-number">Section 10</div>
+    <div class="section-title">Portefeuille client de l'agent</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Tout client apporte par un agent doit etre enregistre dans son portefeuille.</div>
+
+<div class="code-block">AGENT
+  ↓
+PORTEFEUILLE
+  ↓
+CLIENT
+  ↓
+COMMANDES
+  ↓
+VENTES</div>
+
+<div class="body-text">Le systeme conserve l'agent ayant initialement enregistre le client. Cela permet de determiner clairement l'origine commerciale d'un client.</div>
+
+<!-- Section 11 -->
+<div class="chapter-header">
+    <div class="section-number">Section 11</div>
+    <div class="section-title">Attribution et transfert des clients</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Un client possede un <strong>agent referent</strong>.</div>
+<div class="body-text">Lorsqu'un agent enregistre un nouveau client, le systeme verifie les eventuels doublons.</div>
+<div class="body-text">Si le client existe deja :</div>
+<ul class="content-list">
+    <li>une alerte est affichee</li>
+    <li>le systeme indique qu'un autre agent est deja associe</li>
+    <li>le nouveau rattachement ne peut pas etre effectue automatiquement</li>
+</ul>
+<div class="body-text">Le transfert d'un client vers un autre agent necessite l'autorisation d'un responsable habilite.</div>
+<div class="body-text">L'historique conserve :</div>
+<ul class="content-list">
+    <li>ancien agent</li>
+    <li>nouvel agent</li>
+    <li>date</li>
+    <li>utilisateur ayant effectue le transfert</li>
+    <li>motif, si renseigne</li>
+</ul>
+
+<!-- Section 12 -->
+<div class="chapter-header">
+    <div class="section-number">Section 12</div>
+    <div class="section-title">Gestion des clients</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le systeme distingue notamment :</div>
+<div class="code-block">Prospect → Nouveau client → Client actif → Client regulier → Client inactif</div>
+
+<div class="body-text">Les criteres permettant de qualifier un client de <em>regulier</em> ou <em>inactif</em> pourront etre configures.</div>
+<div class="body-text">Pour chaque client :</div>
+<ul class="content-list">
+    <li>nom</li>
+    <li>telephone</li>
+    <li>email</li>
+    <li>adresse</li>
+    <li>agent referent</li>
+    <li>maison</li>
+    <li>historique</li>
+    <li>commandes</li>
+    <li>ventes</li>
+    <li>montant des achats</li>
+    <li>frequence d'achat</li>
+    <li>derniere activite</li>
+</ul>
+<div class="body-text">La recherche devra permettre de retrouver rapidement un client.</div>
+
+<!-- Section 13 -->
+<div class="chapter-header">
+    <div class="section-number">Section 13</div>
+    <div class="section-title">Commandes</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Une commande represente une <strong>intention d'achat</strong>. Elle ne constitue pas automatiquement une vente.</div>
+<div class="body-text">Les etats sont :</div>
+<div class="code-block">Brouillon
+   ↓
+En attente
+   ↓
+Formalisee
+   ↓
+Confirmee
+   ↓
+Transformee en vente</div>
+
+<div class="body-text">Une commande peut egalement etre : <strong>Annulee</strong></div>
+<div class="body-text">Le gestionnaire pourra consulter les commandes non encore transformees en ventes. Cela permettra notamment de suivre les <strong>opportunites commerciales en attente</strong>.</div>
+
+<!-- Section 14 -->
+<div class="chapter-header">
+    <div class="section-number">Section 14</div>
+    <div class="section-title">Ventes</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Une vente represente une transaction effectivement confirmee.</div>
+<div class="body-text">Une vente pourra etre creee :</div>
+<blockquote>
+    <p>soit directement,</p>
+    <p>soit a partir d'une commande existante.</p>
+</blockquote>
+<div class="body-text">Chaque vente doit conserver :</div>
+<ul class="content-list">
+    <li>entreprise</li>
+    <li>maison</li>
+    <li>client</li>
+    <li>agent apporteur</li>
+    <li>vendeur</li>
+    <li>produits</li>
+    <li>quantites</li>
+    <li>prix</li>
+    <li>montant</li>
+    <li>date</li>
+    <li>mode de paiement</li>
+    <li>etat du paiement</li>
+</ul>
+
+<!-- Section 15 -->
+<div class="chapter-header">
+    <div class="section-number">Section 15</div>
+    <div class="section-title">Agent apporteur et vendeur</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Afin d'eviter toute ambiguite, le systeme distinguera :</div>
+
+<div class="sub-heading">Agent apporteur</div>
+<div class="body-text">Agent ayant cree ou acquis le client.</div>
+
+<div class="sub-heading">Vendeur</div>
+<div class="body-text">Personne ayant effectivement realise la vente.</div>
+
+<div class="example-block"><strong>Exemple :</strong></div>
+<div class="code-block">Patrick
+  ↓
+apporte Jean
+  ↓
+Jean appartient au portefeuille de Patrick
+  ↓
+Jean achete a la Maison B
+  ↓
+Marie realise la vente</div>
+
+<div class="body-text">Le systeme conserve donc : <strong>Agent apporteur = Patrick</strong> / <strong>Vendeur = Marie</strong></div>
+<div class="body-text">Les regles de commission determineront ensuite qui est remunere.</div>
+
+<!-- Section 16 -->
+<div class="chapter-header">
+    <div class="section-number">Section 16</div>
+    <div class="section-title">Produits et catalogue</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Chaque entreprise possede son propre catalogue. Un produit peut comporter :</div>
+<ul class="content-list">
+    <li>reference</li>
+    <li>nom</li>
+    <li>categorie</li>
+    <li>description</li>
+    <li>unite</li>
+    <li>prix</li>
+    <li>statut actif/inactif</li>
+    <li>image</li>
+    <li>suivi de stock</li>
+</ul>
+<div class="body-text">Les produits sont isoles par entreprise.</div>
+
+<!-- Section 17 -->
+<div class="chapter-header">
+    <div class="section-number">Section 17</div>
+    <div class="section-title">Gestion des stocks</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le stock est suivi par maison. Le systeme enregistre :</div>
+
+<div class="sub-heading">Entrees</div>
+<ul class="content-list">
+    <li>reception</li>
+    <li>retour</li>
+    <li>approvisionnement</li>
+</ul>
+
+<div class="sub-heading">Sorties</div>
+<ul class="content-list">
+    <li>vente</li>
+    <li>transfert</li>
+    <li>sortie autorisee</li>
+</ul>
+
+<div class="sub-heading">Ajustements</div>
+<ul class="content-list">
+    <li>inventaire</li>
+    <li>casse</li>
+    <li>perte</li>
+    <li>correction autorisee</li>
+</ul>
+
+<div class="body-text">Le stock disponible est recalcule apres chaque operation.</div>
+
+<!-- Section 18 -->
+<div class="chapter-header">
+    <div class="section-number">Section 18</div>
+    <div class="section-title">Stock insuffisant</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le comportement en cas de stock insuffisant sera configurable.</div>
+
+<div class="card">
+    <div class="card-title">Mode strict</div>
+    <p>La vente est bloquee si le stock disponible est insuffisant.</p>
+</div>
+
+<div class="card">
+    <div class="card-title">Mode souple</div>
+    <p>La vente peut etre enregistree avec une alerte.</p>
+</div>
+
+<div class="body-text">Cette configuration appartient au gestionnaire principal.</div>
+
+<!-- Section 19 -->
+<div class="chapter-header">
+    <div class="section-number">Section 19</div>
+    <div class="section-title">Paiements</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Une vente peut etre payee :</div>
+<ul class="content-list">
+    <li>integralement</li>
+    <li>partiellement</li>
+    <li>ulterieurement</li>
+</ul>
+<div class="body-text">Une vente peut donc avoir plusieurs paiements.</div>
+
+<div class="example-block"><strong>Exemple :</strong></div>
+<div class="code-block">VENTE : 1 000 $
+
+Paiement 1 : 300 $
+Paiement 2 : 400 $
+----------------
+Solde :       300 $</div>
+
+<div class="body-text"><strong>Etats financiers :</strong></div>
+<div class="code-block">Impaye → Partiellement paye → Paye → Rembourse</div>
+<div class="body-text">La vente et son paiement doivent rester deux notions distinctes.</div>
+
+<!-- Section 20 -->
+<div class="chapter-header">
+    <div class="section-number">Section 20</div>
+    <div class="section-title">Commissions</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">SALES OS integrera un moteur de commissions.</div>
+<div class="body-text">Dans le MVP, une regle simple pourra etre utilisee :</div>
+<blockquote>
+    <p>Pourcentage fixe sur une vente eligible.</p>
+</blockquote>
+
+<div class="example-block"><strong>Exemple :</strong> Vente : 500 $ — Commission : 10 % — Commission = 50 $</div>
+
+<div class="body-text">Le systeme conservera le lien :</div>
+<div class="code-block">Vente
+ ↓
+Agent beneficiaire
+ ↓
+Regle appliquee
+ ↓
+Commission</div>
+
+<!-- Section 21 -->
+<div class="chapter-header">
+    <div class="section-number">Section 21</div>
+    <div class="section-title">Evolution du moteur de commissions</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Dans les versions futures, les regles pourront prendre en compte :</div>
+<ul class="content-list">
+    <li>pourcentage</li>
+    <li>montant fixe</li>
+    <li>produit</li>
+    <li>categorie</li>
+    <li>vendeur</li>
+    <li>agent apporteur</li>
+    <li>paliers</li>
+    <li>bonus</li>
+    <li>objectifs</li>
+</ul>
+<div class="body-text">Une entreprise pourra donc definir ses propres regles.</div>
+
+<!-- Section 22 -->
+<div class="chapter-header">
+    <div class="section-number">Section 22</div>
+    <div class="section-title">Cycle de vie de la commission</div>
+    <div class="divider"></div>
+</div>
+
+<div class="code-block">EN ATTENTE
+     ↓
+VALIDEE
+     ↓
+PAYABLE
+     ↓
+PAYEE</div>
+
+<div class="card">
+    <div class="card-title">En attente</div>
+    <p>Commission calculee mais pas encore validee.</p>
+</div>
+<div class="card">
+    <div class="card-title">Validee</div>
+    <p>Commission controlee par un responsable habilite.</p>
+</div>
+<div class="card">
+    <div class="card-title">Payable</div>
+    <p>Commission prete a etre versee.</p>
+</div>
+<div class="card">
+    <div class="card-title">Payee</div>
+    <p>Commission effectivement versee.</p>
+</div>
+
+<div class="body-text">Une annulation ou un remboursement doit pouvoir entrainer une revision de la commission selon les regles de l'entreprise.</div>
+
+<!-- Section 23 -->
+<div class="chapter-header">
+    <div class="section-number">Section 23</div>
+    <div class="section-title">Objectifs commerciaux</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le gestionnaire principal pourra definir un objectif mensuel.</div>
+
+<div class="example-block"><strong>Exemple :</strong> Target : 3 000 pieces</div>
+
+<div class="body-text">Le dashboard affichera :</div>
+<div class="code-block">OBJECTIF :       3 000
+REALISE :        2 100
+RESTANT :         900
+PROGRESSION :      70 %</div>
+
+<div class="body-text">L'objectif pourra etre exprime selon les besoins :</div>
+<ul class="content-list">
+    <li>quantite</li>
+    <li>chiffre d'affaires</li>
+    <li>nombre de ventes</li>
+</ul>
+
+<!-- Section 24 -->
+<div class="chapter-header">
+    <div class="section-number">Section 24</div>
+    <div class="section-title">Objectifs par maison</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le gestionnaire pourra definir une contribution cible pour chaque maison.</div>
+
+<div class="example-block"><strong>Exemple :</strong></div>
+<div class="code-block">Target global : 3 000 pieces
+
+Kinshasa       1 200
+Lubumbashi       800
+Goma             600
+Matadi           400</div>
+
+<div class="body-text">Le systeme permettra de comparer : <strong>Objectif prevu vs Realise.</strong></div>
+
+<!-- Section 25 -->
+<div class="chapter-header">
+    <div class="section-number">Section 25</div>
+    <div class="section-title">Contribution des maisons</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le dashboard indiquera la contribution reelle de chaque maison.</div>
+
+<div class="example-block"><strong>Exemple :</strong></div>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Maison</th>
+            <th>Realise</th>
+            <th>Contribution</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Kinshasa</td><td>1 000</td><td>33,3 %</td></tr>
+        <tr><td>Lubumbashi</td><td>650</td><td>21,7 %</td></tr>
+        <tr><td>Goma</td><td>300</td><td>10,0 %</td></tr>
+        <tr><td>Matadi</td><td>150</td><td>5,0 %</td></tr>
+    </tbody>
+</table>
+
+<div class="body-text">La direction pourra ainsi identifier immediatement les maisons qui contribuent le plus a l'objectif.</div>
+
+<!-- Section 26 -->
+<div class="chapter-header">
+    <div class="section-number">Section 26</div>
+    <div class="section-title">Tableau de bord de direction</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le tableau de bord principal devra presenter une vision synthetique.</div>
+
+<div class="sub-heading">Ventes</div>
+<ul class="content-list">
+    <li>CA</li>
+    <li>quantite vendue</li>
+    <li>nombre de ventes</li>
+    <li>panier moyen</li>
+</ul>
+
+<div class="sub-heading">Clients</div>
+<ul class="content-list">
+    <li>prospects</li>
+    <li>nouveaux clients</li>
+    <li>clients actifs</li>
+    <li>clients reguliers</li>
+    <li>clients inactifs</li>
+</ul>
+
+<div class="sub-heading">Commandes</div>
+<ul class="content-list">
+    <li>brouillons</li>
+    <li>en attente</li>
+    <li>formalisees</li>
+    <li>confirmees</li>
+</ul>
+
+<div class="sub-heading">Maisons</div>
+<ul class="content-list">
+    <li>ventes</li>
+    <li>objectifs</li>
+    <li>progression</li>
+    <li>contribution</li>
+</ul>
+
+<div class="sub-heading">Agents</div>
+<ul class="content-list">
+    <li>clients apportes</li>
+    <li>portefeuille</li>
+    <li>ventes</li>
+    <li>commissions</li>
+</ul>
+
+<div class="sub-heading">Stocks</div>
+<ul class="content-list">
+    <li>produits disponibles</li>
+    <li>produits faibles</li>
+    <li>ruptures</li>
+</ul>
+
+<div class="sub-heading">Paiements</div>
+<ul class="content-list">
+    <li>encaisse</li>
+    <li>restant du</li>
+    <li>partiellement paye</li>
+</ul>
+
+<!-- Section 27 -->
+<div class="chapter-header">
+    <div class="section-number">Section 27</div>
+    <div class="section-title">Suivi en temps reel</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le <strong>MVP</strong> devra permettre une actualisation reguliere des donnees critiques du tableau de bord.</div>
+<div class="body-text">Les evenements importants pourront etre affiches sous forme d'activite :</div>
+
+<div class="code-block"><span class="status-active status-green"></span> Nouvelle vente — Kinshasa
+<span class="status-active status-green"></span> Nouveau client — Patrick
+<span class="status-active status-yellow"></span> Commande en attente — Goma
+<span class="status-active status-orange"></span> Stock faible — Lubumbashi</div>
+
+<div class="body-text">Le <strong>temps reel avance par WebSocket/SSE et notifications push</strong> constitue une evolution ulterieure. Cette distinction evite de surcharger le MVP.</div>
+
+<!-- Section 28 -->
+<div class="chapter-header">
+    <div class="section-number">Section 28</div>
+    <div class="section-title">Notifications</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Les alertes de base pourront concerner :</div>
+<ul class="content-list">
+    <li>commande en attente</li>
+    <li>stock faible</li>
+    <li>objectif en retard</li>
+    <li>nouveau client</li>
+    <li>nouvelle vente</li>
+    <li>commission validee</li>
+</ul>
+<div class="body-text">Les canaux avances :</div>
+<ul class="content-list">
+    <li>SMS</li>
+    <li>WhatsApp</li>
+    <li>Email</li>
+    <li>Push</li>
+</ul>
+<div class="body-text">seront developpes progressivement.</div>
+
+<!-- Section 29 -->
+<div class="chapter-header">
+    <div class="section-number">Section 29</div>
+    <div class="section-title">Authentification</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Chaque utilisateur dispose d'un compte personnel. Le systeme utilise :</div>
+<div class="code-block">Identifiant
+    ↓
+Mot de passe
+    ↓
+OTP
+    ↓
+Autorisation</div>
+
+<div class="body-text">Le mot de passe possede une duree de validite configurable, par exemple <strong>30 a 60 jours</strong>.</div>
+<div class="body-text">Le gestionnaire principal peut :</div>
+<ul class="content-list">
+    <li>activer un utilisateur</li>
+    <li>desactiver un utilisateur</li>
+    <li>reinitialiser son acces</li>
+    <li>revoquer ses sessions</li>
+</ul>
+<div class="body-text">Le mecanisme OTP devra etre concu pour etre securise et operationnel sans dependre d'une intervention manuelle du gestionnaire a chaque connexion.</div>
+
+<!-- Section 30 -->
+<div class="chapter-header">
+    <div class="section-number">Section 30</div>
+    <div class="section-title">Permissions</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Les permissions seront definies par :</div>
+<div class="body-text"><strong>Role + entreprise + maison + perimetre personnel.</strong></div>
+<div class="body-text">Les actions pourront etre :</div>
+<ul class="content-list">
+    <li>consulter</li>
+    <li>creer</li>
+    <li>modifier</li>
+    <li>valider</li>
+    <li>annuler</li>
+    <li>supprimer</li>
+</ul>
+<div class="body-text">Certaines operations sensibles devront obligatoirement etre validees par un responsable.</div>
+
+<!-- Section 31 -->
+<div class="chapter-header">
+    <div class="section-number">Section 31</div>
+    <div class="section-title">Audit et tracabilite</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Les operations sensibles seront enregistrees.</div>
+
+<div class="example-block"><strong>Exemple :</strong></div>
+<div class="code-block">Utilisateur : Patrick
+Maison      : Kinshasa
+Action      : Creation d'une vente
+Montant     : 500 $
+Date        : 17/08/2026 14:32
+Resultat    : Succes</div>
+
+<div class="body-text">L'audit permettra de repondre a :</div>
+<blockquote>
+    <p>Qui a fait quoi, quand, ou et sur quelle donnee ?</p>
+</blockquote>
+<div class="body-text">Les transferts de clients, validations de commissions, modifications sensibles et operations financieres devront notamment etre tracables.</div>
+
+<!-- Section 32 -->
+<div class="chapter-header">
+    <div class="section-number">Section 32</div>
+    <div class="section-title">Architecture multi-tenant</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Meme si la premiere utilisation concerne une seule entreprise, le modele de donnees integrera des la V1 la notion de :</div>
+<div class="body-text"><strong>Tenant = entreprise cliente.</strong></div>
+<div class="body-text">Chaque donnee metier importante sera rattachee au tenant.</div>
+
+<div class="code-block">SALES OS
+│
+├── TENANT A
+│   ├── Maisons
+│   ├── Agents
+│   ├── Clients
+│   └── Ventes
+│
+├── TENANT B
+│   ├── Maisons
+│   ├── Agents
+│   ├── Clients
+│   └── Ventes
+│
+└── TENANT C</div>
+
+<div class="body-text">Une entreprise ne pourra jamais acceder aux donnees d'une autre. Cette isolation sera appliquee au niveau de la couche de donnees et verifiee par des tests specifiques.</div>
+
+<!-- Section 33 -->
+<div class="chapter-header">
+    <div class="section-number">Section 33</div>
+    <div class="section-title">Architecture technique cible</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le MVP sera developpe sous forme de <strong>monolithe modulaire</strong>.</div>
+
+<div class="code-block">                 NEXT.JS / REACT
+                       │
+                       ▼
+              APPLICATION CORE
+                       │
+              ┌────────┴────────┐
+              │                 │
+         PAYLOAD CMS       LOGIQUE METIER
+              │                 │
+              └────────┬────────┘
+                       ▼
+                  POSTGRESQL
+                 SOURCE DE VERITE
+                       │
+                     REDIS
+          Cache / Sessions / Jobs</div>
+
+<div class="sub-heading">Technologies cibles</div>
+<ul class="content-list">
+    <li><strong>Frontend :</strong> Next.js / React</li>
+    <li><strong>Backend / administration :</strong> Payload CMS + logique metier</li>
+    <li><strong>Base de donnees :</strong> PostgreSQL</li>
+    <li><strong>Cache / jobs / temps reel futur :</strong> Redis</li>
+    <li><strong>API :</strong> API versionnee</li>
+    <li><strong>Deploiement :</strong> infrastructure web securisee</li>
+</ul>
+<div class="body-text">Le choix technologique pourra etre ajuste lors de la conception technique sans modifier les fonctionnalites validees par le present cahier des charges.</div>
+
+<!-- Section 34 -->
+<div class="chapter-header">
+    <div class="section-number">Section 34</div>
+    <div class="section-title">Principe "PostgreSQL source de verite"</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Toutes les donnees critiques sont conservees dans PostgreSQL.</div>
+<div class="body-text">Redis pourra etre utilise pour :</div>
+<ul class="content-list">
+    <li>cache</li>
+    <li>sessions</li>
+    <li>taches</li>
+    <li>evenements</li>
+    <li>temps reel</li>
+</ul>
+<div class="body-text">Redis ne constituera jamais la source principale des ventes, paiements, stocks ou commissions.</div>
+
+<!-- Section 35 -->
+<div class="chapter-header">
+    <div class="section-number">Section 35</div>
+    <div class="section-title">Evolution architecturale</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">La premiere version n'utilisera pas une architecture microservices complexe. Le systeme sera organise en modules :</div>
+<div class="code-block">AUTH
+TENANT
+USERS
+HOUSES
+CRM
+SALES
+ORDERS
+PAYMENTS
+STOCK
+COMMISSIONS
+TARGETS
+REPORTING
+AUDIT</div>
+
+<div class="body-text">Si la plateforme atteint une taille importante, certains modules pourront ulterieurement devenir des services independants.</div>
+
+<!-- Section 36 -->
+<div class="chapter-header">
+    <div class="section-number">Section 36</div>
+    <div class="section-title">MVP — Version 1</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le MVP constitue le <strong>perimetre contractuel initial</strong>.</div>
+
+<div class="card">
+    <div class="card-title">Socle</div>
+    <ul class="content-list">
+        <li>authentification</li>
+        <li>utilisateurs</li>
+        <li>roles</li>
+        <li>permissions</li>
+        <li>entreprise / tenant</li>
+        <li>maisons</li>
+        <li>audit de base</li>
+    </ul>
+</div>
+
+<div class="card">
+    <div class="card-title">Commercial</div>
+    <ul class="content-list">
+        <li>agents</li>
+        <li>prospects</li>
+        <li>clients</li>
+        <li>portefeuille</li>
+        <li>produits</li>
+        <li>commandes</li>
+        <li>ventes</li>
+    </ul>
+</div>
+
+<div class="card">
+    <div class="card-title">Finance</div>
+    <ul class="content-list">
+        <li>paiements simples</li>
+        <li>commissions a pourcentage fixe</li>
+    </ul>
+</div>
+
+<div class="card">
+    <div class="card-title">Performance</div>
+    <ul class="content-list">
+        <li>target mensuel</li>
+        <li>objectifs par maison</li>
+        <li>contribution des maisons</li>
+        <li>dashboard central</li>
+    </ul>
+</div>
+
+<div class="card">
+    <div class="card-title">Stock</div>
+    <ul class="content-list">
+        <li>catalogue</li>
+        <li>stock simple</li>
+        <li>alertes de stock faible</li>
+    </ul>
+</div>
+
+<!-- Section 37 -->
+<div class="chapter-header">
+    <div class="section-number">Section 37</div>
+    <div class="section-title">Ce qui n'est pas dans le MVP</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Pour eviter toute ambiguite, les fonctionnalites suivantes ne sont <strong>pas incluses dans le perimetre initial</strong>, sauf accord complementaire :</div>
+<ul class="content-list">
+    <li>IA</li>
+    <li>forecasting avance</li>
+    <li>mode offline</li>
+    <li>application mobile native</li>
+    <li>facturation SaaS</li>
+    <li>abonnements</li>
+    <li>white-label</li>
+    <li>marketplace</li>
+    <li>integrations bancaires complexes</li>
+    <li>WhatsApp automatise</li>
+    <li>SMS avance</li>
+    <li>comptabilite complete</li>
+    <li>caisse avancee</li>
+    <li>microservices distribues</li>
+</ul>
+<div class="body-text">Ces fonctionnalites pourront etre ajoutees ulterieurement.</div>
+
+<!-- Section 38 -->
+<div class="chapter-header">
+    <div class="section-number">Section 38</div>
+    <div class="section-title">Roadmap</div>
+    <div class="divider"></div>
+</div>
+
+<div class="roadmap-item">
+    <div class="roadmap-badge">V1</div>
+    <div class="roadmap-text"><strong>MVP commercial</strong> — Gestion fondamentale de l'activite.</div>
+</div>
+<div class="roadmap-item">
+    <div class="roadmap-badge">V2</div>
+    <div class="roadmap-text"><strong>Operations avancees</strong> — Stock avance, transferts inter-maisons, notifications, temps reel ameliore.</div>
+</div>
+<div class="roadmap-item">
+    <div class="roadmap-badge">V3</div>
+    <div class="roadmap-text"><strong>Intelligence commerciale</strong> — Analytics avance, forecasting, automatisations.</div>
+</div>
+<div class="roadmap-item">
+    <div class="roadmap-badge">V4</div>
+    <div class="roadmap-text"><strong>SaaS</strong> — Plusieurs entreprises actives, abonnements, plans, facturation, limites.</div>
+</div>
+<div class="roadmap-item">
+    <div class="roadmap-badge">V5</div>
+    <div class="roadmap-text"><strong>IA</strong> — Recommandations, detection d'anomalies, previsions, assistant decisionnel.</div>
+</div>
+<div class="roadmap-item">
+    <div class="roadmap-badge">V6</div>
+    <div class="roadmap-text"><strong>Mobilite et integrations</strong> — Offline, Mobile Money, API publiques, integrations externes.</div>
+</div>
+<div class="roadmap-item">
+    <div class="roadmap-badge">V7</div>
+    <div class="roadmap-text"><strong>Ecosysteme</strong> — White-label, extensions, marketplace, ecosysteme partenaires.</div>
+</div>
+
+<!-- Section 39 -->
+<div class="chapter-header">
+    <div class="section-number">Section 39</div>
+    <div class="section-title">Exigences non fonctionnelles</div>
+    <div class="divider"></div>
+</div>
+
+<div class="sub-heading">Performance</div>
+<div class="body-text">Pour le MVP :</div>
+<ul class="content-list">
+    <li>cible initiale d'au moins 50 utilisateurs simultanes</li>
+    <li>pages principales idealement chargees en moins de 2 secondes dans des conditions normales</li>
+    <li>pagination et recherche pour les grandes listes</li>
+</ul>
+
+<div class="sub-heading">Securite</div>
+<ul class="content-list">
+    <li>mots de passe haches</li>
+    <li>HTTPS</li>
+    <li>protection contre les injections</li>
+    <li>protection XSS</li>
+    <li>protection CSRF lorsque pertinente</li>
+    <li>controle des permissions</li>
+    <li>isolation tenant</li>
+    <li>audit</li>
+    <li>gestion securisee des sessions</li>
+</ul>
+
+<div class="sub-heading">Disponibilite</div>
+<div class="body-text">Objectif initial : <strong>99,5 % hors maintenance planifiee</strong>, sous reserve de l'infrastructure d'hebergement.</div>
+
+<div class="sub-heading">Sauvegardes</div>
+<ul class="content-list">
+    <li>sauvegardes automatiques</li>
+    <li>conservation de plusieurs versions</li>
+    <li>procedure de restauration testee</li>
+</ul>
+
+<div class="sub-heading">Compatibilite</div>
+<div class="body-text">Navigateurs modernes : Chrome, Edge, Firefox, Safari. Interface responsive et prioritairement adaptee aux smartphones pour les agents.</div>
+
+<!-- Section 40 -->
+<div class="chapter-header">
+    <div class="section-number">Section 40</div>
+    <div class="section-title">Criteres d'acceptation du MVP</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le MVP sera considere comme fonctionnel lorsque :</div>
+
+<div class="criteria-group">
+    <div class="criteria-title">Securite</div>
+    <ul class="content-list">
+        <li>un utilisateur ne peut acceder qu'a ses donnees autorisees</li>
+        <li>les tenants sont isoles</li>
+        <li>les permissions fonctionnent</li>
+        <li>les acces sont journalises</li>
+    </ul>
+</div>
+
+<div class="criteria-group">
+    <div class="criteria-title">Clients</div>
+    <ul class="content-list">
+        <li>un agent peut creer un prospect</li>
+        <li>le prospect peut devenir client</li>
+        <li>le client est ajoute au portefeuille de l'agent</li>
+        <li>les doublons sont detectes</li>
+    </ul>
+</div>
+
+<div class="criteria-group">
+    <div class="criteria-title">Commandes</div>
+    <ul class="content-list">
+        <li>une commande peut etre creee</li>
+        <li>son statut peut evoluer</li>
+        <li>elle ne devient une vente qu'apres conversion explicite</li>
+    </ul>
+</div>
+
+<div class="criteria-group">
+    <div class="criteria-title">Ventes</div>
+    <ul class="content-list">
+        <li>une vente peut etre creee</li>
+        <li>elle est liee au client, agent, vendeur, maison et produits</li>
+        <li>le stock est mis a jour lorsque le produit est suivi</li>
+    </ul>
+</div>
+
+<div class="criteria-group">
+    <div class="criteria-title">Paiements</div>
+    <ul class="content-list">
+        <li>un paiement peut etre enregistre</li>
+        <li>les paiements partiels sont possibles</li>
+        <li>le solde restant est calcule</li>
+    </ul>
+</div>
+
+<div class="criteria-group">
+    <div class="criteria-title">Commissions</div>
+    <ul class="content-list">
+        <li>une commission est automatiquement calculee</li>
+        <li>elle est associee a la bonne vente et au bon beneficiaire</li>
+        <li>elle peut etre validee</li>
+    </ul>
+</div>
+
+<div class="criteria-group">
+    <div class="criteria-title">Objectifs</div>
+    <ul class="content-list">
+        <li>le gestionnaire peut definir un target</li>
+        <li>les realisations sont calculees</li>
+        <li>la contribution des maisons est affichee</li>
+    </ul>
+</div>
+
+<div class="criteria-group">
+    <div class="criteria-title">Dashboard</div>
+    <ul class="content-list">
+        <li>les indicateurs correspondent aux donnees reelles</li>
+        <li>les filtres fonctionnent</li>
+        <li>les performances des maisons peuvent etre comparees</li>
+    </ul>
+</div>
+
+<!-- Section 41 -->
+<div class="chapter-header">
+    <div class="section-number">Section 41</div>
+    <div class="section-title">Livrables du projet</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le projet devra produire :</div>
+<ol class="content-list-ol">
+    <li>application web fonctionnelle</li>
+    <li>interface d'administration</li>
+    <li>base de donnees structuree</li>
+    <li>systeme d'authentification</li>
+    <li>gestion des roles et permissions</li>
+    <li>modules commerciaux du MVP</li>
+    <li>dashboard</li>
+    <li>systeme de commissions</li>
+    <li>systeme d'objectifs</li>
+    <li>systeme d'audit</li>
+    <li>documentation technique minimale</li>
+    <li>documentation utilisateur minimale</li>
+    <li>procedure de sauvegarde et restauration</li>
+</ol>
+
+<!-- Section 42 -->
+<div class="chapter-header">
+    <div class="section-number">Section 42</div>
+    <div class="section-title">Documents de conception complementaires</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Avant ou pendant le developpement, les documents suivants seront etablis :</div>
+
+<div class="sub-heading">Specifications fonctionnelles detaillees</div>
+<div class="body-text">Regles metier et scenarios.</div>
+
+<div class="sub-heading">Matrice RBAC</div>
+<div class="body-text">Roles x permissions x perimetre.</div>
+
+<div class="sub-heading">Modele de donnees</div>
+<div class="body-text">Tables, relations, contraintes et index.</div>
+
+<div class="sub-heading">Contrat API</div>
+<div class="body-text">Endpoints, parametres et reponses.</div>
+
+<div class="sub-heading">Wireframes</div>
+<div class="body-text">Structure des principaux ecrans.</div>
+
+<div class="sub-heading">Plan de tests</div>
+<div class="body-text">Tests fonctionnels, securite, permissions et isolation multi-tenant.</div>
+
+<!-- Section 43 -->
+<div class="chapter-header">
+    <div class="section-number">Section 43</div>
+    <div class="section-title">Gestion du perimetre</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le present document definit le perimetre fonctionnel du projet.</div>
+<div class="body-text">Toute fonctionnalite qui n'est pas explicitement incluse dans le <strong>MVP V1</strong> sera consideree comme une evolution.</div>
+<div class="body-text">Toute demande supplementaire pourra faire l'objet :</div>
+<ul class="content-list">
+    <li>d'une analyse</li>
+    <li>d'une estimation</li>
+    <li>d'un delai supplementaire</li>
+    <li>d'une validation separee</li>
+</ul>
+<div class="body-text">Cette regle permet de preserver : <strong>le budget, le delai et la qualite du MVP.</strong></div>
+
+<!-- Section 44 -->
+<div class="chapter-header">
+    <div class="section-number">Section 44</div>
+    <div class="section-title">Resultat attendu pour le proprietaire</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">A la livraison du MVP, le proprietaire disposera d'une application permettant de gerer son activite commerciale depuis un seul espace.</div>
+<div class="body-text">Il pourra notamment :</div>
+<blockquote>
+    <p>gerer ses maisons</p>
+    <p>gerer ses agents</p>
+    <p>construire les portefeuilles clients</p>
+    <p>suivre les clients</p>
+    <p>suivre les commandes</p>
+    <p>enregistrer les ventes</p>
+    <p>suivre les paiements</p>
+    <p>gerer les produits et stocks</p>
+    <p>calculer les commissions</p>
+    <p>definir un target mensuel</p>
+    <p>mesurer la contribution de chaque maison</p>
+    <p>suivre les performances</p>
+    <p>consulter les alertes et evenements importants</p>
+    <p>controler les operations grace a l'audit</p>
+</blockquote>
+
+<!-- Section 45 -->
+<div class="chapter-header">
+    <div class="section-number">Section 45</div>
+    <div class="section-title">Parcours commercial global</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">Le systeme devra couvrir le parcours :</div>
+
+<div class="code-block">                 PROSPECTION
+                     │
+                     ▼
+                  PROSPECT
+                     │
+                     ▼
+                   CLIENT
+                     │
+                     ▼
+              PORTEFEUILLE AGENT
+                     │
+                     ▼
+                 COMMANDE
+                     │
+                     ▼
+               FORMALISATION
+                     │
+                     ▼
+                   VENTE
+                     │
+          ┌──────────┴──────────┐
+          ▼                     ▼
+       PAIEMENT              STOCK
+          │
+          ▼
+      COMMISSION
+          │
+          ▼
+       OBJECTIF
+          │
+          ▼
+       ANALYTICS
+          │
+          ▼
+       DECISION</div>
+
+<!-- Section 46 -->
+<div class="chapter-header">
+    <div class="section-number">Section 46</div>
+    <div class="section-title">Vision a long terme</div>
+    <div class="divider"></div>
+</div>
+
+<div class="body-text">SALES OS evoluer progressivement :</div>
+<div class="code-block">Application de gestion commerciale
+        ↓
+Plateforme de pilotage commercial
+        ↓
+Plateforme SaaS multi-entreprises
+        ↓
+Business Intelligence
+        ↓
+Sales Intelligence
+        ↓
+Business Operating System</div>
+
+<div class="body-text">L'objectif ultime est de permettre a la direction de passer de :</div>
+<blockquote>
+    <p>« Je cherche les informations pour comprendre ce qui se passe »</p>
+</blockquote>
+<div class="body-text">a :</div>
+<blockquote>
+    <p>« SALES OS me montre ce qui se passe, pourquoi cela se passe et ou je dois agir. »</p>
+</blockquote>
+
+<!-- Section 47 -->
+<div class="chapter-header">
+    <div class="section-number">Section 47</div>
+    <div class="section-title">Principe directeur</div>
+    <div class="divider"></div>
+</div>
+
+<div class="principle-banner">
+    <p>CAPTURER → CENTRALISER → SECURISER → MESURER → ANALYSER → AUTOMATISER → DECIDER</p>
+</div>
+
+<div class="body-text">SALES OS doit transformer les operations commerciales quotidiennes en <strong>donnees fiables permettant un pilotage reel de l'entreprise</strong>.</div>
+
+</div><!-- end main-content -->
+
+<!-- ===== VALIDATION / SIGNATURE PAGE ===== -->
+<div class="ending">
+    <div class="section-number">Section 48</div>
+    <div class="ending-title">Validation du proprietaire</div>
+    <div class="ending-subtitle">Le present cahier des charges constitue la base de validation fonctionnelle du projet.</div>
+    <div class="divider" style="margin-bottom: 24px;"></div>
+
+    <div class="validation-item">
+        <div class="validation-label">Perimetre general</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+    <div class="validation-item">
+        <div class="validation-label">Fonctionnalites du MVP V1</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+    <div class="validation-item">
+        <div class="validation-label">Gestion des maisons</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+    <div class="validation-item">
+        <div class="validation-label">Gestion des agents et portefeuilles</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+    <div class="validation-item">
+        <div class="validation-label">Gestion des clients</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+    <div class="validation-item">
+        <div class="validation-label">Commandes et ventes</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+    <div class="validation-item">
+        <div class="validation-label">Produits et stocks</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+    <div class="validation-item">
+        <div class="validation-label">Paiements et commissions</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+    <div class="validation-item">
+        <div class="validation-label">Objectifs et contribution des maisons</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+    <div class="validation-item">
+        <div class="validation-label">Dashboard</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+    <div class="validation-item">
+        <div class="validation-label">Securite et audit</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+    <div class="validation-item" style="border-bottom: none;">
+        <div class="validation-label">Architecture evolutive</div>
+        <div class="validation-checkbox"><span>Valide</span><span>A modifier</span></div>
+    </div>
+
+    <div style="margin-top: 24px;">
+        <div class="sig-label">Observations du proprietaire</div>
+        <div class="sig-dots"></div>
+        <div class="sig-dots"></div>
+    </div>
+
+    <div style="display: flex; gap: 32px; margin-top: 8px;">
+        <div style="flex: 1;">
+            <div class="sig-label">Nom du proprietaire</div>
+            <div class="sig-dots"></div>
+        </div>
+        <div style="flex: 1;">
+            <div class="sig-label">Date</div>
+            <div class="sig-dots"></div>
+        </div>
+    </div>
+
+    <div style="margin-top: 8px;">
+        <div class="sig-label">Signature</div>
+        <div class="sig-dots" style="height: 48px;"></div>
+    </div>
+
+    <div class="conclusion-box" style="margin-top: 24px;">
+        <p><strong>SALES OS V2.1</strong> constitue desormais un cadre suffisamment precis pour passer a la conception et au developpement du MVP.</p>
+        <p><span class="highlight">Architecture cible = ambitieuse et evolutive.</span></p>
+        <p><span class="highlight">MVP V1 = volontairement limite et realisable.</span></p>
+        <p>Ainsi, le projet peut commencer simplement sans sacrifier sa capacite future a devenir une <strong>veritable plateforme SaaS multi-entreprises</strong>.</p>
+    </div>
+</div>
+
+</body>
+</html>
