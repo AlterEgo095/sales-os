@@ -7,9 +7,11 @@ export type ViewId =
   | 'orders'
   | 'agents'
   | 'payments'
+  | 'commissions'
   | 'stock'
   | 'targets'
-  | 'commissions'
+  | 'audit'
+  | 'rbac'
   | 'settings'
 
 interface NavigationState {

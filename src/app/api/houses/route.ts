@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
     const houses = await db.house.findMany({
       where: tenantId ? { tenantId } : undefined,
       orderBy: { createdAt: "desc" },
+      include: { manager: { select: { id: true, firstName: true, lastName: true } } },
     })
     return NextResponse.json(houses)
   } catch (error) {

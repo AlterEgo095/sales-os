@@ -10,6 +10,7 @@ import {
   Warehouse,
   Target,
   DollarSign,
+  Shield,
   Settings,
 } from 'lucide-react'
 import {
@@ -42,8 +43,19 @@ const secondaryNav = [
   { id: 'targets' as ViewId, label: 'Objectifs', icon: Target },
 ]
 
+const platformNav = [
+  { id: 'audit' as ViewId, label: 'Audit', icon: Shield },
+  { id: 'rbac' as ViewId, label: 'Permissions', icon: Users },
+  { id: 'settings' as ViewId, label: 'Parametres', icon: Settings },
+]
+
 export function AppSidebar() {
   const { activeView, setActiveView } = useNavigation()
+
+  const btnClass = (id: ViewId) =>
+    activeView === id
+      ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/15 hover:text-blue-300'
+      : 'text-gray-400 hover:bg-[#1f2937]/50 hover:text-white'
 
   return (
     <Sidebar className="bg-[#0d1117] border-r border-[#1f2937]">
@@ -53,7 +65,7 @@ export function AppSidebar() {
             SALES <span className="text-blue-500">OS</span>
           </div>
           <span className="text-[9px] font-medium px-1.5 py-0.5 rounded border border-blue-500/30 text-blue-400 bg-blue-500/10">
-            V2
+            V3
           </span>
         </div>
       </SidebarHeader>
@@ -73,11 +85,7 @@ export function AppSidebar() {
                     isActive={activeView === item.id}
                     onClick={() => setActiveView(item.id)}
                     tooltip={item.label}
-                    className={
-                      activeView === item.id
-                        ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/15 hover:text-blue-300'
-                        : 'text-gray-400 hover:bg-[#1f2937]/50 hover:text-white'
-                    }
+                    className={btnClass(item.id)}
                   >
                     <item.icon className="w-4 h-4" />
                     <span>{item.label}</span>
@@ -100,11 +108,30 @@ export function AppSidebar() {
                     isActive={activeView === item.id}
                     onClick={() => setActiveView(item.id)}
                     tooltip={item.label}
-                    className={
-                      activeView === item.id
-                        ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/15 hover:text-blue-300'
-                        : 'text-gray-400 hover:bg-[#1f2937]/50 hover:text-white'
-                    }
+                    className={btnClass(item.id)}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    <span>{item.label}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-gray-500 text-[10px] uppercase tracking-widest">
+            Plateforme
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {platformNav.map((item) => (
+                <SidebarMenuItem key={item.id}>
+                  <SidebarMenuButton
+                    isActive={activeView === item.id}
+                    onClick={() => setActiveView(item.id)}
+                    tooltip={item.label}
+                    className={btnClass(item.id)}
                   >
                     <item.icon className="w-4 h-4" />
                     <span>{item.label}</span>
@@ -115,22 +142,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-
-      <SidebarFooter className="p-3">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              isActive={activeView === 'settings'}
-              onClick={() => setActiveView('settings')}
-              tooltip="Parametres"
-              className="text-gray-500 hover:bg-[#1f2937]/50 hover:text-gray-300"
-            >
-              <Settings className="w-4 h-4" />
-              <span>Parametres</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
     </Sidebar>
   )
 }

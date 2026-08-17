@@ -12,6 +12,8 @@ import { PaymentsView } from '@/components/modules/payments-view'
 import { StockView } from '@/components/modules/stock-view'
 import { TargetsView } from '@/components/modules/targets-view'
 import { CommissionsView } from '@/components/modules/commissions-view'
+import { AuditView } from '@/components/modules/audit-view'
+import { RbacView } from '@/components/modules/rbac-view'
 import { SettingsView } from '@/components/modules/settings-view'
 import { Separator } from '@/components/ui/separator'
 
@@ -25,6 +27,8 @@ const viewLabels: Record<ViewId, string> = {
   commissions: 'Commissions',
   stock: 'Stock',
   targets: 'Objectifs',
+  audit: 'Journal d\'audit',
+  rbac: 'Permissions (RBAC)',
   settings: 'Parametres',
 }
 
@@ -55,6 +59,10 @@ export default function SalesOSApp() {
         return <StockView />
       case 'targets':
         return <TargetsView />
+      case 'audit':
+        return <AuditView />
+      case 'rbac':
+        return <RbacView />
       case 'settings':
         return <SettingsView />
       default:
@@ -89,7 +97,7 @@ export default function SalesOSApp() {
           {/* Footer */}
           <footer className="border-t border-[#1f2937] px-6 py-3 mt-auto">
             <div className="text-center text-xs text-gray-600">
-              SALES OS — V2 — Intelligence & Commissions
+              SALES OS — V3 — Production Ready
             </div>
           </footer>
         </SidebarInset>
