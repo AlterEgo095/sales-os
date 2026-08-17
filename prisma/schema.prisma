@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// SALES OS — Complete Prisma Schema
+// Database: SQLite (development)
 
 generator client {
   provider = "prisma-client-js"
@@ -13,20 +10,362 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+// ─── Tenant ───────────────────────────────────────────────────────────────────
+model Tenant {
   id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
+  name      String
+  slug      String   @unique
+  status    String   @default("active") // active | suspended | archived
+  settings  String   @default("{}") // JSON settings
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  users          User[]
+  houses         House[]
+  agents         Agent[]
+  customers      Customer[]
+  products       Product[]
+  orders         Order[]
+  orderItems     OrderItem[]
+  orderEvents    OrderEvent[]
+  sales          Sale[]
+  payments       Payment[]
+  stock          Stock[]
+  stockMovements StockMovement[]
+  commissions    Commission[]
+  targets        Target[]
+  auditEvents    AuditEvent[]
 }
 
-model Post {
+// ─── User ─────────────────────────────────────────────────────────────────────
+model User {
+  id           String    @id @default(cuid())
+  tenantId     String    @map("tenant_id")
+  email        String
+  passwordHash String    @map("password_hash")
+  firstName    String    @map("first_name")
+  lastName     String    @map("last_name")
+  role         String    @default("viewer") // super_admin | admin | manager | agent | cashier | viewer
+  status       String    @default("active") // active | inactive | suspended
+  lastLogin    DateTime? @map("last_login")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  house       House[]     @relation("HouseManager") // managed houses
+  agent       Agent?      @relation("UserAgent")
+  orders      Order[]     @relation("OrderSeller") // orders as seller
+  sales       Sale[]      @relation("SaleSeller") // sales as seller
+  auditEvents AuditEvent[]
+
+  @@unique([tenantId, email])
+  @@map("users")
+}
+
+// ─── House ────────────────────────────────────────────────────────────────────
+model House {
   id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
+  tenantId  String
+  name      String
+  code      String
+  address   String?
+  city      String?
+  country   String?
+  managerId String?  @map("manager_id")
+  status    String   @default("active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  tenant        Tenant          @relation(fields: [tenantId], references: [id])
+  manager       User?           @relation("HouseManager", fields: [managerId], references: [id])
+  agents        Agent[]
+  customers     Customer[]
+  products      Product[]
+  stock         Stock[]
+  stockMovements StockMovement[]
+  orders        Order[]
+  sales         Sale[]
+  targets       Target[]
+
+  @@unique([tenantId, code])
+  @@map("houses")
+}
+
+// ─── Agent ────────────────────────────────────────────────────────────────────
+model Agent {
+  id             String   @id @default(cuid())
+  tenantId       String
+  userId         String   @map("user_id")
+  houseId        String   @map("house_id")
+  code           String
+  commissionRate Float    @map("commission_rate") @default(0)
+  status         String   @default("active")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  tenant     Tenant      @relation(fields: [tenantId], references: [id])
+  user       User        @relation("UserAgent", fields: [userId], references: [id])
+  house      House       @relation(fields: [houseId], references: [id])
+  customers  Customer[]  @relation("CustomerReferent") // customers as referent
+  commissions Commission[]
+  orders     Order[]     @relation("OrderAgent") // orders as apporteur
+  sales      Sale[]      @relation("SaleAgent")
+  targets    Target[]
+
+  @@unique([tenantId, code])
+  @@unique([userId])
+  @@map("agents")
+}
+
+// ─── Customer ─────────────────────────────────────────────────────────────────
+model Customer {
+  id               String   @id @default(cuid())
+  tenantId         String
+  houseId          String
+  firstName        String   @map("first_name")
+  lastName         String   @map("last_name")
+  phone            String?
+  email            String?
+  address          String?
+  clientAccountId  String?  @map("client_account_id") // PREPARED: digital client
+  agentReferentId  String?  @map("agent_referent_id") // PREPARED: digital client
+  orderSource      String   @map("order_source") @default("manual") // manual | digital | referral
+  status           String   @default("active")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  tenant        Tenant       @relation(fields: [tenantId], references: [id])
+  house         House        @relation(fields: [houseId], references: [id])
+  agentReferent Agent?       @relation("CustomerReferent", fields: [agentReferentId], references: [id])
+  orders        Order[]
+
+  @@map("customers")
+}
+
+// ─── Product ──────────────────────────────────────────────────────────────────
+model Product {
+  id          String   @id @default(cuid())
+  tenantId    String
+  houseId     String
+  name        String
+  sku         String
+  description String?
+  unitPrice   Float    @map("unit_price")
+  currency    String   @default("USD")
+  category    String?
+  status      String   @default("active") // active | inactive | discontinued
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant     Tenant       @relation(fields: [tenantId], references: [id])
+  house      House        @relation(fields: [houseId], references: [id])
+  orderItems     OrderItem[]
+  stock          Stock[]
+  stockMovements StockMovement[]
+
+  @@map("products")
+}
+
+// ─── Order ────────────────────────────────────────────────────────────────────
+model Order {
+  id          String   @id @default(cuid())
+  tenantId    String
+  houseId     String
+  customerId  String   @map("customer_id")
+  source      String   @default("client") // client | agent | digital
+  agentId     String?  @map("agent_id") // apporteur
+  sellerId    String?  @map("seller_id") // vendeur
+  status      String   @default("draft") // draft | formalized | confirmed | cancelled | completed
+  totalAmount Float    @map("total_amount") @default(0)
+  currency    String   @default("USD")
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant   Tenant       @relation(fields: [tenantId], references: [id])
+  house    House        @relation(fields: [houseId], references: [id])
+  customer Customer     @relation(fields: [customerId], references: [id])
+  agent    Agent?       @relation("OrderAgent", fields: [agentId], references: [id])
+  seller   User?        @relation("OrderSeller", fields: [sellerId], references: [id])
+  items    OrderItem[]
+  events   OrderEvent[]
+  sale     Sale?
+
+  @@map("orders")
+}
+
+// ─── OrderItem ────────────────────────────────────────────────────────────────
+model OrderItem {
+  id        String @id @default(cuid())
+  tenantId  String
+  orderId   String @map("order_id")
+  productId String @map("product_id")
+  quantity  Int
+  unitPrice Float  @map("unit_price")
+  discount  Float  @default(0)
+  total     Float
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+// ─── OrderEvent ───────────────────────────────────────────────────────────────
+model OrderEvent {
+  id          String   @id @default(cuid())
+  tenantId    String
+  orderId     String   @map("order_id")
+  eventType   String   @map("event_type") // created | formalized | confirmed | cancelled | converted | completed
+  payload     String   @default("{}") // JSON
+  triggeredBy String?  @map("triggered_by")
+  createdAt   DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  order  Order  @relation(fields: [orderId], references: [id])
+
+  @@map("order_events")
+}
+
+// ─── Sale ─────────────────────────────────────────────────────────────────────
+model Sale {
+  id          String   @id @default(cuid())
+  tenantId    String
+  orderId     String?  @map("order_id")
+  houseId     String
+  agentId     String?  @map("agent_id")
+  sellerId    String?  @map("seller_id")
+  status      String   @default("pending") // pending | completed | refunded
+  totalAmount Float    @map("total_amount") @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant      Tenant       @relation(fields: [tenantId], references: [id])
+  order       Order?       @relation(fields: [orderId], references: [id])
+  house       House        @relation(fields: [houseId], references: [id])
+  agent       Agent?       @relation("SaleAgent", fields: [agentId], references: [id])
+  seller      User?        @relation("SaleSeller", fields: [sellerId], references: [id])
+  payments    Payment[]
+  commissions Commission[]
+
+  @@unique([orderId])
+  @@map("sales")
+}
+
+// ─── Payment ──────────────────────────────────────────────────────────────────
+model Payment {
+  id        String    @id @default(cuid())
+  tenantId  String
+  saleId    String    @map("sale_id")
+  amount    Float
+  method    String // cash | mobile_money | bank_transfer | card
+  status    String    @default("pending") // pending | completed | failed | refunded
+  reference String?
+  paidAt    DateTime? @map("paid_at")
+  createdAt DateTime  @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  sale   Sale   @relation(fields: [saleId], references: [id])
+
+  @@map("payments")
+}
+
+// ─── Stock ────────────────────────────────────────────────────────────────────
+model Stock {
+  id        String   @id @default(cuid())
+  tenantId  String
+  houseId   String
+  productId String   @map("product_id")
+  quantity  Int      @default(0)
+  reserved  Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  tenant    Tenant          @relation(fields: [tenantId], references: [id])
+  house     House           @relation(fields: [houseId], references: [id])
+  product   Product         @relation(fields: [productId], references: [id])
+  movements StockMovement[]
+
+  @@unique([tenantId, houseId, productId])
+  @@map("stock")
+}
+
+// ─── StockMovement ────────────────────────────────────────────────────────────
+model StockMovement {
+  id        String   @id @default(cuid())
+  tenantId  String
+  houseId   String
+  productId String   @map("product_id")
+  stockId   String   @map("stock_id")
+  type      String // in | out | adjust | reserve | release
+  quantity  Int
+  reference String?
+  reason    String?
+  createdAt DateTime @default(now())
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id])
+  house   House   @relation(fields: [houseId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+  stock   Stock   @relation(fields: [stockId], references: [id])
+
+  @@map("stock_movements")
+}
+
+// ─── Commission ───────────────────────────────────────────────────────────────
+model Commission {
+  id           String    @id @default(cuid())
+  tenantId     String
+  saleId       String    @map("sale_id")
+  agentId      String    @map("agent_id")
+  type         String // percentage | fixed
+  rate         Float
+  amount       Float
+  status       String    @default("calculated") // calculated | validated | paid
+  calculatedAt DateTime  @map("calculated_at")
+  paidAt       DateTime? @map("paid_at")
+  createdAt    DateTime  @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  sale   Sale   @relation(fields: [saleId], references: [id])
+  agent  Agent  @relation(fields: [agentId], references: [id])
+
+  @@map("commissions")
+}
+
+// ─── Target ───────────────────────────────────────────────────────────────────
+model Target {
+  id        String   @id @default(cuid())
+  tenantId  String
+  agentId   String?  @map("agent_id")
+  houseId   String?  @map("house_id")
+  period    String // e.g. 2026-Q1
+  type      String // revenue | orders | units
+  value     Float
+  achieved  Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  agent  Agent?  @relation(fields: [agentId], references: [id])
+  house  House?  @relation(fields: [houseId], references: [id])
+
+  @@map("targets")
+}
+
+// ─── AuditEvent ───────────────────────────────────────────────────────────────
+model AuditEvent {
+  id         String   @id @default(cuid())
+  tenantId   String
+  userId     String?  @map("user_id")
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  changes    String   @default("{}") // JSON
+  ipAddress  String?  @map("ip_address")
+  createdAt  DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id])
+
+  @@map("audit_events")
 }
