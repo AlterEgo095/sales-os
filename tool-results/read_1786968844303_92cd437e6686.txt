@@ -1,0 +1,938 @@
+     1→<!DOCTYPE html>
+     2→<html lang="fr">
+     3→<head>
+     4→<meta charset="UTF-8">
+     5→<title>Estimation Technique — SALES OS</title>
+     6→<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+     7→<style>
+     8→@page {
+     9→    size: 720px 1020px;
+    10→    margin: 0;
+    11→}
+    12→
+    13→:root {
+    14→    --c-bg: #0a0f1a;
+    15→    --c-bg-cover: #060b14;
+    16→    --c-surface: #111827;
+    17→    --c-surface-2: #1a2236;
+    18→    --c-accent: #3b82f6;
+    19→    --c-accent-light: #60a5fa;
+    20→    --c-accent-dim: #1e40af;
+    21→    --c-text: #e5e7eb;
+    22→    --c-text-muted: #9ca3af;
+    23→    --c-text-bright: #f9fafb;
+    24→    --c-border: #1f2937;
+    25→    --c-border-light: #374151;
+    26→    --c-success: #10b981;
+    27→    --c-warning: #f59e0b;
+    28→    --c-code-bg: #0d1117;
+    29→    --c-table-header: #111827;
+    30→    --c-table-stripe: #0f1520;
+    31→}
+    32→
+    33→html, body {
+    34→    margin: 0;
+    35→    padding: 0;
+    36→    width: 720px;
+    37→    background: var(--c-bg);
+    38→    color: var(--c-text);
+    39→    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    40→    font-size: 11px;
+    41→    line-height: 1.65;
+    42→    -webkit-font-smoothing: antialiased;
+    43→}
+    44→
+    45→@media screen {
+    46→    html {
+    47→        height: auto;
+    48→        display: flex;
+    49→        justify-content: center;
+    50→        background: #1a1a2e;
+    51→    }
+    52→    body {
+    53→        transform-origin: top center;
+    54→        margin: 20px auto;
+    55→    }
+    56→}
+    57→
+    58→/* ===== COVER ===== */
+    59→.cover {
+    60→    width: 720px;
+    61→    height: 1020px;
+    62→    box-sizing: border-box;
+    63→    break-after: page;
+    64→    overflow: hidden;
+    65→    display: flex;
+    66→    flex-direction: column;
+    67→    justify-content: center;
+    68→    align-items: center;
+    69→    position: relative;
+    70→    background: var(--c-bg-cover);
+    71→}
+    72→
+    73→.cover-bg {
+    74→    position: absolute;
+    75→    inset: 0;
+    76→    z-index: 0;
+    77→    pointer-events: none;
+    78→}
+    79→
+    80→.cover-circle-1 {
+    81→    position: absolute;
+    82→    right: -50px;
+    83→    top: 12%;
+    84→    width: 280px;
+    85→    height: 280px;
+    86→    border-radius: 50%;
+    87→    border: 1px solid rgba(59, 130, 246, 0.06);
+    88→}
+    89→
+    90→.cover-circle-2 {
+    91→    position: absolute;
+    92→    left: -100px;
+    93→    bottom: 18%;
+    94→    width: 400px;
+    95→    height: 400px;
+    96→    border-radius: 50%;
+    97→    border: 1px solid rgba(59, 130, 246, 0.04);
+    98→}
+    99→
+   100→.cover-watermark {
+   101→    position: absolute;
+   102→    left: 4%;
+   103→    top: 50%;
+   104→    transform: translateY(-50%) rotate(-90deg);
+   105→    transform-origin: center center;
+   106→    font-size: 140px;
+   107→    font-family: 'Inter', sans-serif;
+   108→    font-weight: 900;
+   109→    color: rgba(59, 130, 246, 0.03);
+   110→    white-space: nowrap;
+   111→    line-height: 1;
+   112→    letter-spacing: 8px;
+   113→}
+   114→
+   115→.cover-content {
+   116→    position: relative;
+   117→    z-index: 1;
+   118→    text-align: center;
+   119→    padding: 0 80px;
+   120→}
+   121→
+   122→.cover-badge {
+   123→    display: inline-block;
+   124→    background: rgba(59, 130, 246, 0.1);
+   125→    border: 1px solid rgba(59, 130, 246, 0.2);
+   126→    color: var(--c-accent-light);
+   127→    padding: 6px 20px;
+   128→    border-radius: 100px;
+   129→    font-size: 10px;
+   130→    font-weight: 600;
+   131→    letter-spacing: 2px;
+   132→    text-transform: uppercase;
+   133→    margin-bottom: 44px;
+   134→}
+   135→
+   136→.cover-title {
+   137→    font-family: 'Inter', sans-serif;
+   138→    font-size: 52px;
+   139→    font-weight: 900;
+   140→    color: var(--c-text-bright);
+   141→    line-height: 1.05;
+   142→    letter-spacing: -1.5px;
+   143→    margin-bottom: 16px;
+   144→}
+   145→
+   146→.cover-title span {
+   147→    color: var(--c-accent);
+   148→}
+   149→
+   150→.cover-subtitle {
+   151→    font-family: 'Playfair Display', serif;
+   152→    font-size: 17px;
+   153→    font-style: italic;
+   154→    color: var(--c-text-muted);
+   155→    margin-bottom: 52px;
+   156→    line-height: 1.4;
+   157→}
+   158→
+   159→.cover-amount-box {
+   160→    background: rgba(59, 130, 246, 0.08);
+   161→    border: 1px solid rgba(59, 130, 246, 0.2);
+   162→    border-radius: 12px;
+   163→    padding: 20px 40px;
+   164→    margin-bottom: 40px;
+   165→    display: inline-block;
+   166→}
+   167→
+   168→.cover-amount-label {
+   169→    font-size: 10px;
+   170→    font-weight: 600;
+   171→    color: var(--c-text-muted);
+   172→    letter-spacing: 1.5px;
+   173→    text-transform: uppercase;
+   174→    margin-bottom: 6px;
+   175→}
+   176→
+   177→.cover-amount-value {
+   178→    font-size: 42px;
+   179→    font-weight: 900;
+   180→    color: var(--c-accent-light);
+   181→    letter-spacing: -1px;
+   182→}
+   183→
+   184→.cover-amount-value span {
+   185→    font-size: 20px;
+   186→    font-weight: 500;
+   187→    color: var(--c-text-muted);
+   188→    margin-left: 4px;
+   189→}
+   190→
+   191→.cover-meta {
+   192→    display: flex;
+   193→    justify-content: center;
+   194→    gap: 40px;
+   195→}
+   196→
+   197→.cover-meta-item {
+   198→    text-align: center;
+   199→}
+   200→
+   201→.cover-meta-label {
+   202→    font-size: 9px;
+   203→    font-weight: 600;
+   204→    color: var(--c-text-muted);
+   205→    letter-spacing: 1.5px;
+   206→    text-transform: uppercase;
+   207→    margin-bottom: 4px;
+   208→}
+   209→
+   210→.cover-meta-value {
+   211→    font-size: 12px;
+   212→    font-weight: 700;
+   213→    color: var(--c-text-bright);
+   214→}
+   215→
+   216→.cover-footer {
+   217→    position: absolute;
+   218→    bottom: 40px;
+   219→    left: 0;
+   220→    right: 0;
+   221→    text-align: center;
+   222→    z-index: 1;
+   223→}
+   224→
+   225→.cover-footer-text {
+   226→    font-size: 9px;
+   227→    color: rgba(255,255,255,0.2);
+   228→    letter-spacing: 1px;
+   229→    text-transform: uppercase;
+   230→}
+   231→
+   232→/* ===== MAIN CONTENT ===== */
+   233→.main-content {
+   234→    padding: 50px 60px 40px 60px;
+   235→}
+   236→
+   237→.chapter-header {
+   238→    break-after: avoid;
+   239→    break-inside: avoid;
+   240→    margin-top: 28px;
+   241→    margin-bottom: 16px;
+   242→}
+   243→
+   244→.section-number {
+   245→    display: inline-block;
+   246→    font-size: 10px;
+   247→    font-weight: 700;
+   248→    color: var(--c-accent);
+   249→    letter-spacing: 1.5px;
+   250→    text-transform: uppercase;
+   251→    margin-bottom: 6px;
+   252→}
+   253→
+   254→.section-title {
+   255→    font-family: 'Inter', sans-serif;
+   256→    font-size: 22px;
+   257→    font-weight: 800;
+   258→    color: var(--c-text-bright);
+   259→    line-height: 1.2;
+   260→    margin-bottom: 8px;
+   261→}
+   262→
+   263→.divider {
+   264→    width: 40px;
+   265→    height: 2px;
+   266→    background: var(--c-accent);
+   267→    margin-bottom: 16px;
+   268→}
+   269→
+   270→.body-text {
+   271→    font-size: 11px;
+   272→    line-height: 1.7;
+   273→    color: var(--c-text);
+   274→    margin-bottom: 12px;
+   275→}
+   276→
+   277→.body-text strong {
+   278→    color: var(--c-text-bright);
+   279→    font-weight: 700;
+   280→}
+   281→
+   282→/* ===== BUDGET TABLE ===== */
+   283→.budget-table {
+   284→    width: 100%;
+   285→    border-collapse: separate;
+   286→    border-spacing: 0;
+   287→    margin: 16px 0;
+   288→    font-size: 10.5px;
+   289→}
+   290→
+   291→.budget-table thead th {
+   292→    background: var(--c-table-header);
+   293→    color: var(--c-text-bright);
+   294→    font-weight: 700;
+   295→    padding: 12px 16px;
+   296→    text-align: left;
+   297→    font-size: 9.5px;
+   298→    letter-spacing: 0.8px;
+   299→    text-transform: uppercase;
+   300→}
+   301→
+   302→.budget-table thead th:first-child {
+   303→    border-radius: 8px 0 0 0;
+   304→}
+   305→.budget-table thead th:nth-child(2) {
+   306→    border-radius: 0 0 0 0;
+   307→}
+   308→.budget-table thead th:last-child {
+   309→    border-radius: 0 8px 0 0;
+   310→    text-align: right;
+   311→}
+   312→
+   313→.budget-table tbody td {
+   314→    padding: 11px 16px;
+   315→    border-bottom: 1px solid var(--c-border);
+   316→    color: var(--c-text);
+   317→}
+   318→
+   319→.budget-table tbody td:last-child {
+   320→    text-align: right;
+   321→    font-weight: 700;
+   322→    color: var(--c-text-bright);
+   323→    font-variant-numeric: tabular-nums;
+   324→}
+   325→
+   326→.budget-table tbody td:first-child {
+   327→    font-weight: 600;
+   328→    color: var(--c-accent-light);
+   329→}
+   330→
+   331→.budget-table tbody tr:nth-child(even) td {
+   332→    background: var(--c-table-stripe);
+   333→}
+   334→
+   335→/* Total row */
+   336→.budget-table tbody tr.total-row td {
+   337→    background: rgba(59, 130, 246, 0.08);
+   338→    border-top: 2px solid var(--c-accent-dim);
+   339→    border-bottom: none;
+   340→    font-weight: 800;
+   341→    color: var(--c-text-bright);
+   342→    padding: 14px 16px;
+   343→}
+   344→
+   345→.budget-table tbody tr.total-row td:first-child {
+   346→    color: var(--c-accent-light);
+   347→    font-size: 11px;
+   348→    letter-spacing: 0.5px;
+   349→}
+   350→
+   351→.budget-table tbody tr.total-row td:last-child {
+   352→    font-size: 14px;
+   353→    color: var(--c-accent-light);
+   354→}
+   355→
+   356→.budget-table tbody tr.total-row td:first-child {
+   357→    border-radius: 0 0 0 8px;
+   358→}
+   359→.budget-table tbody tr.total-row td:last-child {
+   360→    border-radius: 0 0 8px 0;
+   361→}
+   362→
+   363→/* ===== CARDS ===== */
+   364→.card {
+   365→    background: var(--c-surface);
+   366→    border: 1px solid var(--c-border);
+   367→    border-radius: 8px;
+   368→    padding: 16px 18px;
+   369→    margin: 10px 0;
+   370→    break-inside: avoid;
+   371→}
+   372→
+   373→.card-accent {
+   374→    background: var(--c-surface);
+   375→    border-left: 3px solid var(--c-accent);
+   376→    border-radius: 0 8px 8px 0;
+   377→    padding: 14px 18px;
+   378→    margin: 10px 0;
+   379→    break-inside: avoid;
+   380→}
+   381→
+   382→.card-title {
+   383→    font-size: 12px;
+   384→    font-weight: 700;
+   385→    color: var(--c-accent-light);
+   386→    margin-bottom: 8px;
+   387→}
+   388→
+   389→.card p, .card-accent p {
+   390→    font-size: 10.5px;
+   391→    line-height: 1.6;
+   392→    color: var(--c-text);
+   393→    margin-bottom: 6px;
+   394→}
+   395→
+   396→.card p:last-child, .card-accent p:last-child {
+   397→    margin-bottom: 0;
+   398→}
+   399→
+   400→/* ===== LISTS ===== */
+   401→ul.content-list {
+   402→    list-style: none;
+   403→    padding: 0;
+   404→    margin: 0 0 14px 0;
+   405→}
+   406→
+   407→ul.content-list li {
+   408→    position: relative;
+   409→    padding-left: 18px;
+   410→    margin-bottom: 6px;
+   411→    font-size: 11px;
+   412→    line-height: 1.65;
+   413→    color: var(--c-text);
+   414→}
+   415→
+   416→ul.content-list li::before {
+   417→    content: '';
+   418→    position: absolute;
+   419→    left: 0;
+   420→    top: 7px;
+   421→    width: 6px;
+   422→    height: 6px;
+   423→    border-radius: 50%;
+   424→    background: var(--c-accent);
+   425→}
+   426→
+   427→/* ===== BLOCKQUOTE ===== */
+   428→blockquote {
+   429→    border-left: 3px solid var(--c-accent);
+   430→    background: rgba(59, 130, 246, 0.06);
+   431→    padding: 14px 20px;
+   432→    margin: 16px 0;
+   433→    border-radius: 0 8px 8px 0;
+   434→}
+   435→
+   436→blockquote p {
+   437→    margin: 0 0 6px 0;
+   438→    font-size: 11.5px;
+   439→    font-weight: 600;
+   440→    color: var(--c-text-bright);
+   441→    line-height: 1.5;
+   442→}
+   443→
+   444→blockquote p:last-child {
+   445→    margin-bottom: 0;
+   446→}
+   447→
+   448→/* ===== RECURRING TABLE ===== */
+   449→.recurring-grid {
+   450→    display: grid;
+   451→    grid-template-columns: 1fr 1fr;
+   452→    gap: 10px;
+   453→    margin: 14px 0;
+   454→}
+   455→
+   456→.recurring-item {
+   457→    background: var(--c-surface);
+   458→    border: 1px solid var(--c-border);
+   459→    border-radius: 8px;
+   460→    padding: 14px 16px;
+   461→    break-inside: avoid;
+   462→}
+   463→
+   464→.recurring-label {
+   465→    font-size: 9.5px;
+   466→    font-weight: 600;
+   467→    color: var(--c-text-muted);
+   468→    letter-spacing: 0.8px;
+   469→    text-transform: uppercase;
+   470→    margin-bottom: 4px;
+   471→}
+   472→
+   473→.recurring-value {
+   474→    font-size: 18px;
+   475→    font-weight: 800;
+   476→    color: var(--c-accent-light);
+   477→}
+   478→
+   479→.recurring-value span {
+   480→    font-size: 11px;
+   481→    font-weight: 400;
+   482→    color: var(--c-text-muted);
+   483→    margin-left: 2px;
+   484→}
+   485→
+   486→/* ===== BREAKDOWN BAR ===== */
+   487→.breakdown-container {
+   488→    margin: 20px 0;
+   489→    break-inside: avoid;
+   490→}
+   491→
+   492→.breakdown-bar {
+   493→    display: flex;
+   494→    height: 32px;
+   495→    border-radius: 6px;
+   496→    overflow: hidden;
+   497→    margin-bottom: 10px;
+   498→}
+   499→
+   500→.breakdown-segment {
+   501→    display: flex;
+   502→    align-items: center;
+   503→    justify-content: center;
+   504→    font-size: 8.5px;
+   505→    font-weight: 700;
+   506→    color: white;
+   507→    letter-spacing: 0.3px;
+   508→}
+   509→
+   510→.breakdown-legend {
+   511→    display: flex;
+   512→    flex-wrap: wrap;
+   513→    gap: 12px;
+   514→    margin-top: 8px;
+   515→}
+   516→
+   517→.breakdown-legend-item {
+   518→    display: flex;
+   519→    align-items: center;
+   520→    gap: 6px;
+   521→    font-size: 9.5px;
+   522→    color: var(--c-text-muted);
+   523→}
+   524→
+   525→.breakdown-legend-dot {
+   526→    width: 8px;
+   527→    height: 8px;
+   528→    border-radius: 2px;
+   529→    flex-shrink: 0;
+   530→}
+   531→
+   532→/* ===== HIGHLIGHT BOX ===== */
+   533→.highlight-box {
+   534→    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.04));
+   535→    border: 1px solid rgba(59, 130, 246, 0.2);
+   536→    border-radius: 10px;
+   537→    padding: 22px 24px;
+   538→    margin: 20px 0;
+   539→    break-inside: avoid;
+   540→}
+   541→
+   542→.highlight-box .hl-title {
+   543→    font-size: 13px;
+   544→    font-weight: 800;
+   545→    color: var(--c-accent-light);
+   546→    margin-bottom: 8px;
+   547→    letter-spacing: 0.5px;
+   548→}
+   549→
+   550→.highlight-box .hl-text {
+   551→    font-size: 11px;
+   552→    line-height: 1.7;
+   553→    color: var(--c-text);
+   554→}
+   555→
+   556→.highlight-box .hl-amount {
+   557→    font-size: 28px;
+   558→    font-weight: 900;
+   559→    color: var(--c-accent-light);
+   560→    margin: 10px 0 4px;
+   561→}
+   562→
+   563→.highlight-box .hl-amount span {
+   564→    font-size: 14px;
+   565→    font-weight: 500;
+   566→    color: var(--c-text-muted);
+   567→}
+   568→
+   569→/* ===== ENDING ===== */
+   570→.ending {
+   571→    width: 720px;
+   572→    height: 1020px;
+   573→    box-sizing: border-box;
+   574→    break-before: page;
+   575→    overflow: hidden;
+   576→    display: flex;
+   577→    flex-direction: column;
+   578→    justify-content: center;
+   579→    padding: 60px 80px;
+   580→    position: relative;
+   581→    background: var(--c-bg-cover);
+   582→}
+   583→
+   584→.ending-title {
+   585→    font-size: 24px;
+   586→    font-weight: 800;
+   587→    color: var(--c-text-bright);
+   588→    margin-bottom: 8px;
+   589→}
+   590→
+   591→.ending-subtitle {
+   592→    font-size: 13px;
+   593→    color: var(--c-accent-light);
+   594→    font-weight: 600;
+   595→    margin-bottom: 24px;
+   596→}
+   597→
+   598→.sig-label {
+   599→    font-size: 10px;
+   600→    color: var(--c-text-muted);
+   601→    text-transform: uppercase;
+   602→    letter-spacing: 1px;
+   603→    margin-bottom: 6px;
+   604→}
+   605→
+   606→.sig-dots {
+   607→    border-bottom: 1px solid var(--c-border-light);
+   608→    height: 24px;
+   609→    margin-bottom: 16px;
+   610→}
+   611→
+   612→.conclusion-box {
+   613→    background: rgba(59, 130, 246, 0.08);
+   614→    border: 1px solid rgba(59, 130, 246, 0.15);
+   615→    border-radius: 10px;
+   616→    padding: 24px;
+   617→    margin: 20px 0;
+   618→    text-align: center;
+   619→}
+   620→
+   621→.conclusion-box p {
+   622→    font-size: 12px;
+   623→    line-height: 1.7;
+   624→    color: var(--c-text);
+   625→    margin-bottom: 8px;
+   626→}
+   627→
+   628→.conclusion-box strong {
+   629→    color: var(--c-text-bright);
+   630→}
+   631→
+   632→.conclusion-box .highlight {
+   633→    color: var(--c-accent-light);
+   634→    font-weight: 700;
+   635→}
+   636→
+   637→/* Sub-heading */
+   638→.sub-heading {
+   639→    font-size: 13px;
+   640→    font-weight: 700;
+   641→    color: var(--c-text-bright);
+   642→    margin: 14px 0 6px 0;
+   643→}
+   644→</style>
+   645→</head>
+   646→<body>
+   647→
+   648→<!-- ===== COVER ===== -->
+   649→<div class="cover">
+   650→    <div class="cover-bg">
+   651→        <div class="cover-circle-1"></div>
+   652→        <div class="cover-circle-2"></div>
+   653→        <div class="cover-watermark">SALES OS</div>
+   654→    </div>
+   655→    <div class="cover-content">
+   656→        <div class="cover-badge">Estimation Technique</div>
+   657→        <div class="cover-title">INVESTISSEMENT<br>INITIAL <span>SALES OS</span></div>
+   658→        <div class="cover-subtitle">Budget previsionnel pour la premiere annee</div>
+   659→        <div class="cover-amount-box">
+   660→            <div class="cover-amount-label">Investissement initial estimatif</div>
+   661→            <div class="cover-amount-value">605 <span>USD</span></div>
+   662→        </div>
+   663→        <div class="cover-meta">
+   664→            <div class="cover-meta-item">
+   665→                <div class="cover-meta-label">Projet</div>
+   666→                <div class="cover-meta-value">SALES OS MVP V1</div>
+   667→            </div>
+   668→            <div class="cover-meta-item">
+   669→                <div class="cover-meta-label">Date</div>
+   670→                <div class="cover-meta-value">Mars 2026</div>
+   671→            </div>
+   672→            <div class="cover-meta-item">
+   673→                <div class="cover-meta-label">Statut</div>
+   674→                <div class="cover-meta-value">Estimation</div>
+   675→            </div>
+   676→        </div>
+   677→    </div>
+   678→    <div class="cover-footer">
+   679→        <div class="cover-footer-text">Confidentiel — SALES OS — Estimation Investissement Initial</div>
+   680→    </div>
+   681→</div>
+   682→
+   683→<!-- ===== MAIN CONTENT ===== -->
+   684→<div class="main-content">
+   685→
+   686→<!-- Section 1: Budget -->
+   687→<div class="chapter-header">
+   688→    <div class="section-number">1</div>
+   689→    <div class="section-title">Budget previsionnel detaille</div>
+   690→    <div class="divider"></div>
+   691→</div>
+   692→
+   693→<div class="body-text">L'investissement initial necessaire pour mettre en ligne et rendre operationnelle la premiere version de <strong>SALES OS</strong> est estime a environ <strong>605 USD</strong>.</div>
+   694→
+   695→<table class="budget-table">
+   696→    <thead>
+   697→        <tr>
+   698→            <th style="width:28%">Poste</th>
+   699→            <th style="width:52%">Description</th>
+   700→            <th style="width:20%">Cout estimatif</th>
+   701→        </tr>
+   702→    </thead>
+   703→    <tbody>
+   704→        <tr>
+   705→            <td>VPS / Hebergement</td>
+   706→            <td>Serveur necessaire pour heberger et faire fonctionner l'application pendant 1 an</td>
+   707→            <td>120 $</td>
+   708→        </tr>
+   709→        <tr>
+   710→            <td>Nom de domaine</td>
+   711→            <td>Adresse officielle de la plateforme pendant 1 an</td>
+   712→            <td>15 $</td>
+   713→        </tr>
+   714→        <tr>
+   715→            <td>Sauvegardes</td>
+   716→            <td>Mise en place d'une solution de sauvegarde des donnees</td>
+   717→            <td>20 $</td>
+   718→        </tr>
+   719→        <tr>
+   720→            <td>Deploiement & config.</td>
+   721→            <td>Installation du serveur, configuration de l'environnement, base de donnees, securite et mise en ligne</td>
+   722→            <td>50 $</td>
+   723→        </tr>
+   724→        <tr>
+   725→            <td>Developpement du MVP</td>
+   726→            <td>Conception et developpement de la premiere version fonctionnelle de SALES OS</td>
+   727→            <td>350 $</td>
+   728→        </tr>
+   729→        <tr>
+   730→            <td>Tests & corrections</td>
+   731→            <td>Tests fonctionnels, corrections des anomalies et stabilisation avant livraison</td>
+   732→            <td>50 $</td>
+   733→        </tr>
+   734→        <tr class="total-row">
+   735→            <td>TOTAL INITIAL ESTIMATIF</td>
+   736→            <td></td>
+   737→            <td>≈ 605 $</td>
+   738→        </tr>
+   739→    </tbody>
+   740→</table>
+   741→
+   742→<!-- Section 2: Prérequis Techniques — Terrain d'exécution -->
+   743→<div class="chapter-header">
+   744→    <div class="section-number">2</div>
+   745→    <div class="section-title">Prerequis techniques — Terrain d'execution</div>
+   746→    <div class="divider"></div>
+   747→</div>
+   748→
+   749→<div class="body-text">Pour le <strong>lancement de l'implementation</strong> de SALES OS, il est indispensable de couvrir l'ensemble des <strong>frais techniques</strong> avant meme le debut du developpement. Ces frais constituent le <strong>terrain d'execution</strong> — l'environnement physique et logique sur lequel l'application va se reposer et fonctionner.</div>
+   750→
+   751→<div class="highlight-box" style="margin-top: 12px;">
+   752→    <div class="hl-title">Pourquoi ces frais sont obligatoires</div>
+   753→    <div class="hl-text">Sans serveur (VPS), l'application n'a aucun endroit pour fonctionner. Sans nom de domaine, elle est inaccessible. Sans sauvegardes, les donnees sont vulnerables. Sans deploiement, le code reste inactif. <strong>Chaque poste technique est une condition sine qua non</strong> pour que le developpement produise un resultat utilisable.</div>
+   754→</div>
+   755→
+   756→<div class="card-accent" style="margin-top: 14px;">
+   757→    <div class="card-title">Terrain d'execution — Postes techniques obligatoires</div>
+   758→    <p><strong>VPS / Hebergement (120 $)</strong> — Le serveur est la machine qui fait tourner l'application 24 h/24. C'est l'emplacement physique ou le code, la base de donnees et tous les services resident.</p>
+   759→    <p><strong>Nom de domaine (15 $)</strong> — L'adresse officielle (ex. salesos.com) qui permet aux utilisateurs d'acceder a la plateforme depuis n'importe quel navigateur.</p>
+   760→    <p><strong>Sauvegardes (20 $)</strong> — Systeme de protection des donnees contre la perte accidentelle ou technique. Indispensable pour la securite et la continuite de l'activite.</p>
+   761→    <p><strong>Deploiement & configuration (50 $)</strong> — Installation et mise en service du serveur : configuration de l'environnement, de la base de donnees, de la securite (HTTPS, pare-feu), et connexion du domaine a l'application.</p>
+   762→</div>
+   763→
+   764→<div class="body-text" style="margin-top: 12px;">Le total des <strong>frais techniques obligatoires</strong> s'eleve a <strong>205 USD</strong>. Ce montant doit etre integralement couvert pour disposer d'un <strong>terrain d'execution operationnel</strong> des le depart. Ce n'est qu'une fois ce terrain etabli que le developpement (350 $) et les tests (50 $) peuvent commencer.</div>
+   765→
+   766→<blockquote style="margin-top: 10px;">
+   767→    <p>Les frais techniques (205 $) sont les fondations sur lesquelles repose l'ensemble du projet. Les couvrir en totalite est la condition prealable a toute execution.</p>
+   768→</blockquote>
+   769→
+   770→<!-- Section 3: Visual Breakdown -->
+   771→<div class="chapter-header">
+   772→    <div class="section-number">3</div>
+   773→    <div class="section-title">Repartition de l'investissement</div>
+   774→    <div class="divider"></div>
+   775→</div>
+   776→
+   777→<div class="breakdown-container">
+   778→    <div class="breakdown-bar">
+   779→        <div class="breakdown-segment" style="width:57.9%; background:#1e40af;">Developpement MVP</div>
+   780→        <div class="breakdown-segment" style="width:19.8%; background:#2563eb;">VPS / Hebergement</div>
+   781→        <div class="breakdown-segment" style="width:8.3%; background:#3b82f6;">Deploiement</div>
+   782→        <div class="breakdown-segment" style="width:8.3%; background:#60a5fa;">Tests</div>
+   783→        <div class="breakdown-segment" style="width:5.8%; background:#93c5fd; color:#1e3a5c;">Autres</div>
+   784→    </div>
+   785→    <div class="breakdown-legend">
+   786→        <div class="breakdown-legend-item">
+   787→            <div class="breakdown-legend-dot" style="background:#1e40af;"></div>
+   788→            Developpement MVP — 350 $ (57,9 %)
+   789→        </div>
+   790→        <div class="breakdown-legend-item">
+   791→            <div class="breakdown-legend-dot" style="background:#2563eb;"></div>
+   792→            VPS / Hebergement — 120 $ (19,8 %)
+   793→        </div>
+   794→        <div class="breakdown-legend-item">
+   795→            <div class="breakdown-legend-dot" style="background:#3b82f6;"></div>
+   796→            Deploiement — 50 $ (8,3 %)
+   797→        </div>
+   798→        <div class="breakdown-legend-item">
+   799→            <div class="breakdown-legend-dot" style="background:#60a5fa;"></div>
+   800→            Tests — 50 $ (8,3 %)
+   801→        </div>
+   802→        <div class="breakdown-legend-item">
+   803→            <div class="breakdown-legend-dot" style="background:#93c5fd;"></div>
+   804→            Domaine + Sauvegardes — 35 $ (5,8 %)
+   805→        </div>
+   806→    </div>
+   807→</div>
+   808→
+   809→<div class="body-text">Le <strong>developpement</strong> represente le poste principal avec pres de <strong>58 %</strong> du budget total. L'infrastructure technique (VPS + domaine + sauvegardes) represente environ <strong>26 %</strong>, et les frais de deploiement, tests et stabilisation completent le budget.</div>
+   810→
+   811→<div class="recurring-grid" style="margin-top: 10px;">
+   812→    <div class="recurring-item" style="border: 1px solid rgba(30, 64, 175, 0.3); background: rgba(30, 64, 175, 0.08);">
+   813→        <div class="recurring-label">Terrain d'execution (frais techniques)</div>
+   814→        <div class="recurring-value" style="color: var(--c-accent-light);">205 <span>$ (33,9 %)</span></div>
+   815→        <div style="font-size: 9.5px; color: var(--c-text-muted); margin-top: 4px;">VPS + domaine + sauvegardes + deploiement</div>
+   816→    </div>
+   817→    <div class="recurring-item" style="border: 1px solid rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.06);">
+   818→        <div class="recurring-label">Realisation (developpement + tests)</div>
+   819→        <div class="recurring-value" style="color: #34d399;">400 <span>$ (66,1 %)</span></div>
+   820→        <div style="font-size: 9.5px; color: var(--c-text-muted); margin-top: 4px;">Code + tests + corrections + stabilisation</div>
+   821→    </div>
+   822→</div>
+   823→
+   824→<!-- Section 4: Coverage -->
+   825→<div class="chapter-header">
+   826→    <div class="section-number">4</div>
+   827→    <div class="section-title">Ce que couvre cet investissement</div>
+   828→    <div class="divider"></div>
+   829→</div>
+   830→
+   831→<div class="body-text">Le budget de <strong>605 USD</strong> correspond a la mise en place de la <strong>premiere version fonctionnelle (MVP)</strong> de SALES OS. Il comprend notamment :</div>
+   832→
+   833→<ul class="content-list">
+   834→    <li>l'hebergement de la plateforme pendant la premiere annee</li>
+   835→    <li>le nom de domaine officiel</li>
+   836→    <li>la sauvegarde des donnees</li>
+   837→    <li>la configuration et le deploiement complet du serveur</li>
+   838→    <li>le developpement des fonctionnalites principales du MVP</li>
+   839→    <li>les tests et corrections necessaires a la mise en production</li>
+   840→</ul>
+   841→
+   842→<div class="card-accent">
+   843→    <div class="card-title">Perimetre du MVP V1</div>
+   844→    <p>Le MVP couvre les fonctionnalites essentielles du cahier des charges : gestion des maisons, agents, clients, commandes, ventes, paiements, commissions, objectifs, dashboard et stocks — dans leur version initiale et fonctionnelle.</p>
+   845→</div>
+   846→
+   847→<!-- Section 5: Recurring Costs -->
+   848→<div class="chapter-header">
+   849→    <div class="section-number">5</div>
+   850→    <div class="section-title">Frais recurrents annuels</div>
+   851→    <div class="divider"></div>
+   852→</div>
+   853→
+   854→<div class="body-text">Le cout initial ne signifie pas que toutes les evolutions futures sont incluses. Apres la premiere annee, certains frais recurrents devront etre renouveles :</div>
+   855→
+   856→<div class="recurring-grid">
+   857→    <div class="recurring-item">
+   858→        <div class="recurring-label">VPS / Hebergement</div>
+   859→        <div class="recurring-value">120 <span>$/an</span></div>
+   860→    </div>
+   861→    <div class="recurring-item">
+   862→        <div class="recurring-label">Nom de domaine</div>
+   863→        <div class="recurring-value">15 <span>$/an</span></div>
+   864→    </div>
+   865→    <div class="recurring-item">
+   866→        <div class="recurring-label">Sauvegardes</div>
+   867→        <div class="recurring-value">20 <span>$/an</span></div>
+   868→    </div>
+   869→    <div class="recurring-item" style="border: 1px solid rgba(59, 130, 246, 0.2); background: rgba(59, 130, 246, 0.06);">
+   870→        <div class="recurring-label">Total recurrent annuel</div>
+   871→        <div class="recurring-value">≈ 155 <span>$/an</span></div>
+   872→    </div>
+   873→</div>
+   874→
+   875→<div class="body-text">Les nouvelles fonctionnalites ou evolutions importantes feront l'objet d'une <strong>estimation separee</strong>, selon les besoins de l'entreprise.</div>
+   876→
+   877→<!-- Section 6: Summary -->
+   878→<div class="chapter-header">
+   879→    <div class="section-number">6</div>
+   880→    <div class="section-title">Synthese</div>
+   881→    <div class="divider"></div>
+   882→</div>
+   883→
+   884→<div class="highlight-box">
+   885→    <div class="hl-title">Investissement initial estimatif</div>
+   886→    <div class="hl-amount">605 <span>USD</span></div>
+   887→    <div class="hl-text">Objectif : mettre en production une premiere version <strong>stable et fonctionnelle</strong> de SALES OS, prete a etre utilisee pour la gestion reelle de l'activite commerciale de l'entreprise.</div>
+   888→</div>
+   889→
+   890→<div class="card">
+   891→    <div class="card-title">Rappel important</div>
+   892→    <p>Ce budget couvre le <strong>MVP V1</strong> tel que defini dans le cahier des charges. Les evolutions futures (temps reel avance, analytics, forecasting, IA, architecture SaaS multi-entreprises) feront l'objet de devis complementaires.</p>
+   893→</div>
+   894→
+   895→</div><!-- end main-content -->
+   896→
+   897→<!-- ===== ENDING / SIGNATURE ===== -->
+   898→<div class="ending">
+   899→    <div class="section-number">Validation</div>
+   900→    <div class="ending-title">Validation du proprietaire</div>
+   901→    <div class="ending-subtitle">Approbation du budget previsionnel</div>
+   902→    <div class="divider" style="margin-bottom: 24px;"></div>
+   903→
+   904→    <div style="margin-bottom: 24px;">
+   905→        <div class="body-text" style="font-size: 11.5px; color: var(--c-text); line-height: 1.7;">
+   906→            J'ai pris connaissance de l'estimation technique ci-dessus et j'approuve le budget previsionnel de <strong style="color: var(--c-accent-light);">605 USD</strong> pour le lancement du MVP SALES OS V1.
+   907→        </div>
+   908→    </div>
+   909→
+   910→    <div class="sig-label">Observations</div>
+   911→    <div class="sig-dots"></div>
+   912→    <div class="sig-dots"></div>
+   913→
+   914→    <div style="display: flex; gap: 32px; margin-top: 16px;">
+   915→        <div style="flex: 1;">
+   916→            <div class="sig-label">Nom du proprietaire</div>
+   917→            <div class="sig-dots"></div>
+   918→        </div>
+   919→        <div style="flex: 1;">
+   920→            <div class="sig-label">Date</div>
+   921→            <div class="sig-dots"></div>
+   922→        </div>
+   923→    </div>
+   924→
+   925→    <div style="margin-top: 8px;">
+   926→        <div class="sig-label">Signature</div>
+   927→        <div class="sig-dots" style="height: 48px;"></div>
+   928→    </div>
+   929→
+   930→    <div class="conclusion-box" style="margin-top: 32px;">
+   931→        <p><span class="highlight">605 USD</span> — Investissement initial estimatif</p>
+   932→        <p>Mise en production d'une premiere version <strong>stable et fonctionnelle</strong> de SALES OS</p>
+   933→    </div>
+   934→</div>
+   935→
+   936→</body>
+   937→</html>
+   938→
